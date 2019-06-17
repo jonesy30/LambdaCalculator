@@ -1,20 +1,18 @@
-import sys
-
 #Class taken from https://www.sanfoundry.com/python-program-implement-stack/
 class Stack:
 
     def __init__(self):
-        self.items = []
+        self.stack = []
     
     def is_empty(self):
-        return self.items == []
+        return self.stack == []
 
     def push(self, data):
-        self.items.append(data)
+        self.stack.append(data)
     
     def pop(self):
-        if(len(self.items) != 0):
-            return self.items.pop()
+        if(len(self.stack) != 0):
+            return self.stack.pop()
         return -1
 
 expression = input("Expression to test: ")
@@ -38,7 +36,6 @@ for c in expression:
         if(open_brackets.index(popped) != close_brackets.index(c)):
             matched_brackets = False
             break
-
 
 if(exp_stack.pop() != -1):
     matched_brackets = False
