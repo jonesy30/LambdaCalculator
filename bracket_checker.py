@@ -1,3 +1,5 @@
+import sys
+
 class Stack:
 
     def __init__(self):
@@ -10,7 +12,9 @@ class Stack:
         self.items.append(data)
     
     def pop(self):
-        return self.items.pop()
+        if(len(self.items) != 0):
+            return self.items.pop()
+        return -1
 
 expression = input("Expression to test: ")
 print(expression)
@@ -22,6 +26,16 @@ close_brackets = [')','>',']','}']
 
 for c in expression:
     if c in open_brackets:
-        print("Open bracket found")
+        exp_stack.push(c)
     elif c in close_brackets:
-        print("Close brackets found")
+        popped = exp_stack.pop()
+        #Need to work out how to deal with the value not being in the list
+        if(open_brackets.index(popped) != close_brackets.index(c)):
+            print("Unmatched brackets")
+            sys.exit()
+
+
+if(exp_stack.pop() == -1):
+    print("Matched brackets")
+else:
+    print("Unmatched brackets")
