@@ -7,13 +7,43 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface LambdaCalculusListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link LambdaCalculusParser#lambda}.
+	 * Enter a parse tree produced by {@link LambdaCalculusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterLambda(LambdaCalculusParser.LambdaContext ctx);
+	void enterExpression(LambdaCalculusParser.ExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LambdaCalculusParser#lambda}.
+	 * Exit a parse tree produced by {@link LambdaCalculusParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitLambda(LambdaCalculusParser.LambdaContext ctx);
+	void exitExpression(LambdaCalculusParser.ExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LambdaCalculusParser#function}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunction(LambdaCalculusParser.FunctionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LambdaCalculusParser#function}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunction(LambdaCalculusParser.FunctionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LambdaCalculusParser#variable}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariable(LambdaCalculusParser.VariableContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LambdaCalculusParser#variable}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariable(LambdaCalculusParser.VariableContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LambdaCalculusParser#operation}.
+	 * @param ctx the parse tree
+	 */
+	void enterOperation(LambdaCalculusParser.OperationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LambdaCalculusParser#operation}.
+	 * @param ctx the parse tree
+	 */
+	void exitOperation(LambdaCalculusParser.OperationContext ctx);
 }
