@@ -7,15 +7,15 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface LambdaCalculusListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link LambdaCalculusParser#expression}.
+	 * Enter a parse tree produced by {@link LambdaCalculusParser#term}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpression(LambdaCalculusParser.ExpressionContext ctx);
+	void enterTerm(LambdaCalculusParser.TermContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LambdaCalculusParser#expression}.
+	 * Exit a parse tree produced by {@link LambdaCalculusParser#term}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpression(LambdaCalculusParser.ExpressionContext ctx);
+	void exitTerm(LambdaCalculusParser.TermContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LambdaCalculusParser#function}.
 	 * @param ctx the parse tree

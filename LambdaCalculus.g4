@@ -1,13 +1,15 @@
 grammar LambdaCalculus;
-expression 
+
+term 
     : variable
     | '%' variable '.' function* 
+    | LBRACKET term RBRACKET
     ;
 
 function
     : operation
-    | variable
     | NUMBER
+    | term
     ;
 
 variable
@@ -29,5 +31,7 @@ SUBTRACT : '-' ;
 MULTIPLY : '*' ;
 DIVIDE : '/' ;
 POWER : '^' ;
+LBRACKET : '(' ;
+RBRACKET : ')' ;
 
 WS : [ \t\r\n]+ -> skip ;

@@ -17,19 +17,20 @@ public class LambdaCalculusParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, VARIABLE=3, NUMBER=4, ADD=5, SUBTRACT=6, MULTIPLY=7, DIVIDE=8, 
-		POWER=9, WS=10;
+		POWER=9, LBRACKET=10, RBRACKET=11, WS=12;
 	public static final int
-		RULE_expression = 0, RULE_function = 1, RULE_variable = 2, RULE_operation = 3;
+		RULE_term = 0, RULE_function = 1, RULE_variable = 2, RULE_operation = 3;
 	public static final String[] ruleNames = {
-		"expression", "function", "variable", "operation"
+		"term", "function", "variable", "operation"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'%'", "'.'", null, null, "'+'", "'-'", "'*'", "'/'", "'^'"
+		null, "'%'", "'.'", null, null, "'+'", "'-'", "'*'", "'/'", "'^'", "'('", 
+		"')'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, null, "VARIABLE", "NUMBER", "ADD", "SUBTRACT", "MULTIPLY", 
-		"DIVIDE", "POWER", "WS"
+		"DIVIDE", "POWER", "LBRACKET", "RBRACKET", "WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -80,7 +81,7 @@ public class LambdaCalculusParser extends Parser {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
-	public static class ExpressionContext extends ParserRuleContext {
+	public static class TermContext extends ParserRuleContext {
 		public VariableContext variable() {
 			return getRuleContext(VariableContext.class,0);
 		}
@@ -90,26 +91,31 @@ public class LambdaCalculusParser extends Parser {
 		public FunctionContext function(int i) {
 			return getRuleContext(FunctionContext.class,i);
 		}
-		public ExpressionContext(ParserRuleContext parent, int invokingState) {
+		public TerminalNode LBRACKET() { return getToken(LambdaCalculusParser.LBRACKET, 0); }
+		public TermContext term() {
+			return getRuleContext(TermContext.class,0);
+		}
+		public TerminalNode RBRACKET() { return getToken(LambdaCalculusParser.RBRACKET, 0); }
+		public TermContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_expression; }
+		@Override public int getRuleIndex() { return RULE_term; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).enterExpression(this);
+			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).enterTerm(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitExpression(this);
+			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitTerm(this);
 		}
 	}
 
-	public final ExpressionContext expression() throws RecognitionException {
-		ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
-		enterRule(_localctx, 0, RULE_expression);
-		int _la;
+	public final TermContext term() throws RecognitionException {
+		TermContext _localctx = new TermContext(_ctx, getState());
+		enterRule(_localctx, 0, RULE_term);
 		try {
-			setState(18);
+			int _alt;
+			setState(22);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case VARIABLE:
@@ -130,18 +136,31 @@ public class LambdaCalculusParser extends Parser {
 				match(T__1);
 				setState(15);
 				_errHandler.sync(this);
-				_la = _input.LA(1);
-				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << VARIABLE) | (1L << NUMBER) | (1L << ADD) | (1L << SUBTRACT) | (1L << MULTIPLY) | (1L << DIVIDE) | (1L << POWER))) != 0)) {
-					{
-					{
-					setState(12);
-					function();
-					}
+				_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
+				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+					if ( _alt==1 ) {
+						{
+						{
+						setState(12);
+						function();
+						}
+						} 
 					}
 					setState(17);
 					_errHandler.sync(this);
-					_la = _input.LA(1);
+					_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
 				}
+				}
+				break;
+			case LBRACKET:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(18);
+				match(LBRACKET);
+				setState(19);
+				term();
+				setState(20);
+				match(RBRACKET);
 				}
 				break;
 			default:
@@ -163,10 +182,10 @@ public class LambdaCalculusParser extends Parser {
 		public OperationContext operation() {
 			return getRuleContext(OperationContext.class,0);
 		}
-		public VariableContext variable() {
-			return getRuleContext(VariableContext.class,0);
-		}
 		public TerminalNode NUMBER() { return getToken(LambdaCalculusParser.NUMBER, 0); }
+		public TermContext term() {
+			return getRuleContext(TermContext.class,0);
+		}
 		public FunctionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -185,7 +204,7 @@ public class LambdaCalculusParser extends Parser {
 		FunctionContext _localctx = new FunctionContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_function);
 		try {
-			setState(23);
+			setState(27);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ADD:
@@ -195,22 +214,24 @@ public class LambdaCalculusParser extends Parser {
 			case POWER:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(20);
+				setState(24);
 				operation();
 				}
 				break;
-			case VARIABLE:
+			case NUMBER:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(21);
-				variable();
+				setState(25);
+				match(NUMBER);
 				}
 				break;
-			case NUMBER:
+			case T__0:
+			case VARIABLE:
+			case LBRACKET:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(22);
-				match(NUMBER);
+				setState(26);
+				term();
 				}
 				break;
 			default:
@@ -250,7 +271,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(25);
+			setState(29);
 			match(VARIABLE);
 			}
 		}
@@ -292,7 +313,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(27);
+			setState(31);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ADD) | (1L << SUBTRACT) | (1L << MULTIPLY) | (1L << DIVIDE) | (1L << POWER))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -316,15 +337,16 @@ public class LambdaCalculusParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\f \4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\3\2\3\2\3\2\3\2\3\2\7\2\20\n\2\f\2\16\2\23\13\2\5\2"+
-		"\25\n\2\3\3\3\3\3\3\5\3\32\n\3\3\4\3\4\3\5\3\5\3\5\2\2\6\2\4\6\b\2\3\3"+
-		"\2\7\13\2\37\2\24\3\2\2\2\4\31\3\2\2\2\6\33\3\2\2\2\b\35\3\2\2\2\n\25"+
-		"\5\6\4\2\13\f\7\3\2\2\f\r\5\6\4\2\r\21\7\4\2\2\16\20\5\4\3\2\17\16\3\2"+
-		"\2\2\20\23\3\2\2\2\21\17\3\2\2\2\21\22\3\2\2\2\22\25\3\2\2\2\23\21\3\2"+
-		"\2\2\24\n\3\2\2\2\24\13\3\2\2\2\25\3\3\2\2\2\26\32\5\b\5\2\27\32\5\6\4"+
-		"\2\30\32\7\6\2\2\31\26\3\2\2\2\31\27\3\2\2\2\31\30\3\2\2\2\32\5\3\2\2"+
-		"\2\33\34\7\5\2\2\34\7\3\2\2\2\35\36\t\2\2\2\36\t\3\2\2\2\5\21\24\31";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16$\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\3\2\3\2\3\2\3\2\3\2\7\2\20\n\2\f\2\16\2\23\13\2\3\2"+
+		"\3\2\3\2\3\2\5\2\31\n\2\3\3\3\3\3\3\5\3\36\n\3\3\4\3\4\3\5\3\5\3\5\2\2"+
+		"\6\2\4\6\b\2\3\3\2\7\13\2$\2\30\3\2\2\2\4\35\3\2\2\2\6\37\3\2\2\2\b!\3"+
+		"\2\2\2\n\31\5\6\4\2\13\f\7\3\2\2\f\r\5\6\4\2\r\21\7\4\2\2\16\20\5\4\3"+
+		"\2\17\16\3\2\2\2\20\23\3\2\2\2\21\17\3\2\2\2\21\22\3\2\2\2\22\31\3\2\2"+
+		"\2\23\21\3\2\2\2\24\25\7\f\2\2\25\26\5\2\2\2\26\27\7\r\2\2\27\31\3\2\2"+
+		"\2\30\n\3\2\2\2\30\13\3\2\2\2\30\24\3\2\2\2\31\3\3\2\2\2\32\36\5\b\5\2"+
+		"\33\36\7\6\2\2\34\36\5\2\2\2\35\32\3\2\2\2\35\33\3\2\2\2\35\34\3\2\2\2"+
+		"\36\5\3\2\2\2\37 \7\5\2\2 \7\3\2\2\2!\"\t\2\2\2\"\t\3\2\2\2\5\21\30\35";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
