@@ -27,6 +27,30 @@ public class LambdaCalculusBaseListener implements LambdaCalculusListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAbstraction(LambdaCalculusParser.AbstractionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAbstraction(LambdaCalculusParser.AbstractionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterApplication(LambdaCalculusParser.ApplicationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitApplication(LambdaCalculusParser.ApplicationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunction(LambdaCalculusParser.FunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -39,13 +63,13 @@ public class LambdaCalculusBaseListener implements LambdaCalculusListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVariable(LambdaCalculusParser.VariableContext ctx) { }
+	@Override public void enterExpression(LambdaCalculusParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVariable(LambdaCalculusParser.VariableContext ctx) { }
+	@Override public void exitExpression(LambdaCalculusParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

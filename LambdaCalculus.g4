@@ -1,19 +1,29 @@
 grammar LambdaCalculus;
 
 term 
-    : variable
-    | '%' variable '.' function* 
-    | LBRACKET term RBRACKET
+    : VARIABLE
+    | abstraction
+    | application
+    ;
+
+abstraction
+    : '%' VARIABLE '.' function*
+    | LBRACKET abstraction RBRACKET
+    ;
+
+application
+    : LBRACKET term term RBRACKET
     ;
 
 function
-    : operation
-    | NUMBER
+    : expression operation expression
+    | expression
     | term
     ;
 
-variable
-    : VARIABLE
+expression
+    : NUMBER
+    | VARIABLE
     ;
 
 operation
@@ -24,7 +34,7 @@ operation
     | POWER
     ;
 
-VARIABLE : [a-z]+ ;
+VARIABLE : [a-zA-Z]+ ;
 NUMBER : [0-9]+ ;
 ADD : '+' ;
 SUBTRACT : '-' ;
