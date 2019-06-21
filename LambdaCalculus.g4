@@ -7,12 +7,14 @@ term
     ;
 
 abstraction
-    : '%' VARIABLE '.' function*
-    | LBRACKET abstraction RBRACKET
+    : LBRACKET abstraction RBRACKET
+    | '%' VARIABLE '.' function
     ;
 
 application
-    : LBRACKET term term RBRACKET
+    : LBRACKET term* RBRACKET
+    | application term
+    | application expression
     ;
 
 function
