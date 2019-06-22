@@ -10,13 +10,17 @@ abstraction_term
     : '%' variable
     ;
 
+value_term
+    : abstraction number
+    ;
+
 abstraction
     : LBRACKET abstraction RBRACKET
     | abstraction_term '.' function
     ;
 
 application
-    : abstraction expression
+    : value_term
     | abstraction application
     | application term
     | application expression

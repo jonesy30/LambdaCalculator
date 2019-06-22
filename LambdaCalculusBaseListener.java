@@ -39,6 +39,18 @@ public class LambdaCalculusBaseListener implements LambdaCalculusListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterValue_term(LambdaCalculusParser.Value_termContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitValue_term(LambdaCalculusParser.Value_termContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAbstraction(LambdaCalculusParser.AbstractionContext ctx) { }
 	/**
 	 * {@inheritDoc}

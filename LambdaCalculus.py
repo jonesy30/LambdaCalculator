@@ -7,11 +7,28 @@ from LambdaCalculusListener import LambdaCalculusListener
 from sympy.solvers import solve
 from sympy import Symbol
 
+#Note to self: I definitely absolutely need a stack
+
+#taken from https://www.sanfoundry.com/python-program-implement-stack/
+class Stack:
+    def __init__(self):
+        self.items = []
+    
+    def is_empty(self):
+        return self.items == []
+    
+    def push(self, data):
+        self.items.append(data)
+    
+    def pop(self):
+        return self.items.pop()
+
 class Listener(LambdaCalculusListener):
-    abstraction = None
-    value = None
-    variable = None
-    function = None
+    abstraction = Stack()
+    value = Stack()
+    variable = Stack()
+    function = Stack()
+    solve_for = Stack()
 
     # def enterTerm(self, expr):
     #     if expr.abstraction() is not None:
@@ -26,37 +43,32 @@ class Listener(LambdaCalculusListener):
     #         print("Application: " + expr.application().getText())
     #     else:
     #         print("Application = none")
-
-    def enterApplication(self, expr):
-        Listener.abstraction = None
-        Listener.value = None
-        Listener.variable = None
-        Listener.function = None
     
     def exitApplication(self, expr):
-        print("Abstraction: "+Listener.abstraction)
-        print("Value: "+Listener.value)
-        print("Variable: "+Listener.variable)
+        #print("Abstraction: "+Listener.abstraction)
+        #print("Value: "+Listener.value)
+        #print("Variable: "+Listener.variable)
 
-        Listener.function = Listener.function.replace(Listener.variable,Listener.value)
-        print("New function: "+Listener.function)
-        print("Evaluation: "+str(eval(Listener.function)))
+        if not Listener.function.is_empty():
+            function = Listener.function.pop().replace(Listener.solve_for.pop(),Listener.value.pop())
+            print("New function: "+function)
+            output_value = str(eval(function))
+            print("Evaluated = "+output_value)
+            Listener.value.push(output_value) 
 
     def enterAbstraction(self, expr):
         Listener.abstraction = expr.getText()
-        print("Entering abstraction: "+Listener.abstraction)
 
-    def enterExpression(self, expr):
-        Listener.value = expr.getText()
-        print("Entering expression")
-
-    def enterVariable(self, expr):
-        Listener.variable = expr.getText()
-        print("Entering variable")
+    def enterValue_term(self, expr):
+        value = expr.getText().split(")")[-1]
+        print("Value = "+value)
+        Listener.value.push(value)
 
     def enterFunction(self, expr):
-        Listener.function = expr.getText()
-        print("Entering function")
+        Listener.function.push(expr.getText())
+    
+    def enterAbstraction_term(self, expr):
+        Listener.solve_for.push(expr.getText().replace('%',''))
 
 def handleExpression(expr):
     for child in expr.getChildren():
