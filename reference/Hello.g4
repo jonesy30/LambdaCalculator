@@ -1,4 +1,6 @@
 grammar Hello;
-r : 'hello' ID ;
+
+hi : 'hello' ID ;
+
 ID : [a-z]+ ;
 WS : [ \t\r\n]+ -> skip ;
