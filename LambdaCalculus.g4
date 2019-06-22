@@ -6,9 +6,13 @@ term
     | application
     ;
 
+abstraction_term
+    : '%' variable
+    ;
+
 abstraction
     : LBRACKET abstraction RBRACKET
-    | '%' variable '.' function
+    | abstraction_term '.' function
     ;
 
 application

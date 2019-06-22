@@ -17,6 +17,15 @@ class LambdaCalculusListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by LambdaCalculusParser#abstraction_term.
+    def enterAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
+        pass
+
+    # Exit a parse tree produced by LambdaCalculusParser#abstraction_term.
+    def exitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
+        pass
+
+
     # Enter a parse tree produced by LambdaCalculusParser#abstraction.
     def enterAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
         pass
