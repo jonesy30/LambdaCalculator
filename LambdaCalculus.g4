@@ -29,6 +29,7 @@ application
 
 function
     : expression operation expression
+    | expression operation term
     | expression
     | term
     ;

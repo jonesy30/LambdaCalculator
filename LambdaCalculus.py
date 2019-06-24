@@ -29,6 +29,7 @@ class Listener(LambdaCalculusListener):
     variable = Stack()
     function = Stack()
     solve_for = Stack()
+    term = Stack()
 
     # def enterTerm(self, expr):
     #     if expr.abstraction() is not None:
@@ -50,18 +51,32 @@ class Listener(LambdaCalculusListener):
         #print("Variable: "+Listener.variable)
 
         if not Listener.function.is_empty():
-            function = Listener.function.pop().replace(Listener.solve_for.pop(),Listener.value.pop())
+            function = Listener.function.pop()
+            print("Function before replace = "+function)
+            value = Listener.value.pop()
+            print("Value being replaced = "+value)
+            function = function.replace(Listener.solve_for.pop(),value)
             print("New function: "+function)
             output_value = str(eval(function))
             print("Evaluated = "+output_value)
-            Listener.value.push(output_value) 
+            if not Listener.function.is_empty():
+                next_function = Listener.function.pop()
+                print("Next function = "+next_function)
+                next_function = next_function.replace(Listener.term.pop(),output_value)
+                print("New next function = "+next_function)
+                Listener.function.push(next_function)
+            #still need to find a way to evaluate terms with variables and not numbers
+            #and also I need to work out bound/free variables
 
     def enterAbstraction(self, expr):
-        Listener.abstraction = expr.getText()
+        Listener.abstraction.push(expr.getText())
+
+    def enterTerm(self, expr):
+        Listener.term.push(expr.getText())
 
     def enterValue_term(self, expr):
         value = expr.getText().split(")")[-1]
-        print("Value = "+value)
+        print("Value in enter value = "+value)
         Listener.value.push(value)
 
     def enterFunction(self, expr):

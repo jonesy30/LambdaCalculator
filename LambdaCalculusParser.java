@@ -478,7 +478,7 @@ public class LambdaCalculusParser extends Parser {
 		FunctionContext _localctx = new FunctionContext(_ctx, getState());
 		enterRule(_localctx, 10, RULE_function);
 		try {
-			setState(71);
+			setState(75);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
 			case 1:
@@ -497,12 +497,23 @@ public class LambdaCalculusParser extends Parser {
 				{
 				setState(69);
 				expression();
+				setState(70);
+				operation();
+				setState(71);
+				term();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(70);
+				setState(73);
+				expression();
+				}
+				break;
+			case 4:
+				enterOuterAlt(_localctx, 4);
+				{
+				setState(74);
 				term();
 				}
 				break;
@@ -544,20 +555,20 @@ public class LambdaCalculusParser extends Parser {
 		ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
 		enterRule(_localctx, 12, RULE_expression);
 		try {
-			setState(75);
+			setState(79);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NUMBER:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(73);
+				setState(77);
 				number();
 				}
 				break;
 			case VARIABLE:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(74);
+				setState(78);
 				variable();
 				}
 				break;
@@ -598,7 +609,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(77);
+			setState(81);
 			match(VARIABLE);
 			}
 		}
@@ -635,7 +646,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(79);
+			setState(83);
 			match(NUMBER);
 			}
 		}
@@ -677,7 +688,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(81);
+			setState(85);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ADD) | (1L << SUBTRACT) | (1L << MULTIPLY) | (1L << DIVIDE) | (1L << POWER))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -718,27 +729,28 @@ public class LambdaCalculusParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16V\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16Z\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3"+
 		"\2\3\2\3\2\5\2\32\n\2\3\3\3\3\3\3\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5"+
 		"\3\5\3\5\5\5*\n\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\6\6\63\n\6\r\6\16\6\64\3"+
 		"\6\3\6\5\69\n\6\3\6\3\6\3\6\3\6\7\6?\n\6\f\6\16\6B\13\6\3\7\3\7\3\7\3"+
-		"\7\3\7\3\7\5\7J\n\7\3\b\3\b\5\bN\n\b\3\t\3\t\3\n\3\n\3\13\3\13\3\13\2"+
-		"\3\n\f\2\4\6\b\n\f\16\20\22\24\2\3\3\2\7\13\2V\2\31\3\2\2\2\4\33\3\2\2"+
-		"\2\6\36\3\2\2\2\b)\3\2\2\2\n8\3\2\2\2\fI\3\2\2\2\16M\3\2\2\2\20O\3\2\2"+
-		"\2\22Q\3\2\2\2\24S\3\2\2\2\26\32\5\20\t\2\27\32\5\b\5\2\30\32\5\n\6\2"+
-		"\31\26\3\2\2\2\31\27\3\2\2\2\31\30\3\2\2\2\32\3\3\2\2\2\33\34\7\3\2\2"+
-		"\34\35\5\20\t\2\35\5\3\2\2\2\36\37\5\b\5\2\37 \5\22\n\2 \7\3\2\2\2!\""+
-		"\7\f\2\2\"#\5\b\5\2#$\7\r\2\2$*\3\2\2\2%&\5\4\3\2&\'\7\4\2\2\'(\5\f\7"+
-		"\2(*\3\2\2\2)!\3\2\2\2)%\3\2\2\2*\t\3\2\2\2+,\b\6\1\2,9\5\6\4\2-.\5\b"+
-		"\5\2./\5\n\6\6/9\3\2\2\2\60\62\7\f\2\2\61\63\5\2\2\2\62\61\3\2\2\2\63"+
-		"\64\3\2\2\2\64\62\3\2\2\2\64\65\3\2\2\2\65\66\3\2\2\2\66\67\7\r\2\2\67"+
-		"9\3\2\2\28+\3\2\2\28-\3\2\2\28\60\3\2\2\29@\3\2\2\2:;\f\5\2\2;?\5\2\2"+
-		"\2<=\f\4\2\2=?\5\16\b\2>:\3\2\2\2><\3\2\2\2?B\3\2\2\2@>\3\2\2\2@A\3\2"+
-		"\2\2A\13\3\2\2\2B@\3\2\2\2CD\5\16\b\2DE\5\24\13\2EF\5\16\b\2FJ\3\2\2\2"+
-		"GJ\5\16\b\2HJ\5\2\2\2IC\3\2\2\2IG\3\2\2\2IH\3\2\2\2J\r\3\2\2\2KN\5\22"+
-		"\n\2LN\5\20\t\2MK\3\2\2\2ML\3\2\2\2N\17\3\2\2\2OP\7\5\2\2P\21\3\2\2\2"+
-		"QR\7\6\2\2R\23\3\2\2\2ST\t\2\2\2T\25\3\2\2\2\n\31)\648>@IM";
+		"\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7N\n\7\3\b\3\b\5\bR\n\b\3\t\3\t\3\n\3\n\3"+
+		"\13\3\13\3\13\2\3\n\f\2\4\6\b\n\f\16\20\22\24\2\3\3\2\7\13\2[\2\31\3\2"+
+		"\2\2\4\33\3\2\2\2\6\36\3\2\2\2\b)\3\2\2\2\n8\3\2\2\2\fM\3\2\2\2\16Q\3"+
+		"\2\2\2\20S\3\2\2\2\22U\3\2\2\2\24W\3\2\2\2\26\32\5\20\t\2\27\32\5\b\5"+
+		"\2\30\32\5\n\6\2\31\26\3\2\2\2\31\27\3\2\2\2\31\30\3\2\2\2\32\3\3\2\2"+
+		"\2\33\34\7\3\2\2\34\35\5\20\t\2\35\5\3\2\2\2\36\37\5\b\5\2\37 \5\22\n"+
+		"\2 \7\3\2\2\2!\"\7\f\2\2\"#\5\b\5\2#$\7\r\2\2$*\3\2\2\2%&\5\4\3\2&\'\7"+
+		"\4\2\2\'(\5\f\7\2(*\3\2\2\2)!\3\2\2\2)%\3\2\2\2*\t\3\2\2\2+,\b\6\1\2,"+
+		"9\5\6\4\2-.\5\b\5\2./\5\n\6\6/9\3\2\2\2\60\62\7\f\2\2\61\63\5\2\2\2\62"+
+		"\61\3\2\2\2\63\64\3\2\2\2\64\62\3\2\2\2\64\65\3\2\2\2\65\66\3\2\2\2\66"+
+		"\67\7\r\2\2\679\3\2\2\28+\3\2\2\28-\3\2\2\28\60\3\2\2\29@\3\2\2\2:;\f"+
+		"\5\2\2;?\5\2\2\2<=\f\4\2\2=?\5\16\b\2>:\3\2\2\2><\3\2\2\2?B\3\2\2\2@>"+
+		"\3\2\2\2@A\3\2\2\2A\13\3\2\2\2B@\3\2\2\2CD\5\16\b\2DE\5\24\13\2EF\5\16"+
+		"\b\2FN\3\2\2\2GH\5\16\b\2HI\5\24\13\2IJ\5\2\2\2JN\3\2\2\2KN\5\16\b\2L"+
+		"N\5\2\2\2MC\3\2\2\2MG\3\2\2\2MK\3\2\2\2ML\3\2\2\2N\r\3\2\2\2OR\5\22\n"+
+		"\2PR\5\20\t\2QO\3\2\2\2QP\3\2\2\2R\17\3\2\2\2ST\7\5\2\2T\21\3\2\2\2UV"+
+		"\7\6\2\2V\23\3\2\2\2WX\t\2\2\2X\25\3\2\2\2\n\31)\648>@MQ";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
