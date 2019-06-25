@@ -17,15 +17,6 @@ class LambdaCalculusListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by LambdaCalculusParser#abstraction_term.
-    def enterAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
-        pass
-
-    # Exit a parse tree produced by LambdaCalculusParser#abstraction_term.
-    def exitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
-        pass
-
-
     # Enter a parse tree produced by LambdaCalculusParser#value_term.
     def enterValue_term(self, ctx:LambdaCalculusParser.Value_termContext):
         pass
@@ -41,6 +32,15 @@ class LambdaCalculusListener(ParseTreeListener):
 
     # Exit a parse tree produced by LambdaCalculusParser#abstraction.
     def exitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
+        pass
+
+
+    # Enter a parse tree produced by LambdaCalculusParser#abstraction_term.
+    def enterAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
+        pass
+
+    # Exit a parse tree produced by LambdaCalculusParser#abstraction_term.
+    def exitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
         pass
 
 
@@ -77,6 +77,15 @@ class LambdaCalculusListener(ParseTreeListener):
 
     # Exit a parse tree produced by LambdaCalculusParser#variable.
     def exitVariable(self, ctx:LambdaCalculusParser.VariableContext):
+        pass
+
+
+    # Enter a parse tree produced by LambdaCalculusParser#lambda_variable.
+    def enterLambda_variable(self, ctx:LambdaCalculusParser.Lambda_variableContext):
+        pass
+
+    # Exit a parse tree produced by LambdaCalculusParser#lambda_variable.
+    def exitLambda_variable(self, ctx:LambdaCalculusParser.Lambda_variableContext):
         pass
 
 

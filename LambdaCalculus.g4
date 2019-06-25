@@ -6,10 +6,6 @@ term
     | application
     ;
 
-abstraction_term
-    : '%' variable
-    ;
-
 value_term
     : abstraction number
     ;
@@ -17,6 +13,11 @@ value_term
 abstraction
     : LBRACKET abstraction RBRACKET
     | abstraction_term '.' function
+    | abstraction_term '.' term
+    ;
+
+abstraction_term
+    : '%' lambda_variable+
     ;
 
 application
@@ -40,6 +41,10 @@ expression
     ;
 
 variable
+    : VARIABLE
+    ;
+
+lambda_variable
     : VARIABLE
     ;
 

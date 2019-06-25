@@ -82,8 +82,8 @@ class Listener(LambdaCalculusListener):
     def enterFunction(self, expr):
         Listener.function.push(expr.getText())
     
-    def enterAbstraction_term(self, expr):
-        Listener.solve_for.push(expr.getText().replace('%',''))
+    def enterLambda_variable(self, expr):
+        Listener.solve_for.push(expr.getText())
 
 def handleExpression(expr):
     for child in expr.getChildren():

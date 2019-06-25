@@ -17,16 +17,6 @@ public interface LambdaCalculusListener extends ParseTreeListener {
 	 */
 	void exitTerm(LambdaCalculusParser.TermContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LambdaCalculusParser#abstraction_term}.
-	 * @param ctx the parse tree
-	 */
-	void enterAbstraction_term(LambdaCalculusParser.Abstraction_termContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link LambdaCalculusParser#abstraction_term}.
-	 * @param ctx the parse tree
-	 */
-	void exitAbstraction_term(LambdaCalculusParser.Abstraction_termContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link LambdaCalculusParser#value_term}.
 	 * @param ctx the parse tree
 	 */
@@ -46,6 +36,16 @@ public interface LambdaCalculusListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAbstraction(LambdaCalculusParser.AbstractionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LambdaCalculusParser#abstraction_term}.
+	 * @param ctx the parse tree
+	 */
+	void enterAbstraction_term(LambdaCalculusParser.Abstraction_termContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LambdaCalculusParser#abstraction_term}.
+	 * @param ctx the parse tree
+	 */
+	void exitAbstraction_term(LambdaCalculusParser.Abstraction_termContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LambdaCalculusParser#application}.
 	 * @param ctx the parse tree
@@ -86,6 +86,16 @@ public interface LambdaCalculusListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVariable(LambdaCalculusParser.VariableContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LambdaCalculusParser#lambda_variable}.
+	 * @param ctx the parse tree
+	 */
+	void enterLambda_variable(LambdaCalculusParser.Lambda_variableContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LambdaCalculusParser#lambda_variable}.
+	 * @param ctx the parse tree
+	 */
+	void exitLambda_variable(LambdaCalculusParser.Lambda_variableContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LambdaCalculusParser#number}.
 	 * @param ctx the parse tree
