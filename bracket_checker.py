@@ -29,7 +29,6 @@ for c in expression:
         exp_stack.push(c)
     elif c in close_brackets:
         popped = exp_stack.pop()
-        #Need to work out how to deal with the value not being in the list
         if popped == -1:
             matched_brackets = False
             break
