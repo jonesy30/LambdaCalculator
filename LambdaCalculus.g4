@@ -4,6 +4,7 @@ term
     : variable
     | abstraction
     | application
+    | LBRACKET term RBRACKET
     ;
 
 value_term
