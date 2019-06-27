@@ -1,3 +1,5 @@
+from CurrentLetter import CurrentLetter
+
 class TreeNode(object):
     def __init__(self, data, parent):
         self.data = data
@@ -51,26 +53,45 @@ class TreeNode(object):
 
         return bound_values
     
-    def process_abstraction(self, data, bound_values):
+    def process_abstraction(self, data, bound_values, c):
+        print("Data = "+data)
         abstraction_list = list(data)
+        original_letters = []
+        associated_letters = []
+
         for i,letter in enumerate(abstraction_list):
             if letter.isalpha():
                 if letter not in bound_values:
-                    abstraction_list[i] = letter.upper()
-        
+                    #REPEATED CODE!!!!
+                    if letter not in original_letters:
+                        original_letters.append(letter)
+                        new_letter = c.getUpperCase()
+                        associated_letters.append(new_letter)
+                        abstraction_list[i] = new_letter
+                    else:
+                        abstraction_list[i] = associated_letters[original_letters.index(letter)]
+                else:
+                    if letter not in original_letters:
+                        original_letters.append(letter)
+                        new_letter = c.getLowerCase()
+                        associated_letters.append(new_letter)
+                        abstraction_list[i] = new_letter
+                    else:
+                        abstraction_list[i] = associated_letters[original_letters.index(letter)]
+
         abstraction = "".join(abstraction_list)
         return abstraction
 
-    def process_node(self):
+    def process_node(self,c):
         #print(self.data)
 
         #if self.children == []:
         #    self.process_abstraction(self.data)
         bound_values = self.get_bound_values(self.print_level())
 
-        children_print = self.process_abstraction(self.data, bound_values)
+        children_print = self.process_abstraction(self.data, bound_values, c)
         for child in self.children:
-            abstraction = child.process_node()
+            abstraction = child.process_node(c)
             children_print = children_print + abstraction
         return children_print
         
@@ -123,7 +144,9 @@ for i,expression_letter in enumerate(expression):
 t.get_root().print_node()
 print()
 print("Processed node")
-print(t.get_root().process_node())
+
+c = CurrentLetter()
+print(t.get_root().process_node(c))
 
 # print()
 # print("Level = ")
