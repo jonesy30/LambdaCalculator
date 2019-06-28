@@ -47,6 +47,9 @@ class TreeNode(object):
             for i, letter in enumerate(abstraction_list[:-1]):
                 if letter == '%':
                     bound_values.append(abstraction_list[i+1])
+        
+        #if bound_values == []:
+        #    return self.data
 
         return bound_values
     
@@ -59,33 +62,47 @@ class TreeNode(object):
                 if letter not in scope_object.bound_values:
                     #REPEATED CODE!!!!
                     if letter not in scope_object.original_letters:
+
+                        print(letter+" not found")
+                        print("Original_letters "+str(scope_object.original_letters))
+                        print("Associated_letters "+str(scope_object.associated_letters))
+
                         scope_object.original_letters.append(letter)
                         new_letter = scope_object.current_letter.getUpperCase()
                         scope_object.associated_letters.append(new_letter)
                         abstraction_list[i] = new_letter
                     else:
+                        print(letter+" found")
+                        print("Original_letters "+str(scope_object.original_letters))
+                        print("Associated_letters "+str(scope_object.associated_letters))
                         abstraction_list[i] = scope_object.associated_letters[scope_object.original_letters.index(letter)]
                 else:
                     #REPEATED CODE!!!
                     if letter not in scope_object.original_letters:
+
+                        print(letter+" not found")
+                        print("Original_letters "+str(scope_object.original_letters))
+                        print("Associated_letters "+str(scope_object.associated_letters))
+
                         scope_object.original_letters.append(letter)
                         new_letter = scope_object.current_letter.getLowerCase()
                         scope_object.associated_letters.append(new_letter)
                         abstraction_list[i] = new_letter
                     else:
+                        print(letter+" found")
+                        print("Original_letters "+str(scope_object.original_letters))
+                        print("Associated_letters "+str(scope_object.associated_letters))
                         abstraction_list[i] = scope_object.associated_letters[scope_object.original_letters.index(letter)]
 
         abstraction = "".join(abstraction_list)
         return abstraction
 
     def process_node(self, current_letter):
-        #print(self.data)
+        print("Processing node")
 
-        #if self.children == []:
-        #    self.process_abstraction(self.data)
-        bound_values = self.get_bound_values(self.print_level())
+        returned_bound_values = self.get_bound_values(self.print_level())
         scope_object = ScopeObject(current_letter)
-        scope_object.bound_values = bound_values
+        scope_object.bound_values = returned_bound_values
 
         children_print = self.process_abstraction(self.data, scope_object)
         for child in self.children:
