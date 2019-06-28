@@ -1,3 +1,4 @@
+from ScopeObject import ScopeObject
 from CurrentLetter import CurrentLetter
 
 class TreeNode(object):
@@ -42,56 +43,53 @@ class TreeNode(object):
     def get_bound_values(self, data):
         bound_values = []
         if data is not None:
-            bound_values = []
             abstraction_list = list(data)
             for i, letter in enumerate(abstraction_list[:-1]):
                 if letter == '%':
                     bound_values.append(abstraction_list[i+1])
 
-            if bound_values == []:
-                return self.data
-
         return bound_values
     
-    def process_abstraction(self, data, bound_values, c):
+    def process_abstraction(self, data, scope_object):
         print("Data = "+data)
         abstraction_list = list(data)
-        original_letters = []
-        associated_letters = []
 
         for i,letter in enumerate(abstraction_list):
             if letter.isalpha():
-                if letter not in bound_values:
+                if letter not in scope_object.bound_values:
                     #REPEATED CODE!!!!
-                    if letter not in original_letters:
-                        original_letters.append(letter)
-                        new_letter = c.getUpperCase()
-                        associated_letters.append(new_letter)
+                    if letter not in scope_object.original_letters:
+                        scope_object.original_letters.append(letter)
+                        new_letter = scope_object.current_letter.getUpperCase()
+                        scope_object.associated_letters.append(new_letter)
                         abstraction_list[i] = new_letter
                     else:
-                        abstraction_list[i] = associated_letters[original_letters.index(letter)]
+                        abstraction_list[i] = scope_object.associated_letters[scope_object.original_letters.index(letter)]
                 else:
-                    if letter not in original_letters:
-                        original_letters.append(letter)
-                        new_letter = c.getLowerCase()
-                        associated_letters.append(new_letter)
+                    #REPEATED CODE!!!
+                    if letter not in scope_object.original_letters:
+                        scope_object.original_letters.append(letter)
+                        new_letter = scope_object.current_letter.getLowerCase()
+                        scope_object.associated_letters.append(new_letter)
                         abstraction_list[i] = new_letter
                     else:
-                        abstraction_list[i] = associated_letters[original_letters.index(letter)]
+                        abstraction_list[i] = scope_object.associated_letters[scope_object.original_letters.index(letter)]
 
         abstraction = "".join(abstraction_list)
         return abstraction
 
-    def process_node(self,c):
+    def process_node(self, current_letter):
         #print(self.data)
 
         #if self.children == []:
         #    self.process_abstraction(self.data)
         bound_values = self.get_bound_values(self.print_level())
+        scope_object = ScopeObject(current_letter)
+        scope_object.bound_values = bound_values
 
-        children_print = self.process_abstraction(self.data, bound_values, c)
+        children_print = self.process_abstraction(self.data, scope_object)
         for child in self.children:
-            abstraction = child.process_node(c)
+            abstraction = child.process_node(current_letter)
             children_print = children_print + abstraction
         return children_print
         
@@ -145,8 +143,8 @@ t.get_root().print_node()
 print()
 print("Processed node")
 
-c = CurrentLetter()
-print(t.get_root().process_node(c))
+current_letter = CurrentLetter()
+print(t.get_root().process_node(current_letter))
 
 # print()
 # print("Level = ")
