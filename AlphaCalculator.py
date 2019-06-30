@@ -1,5 +1,6 @@
 from ScopeObject import ScopeObject
 from CurrentLetter import CurrentLetter
+from BracketCheck import BracketCheck
 
 class TreeNode(object):
     def __init__(self, data, parent, sibling_scope_object, current_letter):
@@ -19,7 +20,6 @@ class TreeNode(object):
     def get_parent(self):
         return self.parent
     
-    #I feel like this can be removed....? And combined with print siblings....?
     def print_siblings(self):
         if self.parent is not None:
             output = ""
@@ -60,15 +60,15 @@ class TreeNode(object):
         abstraction = "".join(abstraction_list)
         return abstraction
     
-    def process_level(self, level):
+    def process_siblings(self, siblings):
 
-        level_list = []
-        if level is not None:
-            for sibling in level:
+        sibling_list = []
+        if siblings is not None:
+            for sibling in siblings:
                 for letter in sibling.data:
-                    level_list.append(letter)
+                    sibling_list.append(letter)
         
-        for i,letter in enumerate(level_list):
+        for i,letter in enumerate(sibling_list):
             if letter.isalpha():
                 if letter not in self.sibling_scope_object.original_letters:
                     self.sibling_scope_object.original_letters.append(letter)
@@ -78,19 +78,18 @@ class TreeNode(object):
                         new_letter = self.sibling_scope_object.current_letter.getLowerCase()
                     self.sibling_scope_object.associated_letters.append(new_letter)
 
-    #Still need to fix up this method
     def process_node(self):
+
         returned_bound_values = self.get_bound_values(self.print_siblings())
         self.sibling_scope_object.bound_values = returned_bound_values
-        self.process_level(self.get_siblings())
+        self.process_siblings(self.get_siblings())
 
         if self.processed_data == None:
             siblings = self.get_siblings()
             if siblings is not None:
                 for sibling in siblings:
                     sibling.processed_data = self.process_abstraction(sibling.data,self.sibling_scope_object)
-
-        if self.processed_data == None:
+            
             abstraction_full = self.process_abstraction(self.data, self.sibling_scope_object)
         else:
             abstraction_full = self.processed_data
@@ -102,7 +101,6 @@ class TreeNode(object):
 
         return abstraction_full
 
-    #Do I need this? 
     def __repr__(self):
         return repr(self.data)
     
@@ -124,7 +122,14 @@ class Tree(object):
     def append_data(self, new_data):
         self.current_node.data = self.current_node.data + new_data
 
+bracket_checker = BracketCheck()
+
 expression = input("Enter test expression: ")
+matched_brackets = bracket_checker.check_brackets(expression)
+
+while matched_brackets == False:
+    expression = input("Sorry, mismatched brackets, check and try again?")
+    matched_brackets = bracket_checker.check_brackets(expression)
 
 current_letter = CurrentLetter()
 t = Tree(current_letter)
