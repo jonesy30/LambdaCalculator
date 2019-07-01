@@ -1,7 +1,9 @@
 from ScopeObject import ScopeObject
 from CurrentLetter import CurrentLetter
 from BracketCheck import BracketCheck
+import sys
 
+#Class which represents a node in the tree - each node is a substring of the total expression
 class TreeNode(object):
     def __init__(self, data, parent, sibling_scope_object, current_letter):
         self.data = data
@@ -10,6 +12,11 @@ class TreeNode(object):
         self.sibling_scope_object = sibling_scope_object
         self.current_letter = current_letter
         self.processed_data = None
+
+        #sibling_scope_object: information about the current scope which gets passed to my siblings (they're in the same scope as me)
+        #current letter: a class using the singleton pattern which keeps track of which letter you're currently on
+            #(a is used to replace, then b, then c, etc.)
+        #processed data: the converted version of the string this node represents
 
     def add_child(self, data, parent):
         s = ScopeObject(self.current_letter)
@@ -28,6 +35,7 @@ class TreeNode(object):
             
             return output
     
+    #Get all nodes on the same level as me (my siblings) - these are all within my scope and so need the same variable namings
     def get_siblings(self):
         siblings = None
         if self.parent is not None:
@@ -37,6 +45,7 @@ class TreeNode(object):
             
         return siblings
 
+    #Look for the letter after the lambda (%) operator to find the variables bound in the current scope
     def get_bound_values(self, data):
         bound_values = []
         if data is not None:
@@ -47,6 +56,7 @@ class TreeNode(object):
         
         return bound_values
     
+    #Replace all values with their new names
     def process_abstraction(self, data, scope_object):
         abstraction_list = list(data)
 
@@ -60,6 +70,7 @@ class TreeNode(object):
         abstraction = "".join(abstraction_list)
         return abstraction
     
+    #Process siblings at the same time as me so they get the same names - they're in my scope
     def process_siblings(self, siblings):
 
         sibling_list = []
@@ -70,6 +81,7 @@ class TreeNode(object):
         
         for i,letter in enumerate(sibling_list):
             if letter.isalpha():
+                #bound variables get lowercase letters, unbound get uppercase
                 if letter not in self.sibling_scope_object.original_letters:
                     self.sibling_scope_object.original_letters.append(letter)
                     if letter not in self.sibling_scope_object.bound_values:
@@ -78,12 +90,14 @@ class TreeNode(object):
                         new_letter = self.sibling_scope_object.current_letter.getLowerCase()
                     self.sibling_scope_object.associated_letters.append(new_letter)
 
+    #Process me (and my siblings if I haven't been processed yet)
     def process_node(self):
 
         returned_bound_values = self.get_bound_values(self.print_siblings())
         self.sibling_scope_object.bound_values = returned_bound_values
         self.process_siblings(self.get_siblings())
 
+        #if I have not been processed, process me and my siblings
         if self.processed_data == None:
             siblings = self.get_siblings()
             if siblings is not None:
@@ -94,6 +108,7 @@ class TreeNode(object):
         else:
             abstraction_full = self.processed_data
 
+        #process my children
         for child in self.children:
            abstraction = child.process_node()
            if abstraction is not None:
@@ -104,6 +119,7 @@ class TreeNode(object):
     def __repr__(self):
         return repr(self.data)
     
+#class which is the tree structure for this scope tree
 class Tree(object):
     def __init__(self, current_letter):
         s = ScopeObject(current_letter)
@@ -122,30 +138,35 @@ class Tree(object):
     def append_data(self, new_data):
         self.current_node.data = self.current_node.data + new_data
 
-bracket_checker = BracketCheck()
+def calculate_alpha():
+    bracket_checker = BracketCheck()
 
-expression = input("Enter test expression: ")
-matched_brackets = bracket_checker.check_brackets(expression)
-
-while matched_brackets == False:
-    expression = input("Sorry, mismatched brackets, check and try again?")
+    expression = input("Enter test expression: ")
     matched_brackets = bracket_checker.check_brackets(expression)
 
-current_letter = CurrentLetter()
-t = Tree(current_letter)
-t.add_child("")
-for i,expression_letter in enumerate(expression):
-    if expression_letter == '(':
-        t.append_data(expression_letter)
-        t.add_child("")
-    elif expression_letter == ')':
-        t.exit_child()
-        t.exit_child()
-        t.add_child("")
-        t.append_data(expression_letter)
-    else:
-        t.append_data(expression_letter)
+    while matched_brackets == False:
+        expression = input("Sorry, mismatched brackets, check and try again?")
+        matched_brackets = bracket_checker.check_brackets(expression)
 
-print()
-print("Processed:")
-print(t.get_root().process_node())
+    #Create the scope tree with the expression input by the user
+    current_letter = CurrentLetter()
+    t = Tree(current_letter)
+    t.add_child("")
+    for i,expression_letter in enumerate(expression):
+        if expression_letter == '(':
+            t.append_data(expression_letter)
+            t.add_child("")
+        elif expression_letter == ')':
+            t.exit_child()
+            t.exit_child()
+            t.add_child("")
+            t.append_data(expression_letter)
+        else:
+            t.append_data(expression_letter)
+
+    output = t.get_root().process_node()
+    return output
+
+if __name__ == '__main__':
+    output = calculate_alpha()
+    print(output)

@@ -3,6 +3,7 @@ from antlr4 import *
 from LambdaCalculusLexer import LambdaCalculusLexer
 from LambdaCalculusParser import LambdaCalculusParser
 from LambdaCalculusListener import LambdaCalculusListener
+from AlphaCalculator import calculate_alpha
 
 from sympy.solvers import solve
 from sympy import Symbol
@@ -110,7 +111,8 @@ def handleExpression(expr):
         #     print("Application = none")
 
 def main():
-    lexer = LambdaCalculusLexer(StdinStream())
+    expression = calculate_alpha()
+    lexer = LambdaCalculusLexer(expression)
     stream = CommonTokenStream(lexer)
     parser = LambdaCalculusParser(stream)
     tree = parser.term()
