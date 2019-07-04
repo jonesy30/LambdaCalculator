@@ -32,6 +32,8 @@ class Listener(LambdaCalculusListener):
     solve_for = Stack()
     term = Stack()
 
+    print("hello?")
+
     # def enterTerm(self, expr):
     #     if expr.abstraction() is not None:
     #         print("Abstraction: "+ expr.abstraction().getText())
@@ -112,7 +114,8 @@ def handleExpression(expr):
 
 def main():
     expression = calculate_alpha()
-    lexer = LambdaCalculusLexer(expression)
+    stream = InputStream(expression)
+    lexer = LambdaCalculusLexer(stream)
     stream = CommonTokenStream(lexer)
     parser = LambdaCalculusParser(stream)
     tree = parser.term()
