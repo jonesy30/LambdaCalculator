@@ -1,144 +1,55 @@
-from ScopeObject import ScopeObject
-from CurrentLetter import CurrentLetter
 from BracketCheck import BracketCheck
 import sys
 
-#Class which represents a node in the tree - each node is a substring of the total expression
-class TreeNode(object):
-    def __init__(self, data, parent, sibling_scope_object, current_letter):
-        self.data = data
-        self.parent = parent
-        self.children = []
-        self.sibling_scope_object = sibling_scope_object
-        self.current_letter = current_letter
-        self.processed_data = None
-
-        #sibling_scope_object: information about the current scope which gets passed to my siblings (they're in the same scope as me)
-        #current letter: a class using the singleton pattern which keeps track of which letter you're currently on
-            #(a is used to replace, then b, then c, etc.)
-        #processed data: the converted version of the string this node represents
-
-    def add_child(self, data, parent):
-        s = ScopeObject(self.current_letter)
-        child = TreeNode(data, parent, s, self.current_letter)
-        self.children.append(child)
-        return self.children[-1]
+class Stack:
+    def __init__(self):
+        self.items = []
     
-    def get_parent(self):
-        return self.parent
+    def isEmpty(self):
+        return self.items == []
     
-    def print_siblings(self):
-        if self.parent is not None:
-            output = ""
-            for child in self.parent.children:
-                output = output + str(child)
-            
-            return output
+    def push(self, data):
+        self.items.append(data)
     
-    #Get all nodes on the same level as me (my siblings) - these are all within my scope and so need the same variable namings
-    def get_siblings(self):
-        siblings = None
-        if self.parent is not None:
-            siblings = []
-            for child in self.parent.children:
-                siblings.append(child)
-            
-        return siblings
-
-    #Look for the letter after the lambda (%) operator to find the variables bound in the current scope
-    def get_bound_values(self, data):
-        bound_values = []
-        if data is not None:
-            abstraction_list = list(data)
-            for i, letter in enumerate(abstraction_list[:-1]):
-                if letter == '%':
-                    bound_values.append(abstraction_list[i+1])
-        
-        return bound_values
-    
-    #Replace all values with their new names
-    def process_abstraction(self, data, scope_object):
-        abstraction_list = list(data)
-
-        for i,letter in enumerate(abstraction_list):
-            if letter.isalpha():
-                if letter not in scope_object.original_letters:
-                    print("LETTER "+letter+" NOT IN FOUND VALUES")
-                else:
-                    abstraction_list[i] = scope_object.associated_letters[scope_object.original_letters.index(letter)]
-
-        abstraction = "".join(abstraction_list)
-        return abstraction
-    
-    #Process siblings at the same time as me so they get the same names - they're in my scope
-    def process_siblings(self, siblings):
-
-        sibling_list = []
-        if siblings is not None:
-            for sibling in siblings:
-                for letter in sibling.data:
-                    sibling_list.append(letter)
-        
-        for i,letter in enumerate(sibling_list):
-            if letter.isalpha():
-                #bound variables get lowercase letters, unbound get uppercase
-                if letter not in self.sibling_scope_object.original_letters:
-                    self.sibling_scope_object.original_letters.append(letter)
-                    if letter not in self.sibling_scope_object.bound_values:
-                        new_letter = self.sibling_scope_object.current_letter.getUpperCase()
-                    else:
-                        new_letter = self.sibling_scope_object.current_letter.getLowerCase()
-                    self.sibling_scope_object.associated_letters.append(new_letter)
-
-    #Process me (and my siblings if I haven't been processed yet)
-    def process_node(self):
-
-        returned_bound_values = self.get_bound_values(self.print_siblings())
-        self.sibling_scope_object.bound_values = returned_bound_values
-        self.process_siblings(self.get_siblings())
-
-        #if I have not been processed, process me and my siblings
-        if self.processed_data == None:
-            siblings = self.get_siblings()
-            if siblings is not None:
-                for sibling in siblings:
-                    sibling.processed_data = self.process_abstraction(sibling.data,self.sibling_scope_object)
-            
-            abstraction_full = self.process_abstraction(self.data, self.sibling_scope_object)
-        else:
-            abstraction_full = self.processed_data
-
-        #process my children
-        for child in self.children:
-           abstraction = child.process_node()
-           if abstraction is not None:
-               abstraction_full = abstraction_full + abstraction
-
-        return abstraction_full
+    def pop(self):
+        return self.items.pop()
 
     def __repr__(self):
-        return repr(self.data)
-    
-#class which is the tree structure for this scope tree
-class Tree(object):
-    def __init__(self, current_letter):
-        s = ScopeObject(current_letter)
-        self.root = TreeNode("",None,s,current_letter)
-        self.current_node = self.root
-    
-    def get_root(self):
-        return self.root
+        return str(self.items)
 
-    def add_child(self, data):
-        self.current_node = self.current_node.add_child(data,self.current_node)
-    
-    def exit_child(self):
-        self.current_node = self.current_node.get_parent()
-    
-    def append_data(self, new_data):
-        self.current_node.data = self.current_node.data + new_data
+class ScopeObject(object):
+    def __init__(self, id, parent):
+        self.id = id
+        self.parent = parent
+        self.start_index = None
+        self.end_index = None
+        self.brackets = Stack()
 
-def calculate_alpha():
+    def getParent(self):
+        return self.parent
+
+    def setStartIndex(self, index):
+        self.start_index = index
+
+    def setEndIndex(self,index):
+        self.end_index = index
+    
+    def __repr__(self):
+        return "id = "+str(self.id)+", start = "+str(self.start_index)+", end = "+str(self.end_index)
+
+#Look for the letter after the lambda (%) operator to find the variables bound in the current scope
+def get_bound_values(data):
+    bound_values = []
+    if data is not None:
+        abstraction_list = list(data)
+        for i, letter in enumerate(abstraction_list[:-1]):
+            if letter == '%':
+                bound_values.append(abstraction_list[i+1])
+    
+    return bound_values
+
+#Method to make sure the brackets are all matched up in the string the user has entered
+def check_brackets():
     bracket_checker = BracketCheck()
 
     expression = input("Enter test expression: ")
@@ -147,26 +58,117 @@ def calculate_alpha():
     while matched_brackets == False:
         expression = input("Sorry, mismatched brackets, check and try again?")
         matched_brackets = bracket_checker.check_brackets(expression)
+    
+    return expression
 
-    #Create the scope tree with the expression input by the user
-    current_letter = CurrentLetter()
-    t = Tree(current_letter)
-    t.add_child("")
-    for i,expression_letter in enumerate(expression):
-        if expression_letter == '(':
-            t.append_data(expression_letter)
-            t.add_child("")
-        elif expression_letter == ')':
-            t.exit_child()
-            t.exit_child()
-            t.add_child("")
-            t.append_data(expression_letter)
-        else:
-            t.append_data(expression_letter)
+#Method to create a map of each letter according to their scope ids, and a list of scopes those ids represent
+def get_scopes(expression):
+    scope_objects = []
+    scope_id = 0
 
-    output = t.get_root().process_node()
-    return output
+    current_scope = ScopeObject(scope_id,None)
+    if expression[0] != '%':
+        current_scope.setStartIndex(0)
+        scope_objects.append(current_scope)
 
-if __name__ == '__main__':
-    output = calculate_alpha()
-    print(output)
+    for i,letter in enumerate(expression):
+        if letter == '%':
+            scope_id = scope_id + 1
+            current_scope = ScopeObject(scope_id,current_scope)
+            current_scope.setStartIndex(i)
+            scope_objects.append(current_scope)
+        elif letter == '(':
+            current_scope.brackets.push(letter)
+        elif letter == ')':
+            if current_scope.brackets.isEmpty():
+                current_scope.setEndIndex(i)
+                current_scope = current_scope.getParent()
+                current_scope.brackets.pop()
+            else:
+                current_scope.brackets.pop()
+
+    for scope in scope_objects:
+        if scope.end_index is None:
+            scope.end_index = len(expression)
+
+    scope_map = [0] * len(expression)
+
+    for scope in scope_objects:
+        i = scope.start_index
+        while i < scope.end_index:
+            scope_map[i] = scope.id
+            i = i + 1
+
+    return scope_map, scope_objects
+
+def rename_values(expression,scope_map,scope_objects):
+    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    available_letters = list(alphabet)
+
+    #for scope in reversed(scope_objects):
+    for scope in scope_objects:
+        term = ""
+        i = scope.start_index
+        while i < scope.end_index:
+            term = term + expression[i]
+            i = i + 1
+
+        expression_list = list(expression)    
+        bound_values = get_bound_values(term)
+
+        replace_with = [""] * len(bound_values)
+        for i,bound_value in enumerate(bound_values):
+            if bound_value not in available_letters:
+                replace_with[i] = available_letters[0]
+            else:
+                replace_with[i] = bound_value
+            available_letters.remove(replace_with[i])
+
+        i = scope.start_index
+        while i < scope.end_index:
+            if expression[i] in bound_values:
+                #expression_list[i] = expression_list[i].upper()
+                expression_list[i] = replace_with[bound_values.index(expression[i])]
+            i = i + 1
+        expression = "".join(expression_list)
+
+    return expression
+
+#ToDo: Find and rename bound variables
+#Step 1: Determine the scope of a lambda term (done)
+#Step 2: Find bound variables (done)
+#Step 3: Find something to rename them to (done)
+#Step 4: Rename them (also done)
+
+def calculate_alpha():
+    expression = check_brackets()
+
+    scope_map, scope_objects = get_scopes(expression)
+
+    expression = rename_values(expression, scope_map, scope_objects)
+    return expression
+
+if __name__ == "__main__":
+    expression = calculate_alpha()
+    print(expression)
+
+#this continually overrides replaced variables in smaller scopes, which means some letters aren't used when they should be
+#this might become an issue in the future when I start looking at larger lambda terms, but for now... It works? So leave it?
+
+#This is for testing alone
+# for scope in scope_objects:
+#     print()
+#     print(scope.id)
+    
+#     scope_string = ""
+#     i = scope.start_index
+#     while i < scope.end_index:
+#         scope_string = scope_string + expression[i]
+#         i = i + 1
+    
+#     print(scope_string)
+
+
+
+
+
