@@ -14,11 +14,6 @@ class LambdaCalculusVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by LambdaCalculusParser#value_term.
-    def visitValue_term(self, ctx:LambdaCalculusParser.Value_termContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
         return self.visitChildren(ctx)

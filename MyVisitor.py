@@ -9,10 +9,38 @@ class MyVisitor(LambdaCalculusVisitor):
     
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
-        print("In an application "+ctx.getText())
-        print(self.visitChildren(ctx))
-        print("End of application")
-        return self.visitChildren(ctx)
+        #print(self.visitChildren(ctx))
+        #print("End of application")
+        #print(self.visitChildren(ctx))
+        self.visitChildren(ctx)
+        
+        #print("Child 0 = "+ctx.getChild(0).getText())
+        #print("Child 1 = "+ctx.getChild(1).getChild(0).getText())
+        #This could be useful?
+        #print("Tree")
+        #print(ctx.toStringTree())
+
+        #bound variable at getChild(1).getChild(0)
+        #function at getChild(1).getChild(2)
+        #expression at getChild(3)
+
+        bound_variable = ctx.getChild(1).getChild(0).getText()
+        bound_variable = bound_variable.replace("%","")
+        function = self.visit(ctx.getChild(1)).getText()
+        expression = ctx.getChild(3).getText()
+        ##print("Bound variable through abstraction = "+str(bound_variable))
+        ##print("Function through abstraction = "+str(function))
+        ##print("Expression through abstraction = "+str(expression))
+
+        new_function = function.replace(bound_variable,expression)
+        ##print("New function = "+new_function)
+
+        return new_function
+        #return self.visitChildren(ctx)
+
+    # Visit a parse tree produced by LambdaCalculusParser#expression.
+    def visitExpression(self, ctx:LambdaCalculusParser.ExpressionContext):
+        return ctx.getText()
 
     # Visit a parse tree produced by LambdaCalculusParser#number.
     def visitNumber(self, ctx:LambdaCalculusParser.NumberContext):
@@ -23,22 +51,47 @@ class MyVisitor(LambdaCalculusVisitor):
     
     # Visit a parse tree produced by LambdaCalculusParser#term.
     def visitTerm(self, ctx:LambdaCalculusParser.TermContext):
-        #print("Term = "+ctx.getText())
         #return "Term = "+ctx.getText()
-        print("T: "+str(self.visitChildren(ctx)))
+        #print("T: "+str(self.visitChildren(ctx)))
+        #return self.visitChildren(ctx)
+        
+        # self.visitChildren(ctx)
+        # if ctx.getChildCount() > 1:
+        #     print("T: "+ctx.getChild(1))
+        #     return ctx.getChild(1)
+        # return None
+        
+        #print("Term me = "+ctx.getText())
+
+        #This has stopped working for some reason
+        # if self.visitChildren(ctx) is not None:
+        #     [bound_variable, function] = self.visitChildren(ctx)
+        #     print("Bound variable = "+bound_variable)
+        #     return bound_variable
         return self.visitChildren(ctx)
-    
+
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
-        print("In abstraction "+ctx.getText())
-        print("A: "+str(self.visitChildren(ctx)))  
+        #print("In abstraction "+ctx.getText())
+        #print("A: "+str(self.visitChildren(ctx)))  
 
         #Well that's interesting.... This gives %a as I want....
-        print("Child = "+str(ctx.getChild(0).getText()))
-        
+        #print("Child 0 = "+str(ctx.getChild(0).getText()))
+        #print("Child 2 = "+str(ctx.getChild(2).getText()))
+
         #print("?? "+str(self.visitAbstraction_term(ctx)))
-        print("Number of children = "+str(ctx.getChildCount()))
-        return self.visitChildren(ctx)
+        #print("Number of children = "+str(ctx.getChildCount()))
+        #return self.visitChildren(ctx)
+        #return ctx.getChild(0).getText(), ctx.getChild(2).getText()
+        self.visitChildren(ctx)
+        #print("Child 0 = "+ctx.getChild(0).getText())
+        #print("Child 1 = "+ctx.getChild(1).getText())
+        #print("Child 2 = "+ctx.getChild(2).getText())
+        #return ctx.getChild(0).getText(), ctx.getChild(2).getText()
+        
+        #Changing this to 0 returns %a
+        #Changing this to 2 returns a+1
+        return ctx.getChild(2)
 
     # Visit a parse tree produced by LambdaCalculusParser#function.
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
@@ -47,9 +100,9 @@ class MyVisitor(LambdaCalculusVisitor):
         
         #right = self.visit(ctx.term(1))
 
-        print("Function = "+ctx.getText())
+        #print("Function = "+ctx.getText())
         #return self.visitChildren(ctx)
-        #return "F: "+ctx.getText()
+        return "F: "+ctx.getText()
 
         # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
     def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
@@ -63,10 +116,13 @@ class MyVisitor(LambdaCalculusVisitor):
         #This prints %x
         #print(self.visitLambda_variable(ctx))
         #print("End of children")
-        print("A_t: "+str(self.visitChildren(ctx)))
+        #print("A_t: "+str(self.visitChildren(ctx)))
         #return self.visitLambda_variable(ctx)
         #print("Lambda term?" + self.visit(ctx.lambda_variable()))
-        return "A_t: "+str(self.visitChildren(ctx))
+        #print("A_t: "+str(self.visitChildren(ctx)))
+        #return "A_t: "+str(self.visitChildren(ctx))
+        return self.visitChildren(ctx)
+        
         #return "A_t: "+str(self.visitLambda_variable(ctx))
 
     # Visit a parse tree produced by LambdaCalculusParser#lambda_variable.
@@ -86,6 +142,10 @@ class MyVisitor(LambdaCalculusVisitor):
         #print("Lambda = "+ctx.getText())
         
         #print("L? "+(str(ctx)))
-        return "L: "+ctx.getText()
+        #print("L = "+ctx.getText())
+        return ctx.getText()
+        #return "L: "+ctx.getText()
     
 #NOTE: doing ctx. gives a whole bunch of possible functions
+    #well, it used to :(
+#NOTE: self is MyVisitor (this seems obvious)
