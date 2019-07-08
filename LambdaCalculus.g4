@@ -24,6 +24,7 @@ abstraction_term
 application
     : value_term
     | abstraction application
+    | application abstraction
     | application term
     | application expression
     | LBRACKET term+ RBRACKET
