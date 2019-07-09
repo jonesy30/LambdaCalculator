@@ -1,4 +1,5 @@
 from LambdaCalculusVisitor import LambdaCalculusVisitor
+from AlphaCalculator import calculate_alpha
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .LambdaCalculusParser import LambdaCalculusParser
