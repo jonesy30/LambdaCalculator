@@ -2,7 +2,7 @@ grammar LambdaCalculus;
 
 term 
     : LBRACKET term RBRACKET
-    | variable
+    | expression
     | application
     | abstraction
     ;
@@ -23,7 +23,6 @@ application
     | abstraction application
     | application abstraction
     | application term+
-    | application expression
     ;
 
 function

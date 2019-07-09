@@ -24,9 +24,8 @@ class MyVisitor(LambdaCalculusVisitor):
         #function at getChild(1).getChild(2)
         #expression at getChild(3)
 
-        bound_variable = ctx.getChild(1).getChild(0).getText()
-        bound_variable = bound_variable.replace("%","")
-        function = self.visit(ctx.getChild(1)).getText()
+        [bound_variable, function] = self.visit(ctx.getChild(1))
+
         expression = ctx.getChild(3).getText()
         ##print("Bound variable through abstraction = "+str(bound_variable))
         ##print("Function through abstraction = "+str(function))
@@ -83,7 +82,6 @@ class MyVisitor(LambdaCalculusVisitor):
         #print("Number of children = "+str(ctx.getChildCount()))
         #return self.visitChildren(ctx)
         #return ctx.getChild(0).getText(), ctx.getChild(2).getText()
-        self.visitChildren(ctx)
         #print("Child 0 = "+ctx.getChild(0).getText())
         #print("Child 1 = "+ctx.getChild(1).getText())
         #print("Child 2 = "+ctx.getChild(2).getText())
@@ -91,7 +89,8 @@ class MyVisitor(LambdaCalculusVisitor):
         
         #Changing this to 0 returns %a
         #Changing this to 2 returns a+1
-        return ctx.getChild(2)
+        #self.visitChildren(ctx)
+        return self.visit(ctx.getChild(0)),ctx.getChild(2).getText()
 
     # Visit a parse tree produced by LambdaCalculusParser#function.
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
@@ -122,8 +121,6 @@ class MyVisitor(LambdaCalculusVisitor):
         #print("A_t: "+str(self.visitChildren(ctx)))
         #return "A_t: "+str(self.visitChildren(ctx))
         return self.visitChildren(ctx)
-        
-        #return "A_t: "+str(self.visitLambda_variable(ctx))
 
     # Visit a parse tree produced by LambdaCalculusParser#lambda_variable.
     def visitLambda_variable(self, ctx:LambdaCalculusParser.Lambda_variableContext):
