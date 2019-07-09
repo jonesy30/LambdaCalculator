@@ -18,10 +18,11 @@ abstraction_term
     ;
 
 application
-    : LBRACKET abstraction RBRACKET expression
+    : LBRACKET term RBRACKET term
+    | abstraction expression
     | abstraction application
     | application abstraction
-    | application term
+    | application term+
     | application expression
     ;
 
