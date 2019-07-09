@@ -1,5 +1,5 @@
 from LambdaCalculusVisitor import LambdaCalculusVisitor
-from AlphaCalculator import calculate_alpha
+from AlphaCalculatorPartial import calculate_alpha
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .LambdaCalculusParser import LambdaCalculusParser
@@ -28,6 +28,9 @@ class MyVisitor(LambdaCalculusVisitor):
         [bound_variable, function] = self.visit(ctx.getChild(1))
 
         expression = ctx.getChild(3).getText()
+        print("Expression before = "+expression)
+        expression = calculate_alpha(bound_variable, function, expression)
+        print("Expression after = "+expression)
         ##print("Bound variable through abstraction = "+str(bound_variable))
         ##print("Function through abstraction = "+str(function))
         ##print("Expression through abstraction = "+str(expression))

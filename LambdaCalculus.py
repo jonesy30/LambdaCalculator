@@ -4,7 +4,6 @@ from LambdaCalculusLexer import LambdaCalculusLexer
 from LambdaCalculusParser import LambdaCalculusParser
 from LambdaCalculusListener import LambdaCalculusListener
 from LambdaCalculusVisitor import LambdaCalculusVisitor
-from AlphaCalculator import calculate_alpha
 from BracketCheck import BracketCheck
 from MyVisitor import MyVisitor
 
