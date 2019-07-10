@@ -16,6 +16,12 @@ public interface LambdaCalculusVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTerm(LambdaCalculusParser.TermContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LambdaCalculusParser#parenthesis}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParenthesis(LambdaCalculusParser.ParenthesisContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LambdaCalculusParser#abstraction}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
