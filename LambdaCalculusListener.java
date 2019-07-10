@@ -67,15 +67,15 @@ public interface LambdaCalculusListener extends ParseTreeListener {
 	 */
 	void exitFunction(LambdaCalculusParser.FunctionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LambdaCalculusParser#expression}.
+	 * Enter a parse tree produced by {@link LambdaCalculusParser#value}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpression(LambdaCalculusParser.ExpressionContext ctx);
+	void enterValue(LambdaCalculusParser.ValueContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LambdaCalculusParser#expression}.
+	 * Exit a parse tree produced by {@link LambdaCalculusParser#value}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpression(LambdaCalculusParser.ExpressionContext ctx);
+	void exitValue(LambdaCalculusParser.ValueContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LambdaCalculusParser#variable}.
 	 * @param ctx the parse tree

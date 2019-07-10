@@ -16,23 +16,23 @@ public class LambdaCalculusParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, VARIABLE=3, NUMBER=4, ADD=5, SUBTRACT=6, MULTIPLY=7, DIVIDE=8, 
-		POWER=9, LBRACKET=10, RBRACKET=11, WS=12;
+		T__0=1, T__1=2, T__2=3, VARIABLE=4, NUMBER=5, ADD=6, SUBTRACT=7, MULTIPLY=8, 
+		DIVIDE=9, POWER=10, LBRACKET=11, RBRACKET=12, WS=13;
 	public static final int
 		RULE_term = 0, RULE_parenthesis = 1, RULE_abstraction = 2, RULE_abstraction_term = 3, 
-		RULE_application = 4, RULE_function = 5, RULE_expression = 6, RULE_variable = 7, 
+		RULE_application = 4, RULE_function = 5, RULE_value = 6, RULE_variable = 7, 
 		RULE_lambda_variable = 8, RULE_number = 9, RULE_operation = 10;
 	public static final String[] ruleNames = {
 		"term", "parenthesis", "abstraction", "abstraction_term", "application", 
-		"function", "expression", "variable", "lambda_variable", "number", "operation"
+		"function", "value", "variable", "lambda_variable", "number", "operation"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'.'", "'%'", null, null, "'+'", "'-'", "'*'", "'/'", "'^'", "'('", 
-		"')'"
+		null, "'.'", "'%'", "','", null, null, "'+'", "'-'", "'*'", "'/'", "'^'", 
+		"'('", "')'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, "VARIABLE", "NUMBER", "ADD", "SUBTRACT", "MULTIPLY", 
+		null, null, null, null, "VARIABLE", "NUMBER", "ADD", "SUBTRACT", "MULTIPLY", 
 		"DIVIDE", "POWER", "LBRACKET", "RBRACKET", "WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
@@ -88,14 +88,17 @@ public class LambdaCalculusParser extends Parser {
 		public ParenthesisContext parenthesis() {
 			return getRuleContext(ParenthesisContext.class,0);
 		}
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
+		public ValueContext value() {
+			return getRuleContext(ValueContext.class,0);
 		}
 		public AbstractionContext abstraction() {
 			return getRuleContext(AbstractionContext.class,0);
 		}
 		public ApplicationContext application() {
 			return getRuleContext(ApplicationContext.class,0);
+		}
+		public FunctionContext function() {
+			return getRuleContext(FunctionContext.class,0);
 		}
 		public TermContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -109,13 +112,18 @@ public class LambdaCalculusParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitTerm(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitTerm(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final TermContext term() throws RecognitionException {
 		TermContext _localctx = new TermContext(_ctx, getState());
 		enterRule(_localctx, 0, RULE_term);
 		try {
-			setState(26);
+			setState(27);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 			case 1:
@@ -129,7 +137,7 @@ public class LambdaCalculusParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(23);
-				expression();
+				value();
 				}
 				break;
 			case 3:
@@ -143,7 +151,14 @@ public class LambdaCalculusParser extends Parser {
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(25);
-				application(0);
+				application();
+				}
+				break;
+			case 5:
+				enterOuterAlt(_localctx, 5);
+				{
+				setState(26);
+				function();
 				}
 				break;
 			}
@@ -177,6 +192,11 @@ public class LambdaCalculusParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitParenthesis(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitParenthesis(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ParenthesisContext parenthesis() throws RecognitionException {
@@ -185,11 +205,11 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(28);
-			match(LBRACKET);
 			setState(29);
-			term();
+			match(LBRACKET);
 			setState(30);
+			term();
+			setState(31);
 			match(RBRACKET);
 			}
 		}
@@ -208,9 +228,6 @@ public class LambdaCalculusParser extends Parser {
 		public Abstraction_termContext abstraction_term() {
 			return getRuleContext(Abstraction_termContext.class,0);
 		}
-		public FunctionContext function() {
-			return getRuleContext(FunctionContext.class,0);
-		}
 		public TermContext term() {
 			return getRuleContext(TermContext.class,0);
 		}
@@ -226,37 +243,25 @@ public class LambdaCalculusParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitAbstraction(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitAbstraction(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final AbstractionContext abstraction() throws RecognitionException {
 		AbstractionContext _localctx = new AbstractionContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_abstraction);
 		try {
-			setState(40);
-			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
-				{
-				setState(32);
-				abstraction_term();
-				setState(33);
-				match(T__0);
-				setState(34);
-				function();
-				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(36);
-				abstraction_term();
-				setState(37);
-				match(T__0);
-				setState(38);
-				term();
-				}
-				break;
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(33);
+			abstraction_term();
+			setState(34);
+			match(T__0);
+			setState(35);
+			term();
 			}
 		}
 		catch (RecognitionException re) {
@@ -286,6 +291,11 @@ public class LambdaCalculusParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitAbstraction_term(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitAbstraction_term(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Abstraction_termContext abstraction_term() throws RecognitionException {
@@ -294,9 +304,9 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(42);
+			setState(37);
 			match(T__1);
-			setState(43);
+			setState(38);
 			lambda_variable();
 			}
 		}
@@ -315,20 +325,8 @@ public class LambdaCalculusParser extends Parser {
 		public ParenthesisContext parenthesis() {
 			return getRuleContext(ParenthesisContext.class,0);
 		}
-		public List<TermContext> term() {
-			return getRuleContexts(TermContext.class);
-		}
-		public TermContext term(int i) {
-			return getRuleContext(TermContext.class,i);
-		}
-		public AbstractionContext abstraction() {
-			return getRuleContext(AbstractionContext.class,0);
-		}
-		public FunctionContext function() {
-			return getRuleContext(FunctionContext.class,0);
-		}
-		public ApplicationContext application() {
-			return getRuleContext(ApplicationContext.class,0);
+		public TermContext term() {
+			return getRuleContext(TermContext.class,0);
 		}
 		public ApplicationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -342,203 +340,23 @@ public class LambdaCalculusParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitApplication(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitApplication(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final ApplicationContext application() throws RecognitionException {
-		return application(0);
-	}
-
-	private ApplicationContext application(int _p) throws RecognitionException {
-		ParserRuleContext _parentctx = _ctx;
-		int _parentState = getState();
-		ApplicationContext _localctx = new ApplicationContext(_ctx, _parentState);
-		ApplicationContext _prevctx = _localctx;
-		int _startState = 8;
-		enterRecursionRule(_localctx, 8, RULE_application, _p);
+		ApplicationContext _localctx = new ApplicationContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_application);
 		try {
-			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(55);
-			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
-			case 1:
-				{
-				setState(46);
-				parenthesis();
-				setState(47);
-				term();
-				}
-				break;
-			case 2:
-				{
-				setState(49);
-				abstraction();
-				setState(50);
-				function();
-				}
-				break;
-			case 3:
-				{
-				setState(52);
-				abstraction();
-				setState(53);
-				application(3);
-				}
-				break;
-			}
-			_ctx.stop = _input.LT(-1);
-			setState(67);
-			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
-			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
-				if ( _alt==1 ) {
-					if ( _parseListeners!=null ) triggerExitRuleEvent();
-					_prevctx = _localctx;
-					{
-					setState(65);
-					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
-					case 1:
-						{
-						_localctx = new ApplicationContext(_parentctx, _parentState);
-						pushNewRecursionContext(_localctx, _startState, RULE_application);
-						setState(57);
-						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(58);
-						abstraction();
-						}
-						break;
-					case 2:
-						{
-						_localctx = new ApplicationContext(_parentctx, _parentState);
-						pushNewRecursionContext(_localctx, _startState, RULE_application);
-						setState(59);
-						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(61); 
-						_errHandler.sync(this);
-						_alt = 1;
-						do {
-							switch (_alt) {
-							case 1:
-								{
-								{
-								setState(60);
-								term();
-								}
-								}
-								break;
-							default:
-								throw new NoViableAltException(this);
-							}
-							setState(63); 
-							_errHandler.sync(this);
-							_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
-						} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
-						}
-						break;
-					}
-					} 
-				}
-				setState(69);
-				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			_errHandler.reportError(this, re);
-			_errHandler.recover(this, re);
-		}
-		finally {
-			unrollRecursionContexts(_parentctx);
-		}
-		return _localctx;
-	}
-
-	public static class FunctionContext extends ParserRuleContext {
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public OperationContext operation() {
-			return getRuleContext(OperationContext.class,0);
-		}
-		public TermContext term() {
-			return getRuleContext(TermContext.class,0);
-		}
-		public FunctionContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_function; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).enterFunction(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitFunction(this);
-		}
-	}
-
-	public final FunctionContext function() throws RecognitionException {
-		FunctionContext _localctx = new FunctionContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_function);
-		try {
-			int _alt;
-			setState(83);
-			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
-			case 1:
-				enterOuterAlt(_localctx, 1);
-				{
-				setState(70);
-				expression();
-				setState(71);
-				operation();
-				setState(72);
-				expression();
-				}
-				break;
-			case 2:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(74);
-				expression();
-				setState(75);
-				operation();
-				setState(76);
-				term();
-				}
-				break;
-			case 3:
-				enterOuterAlt(_localctx, 3);
-				{
-				setState(79); 
-				_errHandler.sync(this);
-				_alt = 1;
-				do {
-					switch (_alt) {
-					case 1:
-						{
-						{
-						setState(78);
-						expression();
-						}
-						}
-						break;
-					default:
-						throw new NoViableAltException(this);
-					}
-					setState(81); 
-					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
-				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
-				}
-				break;
+			setState(40);
+			parenthesis();
+			setState(41);
+			term();
 			}
 		}
 		catch (RecognitionException re) {
@@ -552,45 +370,133 @@ public class LambdaCalculusParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ExpressionContext extends ParserRuleContext {
+	public static class FunctionContext extends ParserRuleContext {
+		public ValueContext value() {
+			return getRuleContext(ValueContext.class,0);
+		}
+		public OperationContext operation() {
+			return getRuleContext(OperationContext.class,0);
+		}
+		public List<TermContext> term() {
+			return getRuleContexts(TermContext.class);
+		}
+		public TermContext term(int i) {
+			return getRuleContext(TermContext.class,i);
+		}
+		public FunctionContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_function; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).enterFunction(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitFunction(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitFunction(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final FunctionContext function() throws RecognitionException {
+		FunctionContext _localctx = new FunctionContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_function);
+		try {
+			setState(52);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case VARIABLE:
+			case NUMBER:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(43);
+				value();
+				setState(44);
+				operation();
+				setState(45);
+				term();
+				}
+				break;
+			case ADD:
+			case SUBTRACT:
+			case MULTIPLY:
+			case DIVIDE:
+			case POWER:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(47);
+				operation();
+				setState(48);
+				term();
+				setState(49);
+				match(T__2);
+				setState(50);
+				term();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ValueContext extends ParserRuleContext {
 		public NumberContext number() {
 			return getRuleContext(NumberContext.class,0);
 		}
 		public VariableContext variable() {
 			return getRuleContext(VariableContext.class,0);
 		}
-		public ExpressionContext(ParserRuleContext parent, int invokingState) {
+		public ValueContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_expression; }
+		@Override public int getRuleIndex() { return RULE_value; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).enterExpression(this);
+			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).enterValue(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitExpression(this);
+			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitValue(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitValue(this);
+			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final ExpressionContext expression() throws RecognitionException {
-		ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_expression);
+	public final ValueContext value() throws RecognitionException {
+		ValueContext _localctx = new ValueContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_value);
 		try {
-			setState(87);
+			setState(56);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NUMBER:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(85);
+				setState(54);
 				number();
 				}
 				break;
 			case VARIABLE:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(86);
+				setState(55);
 				variable();
 				}
 				break;
@@ -623,6 +529,11 @@ public class LambdaCalculusParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitVariable(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitVariable(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final VariableContext variable() throws RecognitionException {
@@ -631,7 +542,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(89);
+			setState(58);
 			match(VARIABLE);
 			}
 		}
@@ -660,6 +571,11 @@ public class LambdaCalculusParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitLambda_variable(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitLambda_variable(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final Lambda_variableContext lambda_variable() throws RecognitionException {
@@ -668,7 +584,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(91);
+			setState(60);
 			match(VARIABLE);
 			}
 		}
@@ -697,6 +613,11 @@ public class LambdaCalculusParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitNumber(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitNumber(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final NumberContext number() throws RecognitionException {
@@ -705,7 +626,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(93);
+			setState(62);
 			match(NUMBER);
 			}
 		}
@@ -738,6 +659,11 @@ public class LambdaCalculusParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitOperation(this);
 		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitOperation(this);
+			else return visitor.visitChildren(this);
+		}
 	}
 
 	public final OperationContext operation() throws RecognitionException {
@@ -747,7 +673,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(95);
+			setState(64);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ADD) | (1L << SUBTRACT) | (1L << MULTIPLY) | (1L << DIVIDE) | (1L << POWER))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -770,48 +696,24 @@ public class LambdaCalculusParser extends Parser {
 		return _localctx;
 	}
 
-	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
-		switch (ruleIndex) {
-		case 4:
-			return application_sempred((ApplicationContext)_localctx, predIndex);
-		}
-		return true;
-	}
-	private boolean application_sempred(ApplicationContext _localctx, int predIndex) {
-		switch (predIndex) {
-		case 0:
-			return precpred(_ctx, 2);
-		case 1:
-			return precpred(_ctx, 1);
-		}
-		return true;
-	}
-
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16d\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\17E\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
-		"\f\t\f\3\2\3\2\3\2\3\2\5\2\35\n\2\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\4"+
-		"\3\4\3\4\3\4\5\4+\n\4\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6"+
-		"\3\6\5\6:\n\6\3\6\3\6\3\6\3\6\6\6@\n\6\r\6\16\6A\7\6D\n\6\f\6\16\6G\13"+
-		"\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\6\7R\n\7\r\7\16\7S\5\7V\n\7\3\b"+
-		"\3\b\5\bZ\n\b\3\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\f\2\3\n\r\2\4\6\b\n"+
-		"\f\16\20\22\24\26\2\3\3\2\7\13\2e\2\34\3\2\2\2\4\36\3\2\2\2\6*\3\2\2\2"+
-		"\b,\3\2\2\2\n9\3\2\2\2\fU\3\2\2\2\16Y\3\2\2\2\20[\3\2\2\2\22]\3\2\2\2"+
-		"\24_\3\2\2\2\26a\3\2\2\2\30\35\5\4\3\2\31\35\5\16\b\2\32\35\5\6\4\2\33"+
-		"\35\5\n\6\2\34\30\3\2\2\2\34\31\3\2\2\2\34\32\3\2\2\2\34\33\3\2\2\2\35"+
-		"\3\3\2\2\2\36\37\7\f\2\2\37 \5\2\2\2 !\7\r\2\2!\5\3\2\2\2\"#\5\b\5\2#"+
-		"$\7\3\2\2$%\5\f\7\2%+\3\2\2\2&\'\5\b\5\2\'(\7\3\2\2()\5\2\2\2)+\3\2\2"+
-		"\2*\"\3\2\2\2*&\3\2\2\2+\7\3\2\2\2,-\7\4\2\2-.\5\22\n\2.\t\3\2\2\2/\60"+
-		"\b\6\1\2\60\61\5\4\3\2\61\62\5\2\2\2\62:\3\2\2\2\63\64\5\6\4\2\64\65\5"+
-		"\f\7\2\65:\3\2\2\2\66\67\5\6\4\2\678\5\n\6\58:\3\2\2\29/\3\2\2\29\63\3"+
-		"\2\2\29\66\3\2\2\2:E\3\2\2\2;<\f\4\2\2<D\5\6\4\2=?\f\3\2\2>@\5\2\2\2?"+
-		">\3\2\2\2@A\3\2\2\2A?\3\2\2\2AB\3\2\2\2BD\3\2\2\2C;\3\2\2\2C=\3\2\2\2"+
-		"DG\3\2\2\2EC\3\2\2\2EF\3\2\2\2F\13\3\2\2\2GE\3\2\2\2HI\5\16\b\2IJ\5\26"+
-		"\f\2JK\5\16\b\2KV\3\2\2\2LM\5\16\b\2MN\5\26\f\2NO\5\2\2\2OV\3\2\2\2PR"+
-		"\5\16\b\2QP\3\2\2\2RS\3\2\2\2SQ\3\2\2\2ST\3\2\2\2TV\3\2\2\2UH\3\2\2\2"+
-		"UL\3\2\2\2UQ\3\2\2\2V\r\3\2\2\2WZ\5\24\13\2XZ\5\20\t\2YW\3\2\2\2YX\3\2"+
-		"\2\2Z\17\3\2\2\2[\\\7\5\2\2\\\21\3\2\2\2]^\7\5\2\2^\23\3\2\2\2_`\7\6\2"+
-		"\2`\25\3\2\2\2ab\t\2\2\2b\27\3\2\2\2\13\34*9ACESUY";
+		"\f\t\f\3\2\3\2\3\2\3\2\3\2\5\2\36\n\2\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4"+
+		"\3\5\3\5\3\5\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7\67\n"+
+		"\7\3\b\3\b\5\b;\n\b\3\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\f\2\2\r\2\4\6"+
+		"\b\n\f\16\20\22\24\26\2\3\3\2\b\f\2?\2\35\3\2\2\2\4\37\3\2\2\2\6#\3\2"+
+		"\2\2\b\'\3\2\2\2\n*\3\2\2\2\f\66\3\2\2\2\16:\3\2\2\2\20<\3\2\2\2\22>\3"+
+		"\2\2\2\24@\3\2\2\2\26B\3\2\2\2\30\36\5\4\3\2\31\36\5\16\b\2\32\36\5\6"+
+		"\4\2\33\36\5\n\6\2\34\36\5\f\7\2\35\30\3\2\2\2\35\31\3\2\2\2\35\32\3\2"+
+		"\2\2\35\33\3\2\2\2\35\34\3\2\2\2\36\3\3\2\2\2\37 \7\r\2\2 !\5\2\2\2!\""+
+		"\7\16\2\2\"\5\3\2\2\2#$\5\b\5\2$%\7\3\2\2%&\5\2\2\2&\7\3\2\2\2\'(\7\4"+
+		"\2\2()\5\22\n\2)\t\3\2\2\2*+\5\4\3\2+,\5\2\2\2,\13\3\2\2\2-.\5\16\b\2"+
+		"./\5\26\f\2/\60\5\2\2\2\60\67\3\2\2\2\61\62\5\26\f\2\62\63\5\2\2\2\63"+
+		"\64\7\5\2\2\64\65\5\2\2\2\65\67\3\2\2\2\66-\3\2\2\2\66\61\3\2\2\2\67\r"+
+		"\3\2\2\28;\5\24\13\29;\5\20\t\2:8\3\2\2\2:9\3\2\2\2;\17\3\2\2\2<=\7\6"+
+		"\2\2=\21\3\2\2\2>?\7\6\2\2?\23\3\2\2\2@A\7\7\2\2A\25\3\2\2\2BC\t\2\2\2"+
+		"C\27\3\2\2\2\5\35\66:";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

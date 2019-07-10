@@ -87,13 +87,13 @@ public class LambdaCalculusBaseListener implements LambdaCalculusListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExpression(LambdaCalculusParser.ExpressionContext ctx) { }
+	@Override public void enterValue(LambdaCalculusParser.ValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExpression(LambdaCalculusParser.ExpressionContext ctx) { }
+	@Override public void exitValue(LambdaCalculusParser.ValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

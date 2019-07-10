@@ -2,9 +2,10 @@ grammar LambdaCalculus;
 
 term 
     : parenthesis
-    | expression
+    | value
     | abstraction
     | application
+    | function
     ;
 
 parenthesis
@@ -12,8 +13,7 @@ parenthesis
     ;
 
 abstraction
-    : abstraction_term '.' function
-    | abstraction_term '.' term
+    : abstraction_term '.' term
     ;
 
 abstraction_term
@@ -22,19 +22,15 @@ abstraction_term
 
 application
     : parenthesis term
-    | abstraction function
-    | abstraction application
-    | application abstraction
-    | application term+
     ;
 
 function
-    : expression operation expression
-    | expression operation term
-    | expression+
+    : value term
+    | value operation term
+    | operation term ',' term
     ;
 
-expression
+value
     : number
     | variable
     ;
