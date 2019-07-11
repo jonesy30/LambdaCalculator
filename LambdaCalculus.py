@@ -5,6 +5,7 @@ from LambdaCalculusParser import LambdaCalculusParser
 from LambdaCalculusListener import LambdaCalculusListener
 from LambdaCalculusVisitor import LambdaCalculusVisitor
 from BracketCheck import BracketCheck
+from CaseCheck import CaseCheck
 from MyVisitor import MyVisitor
 
 from sympy.solvers import solve
@@ -27,13 +28,19 @@ class Stack:
 def main():
     #I need to put a bracket checker in here
     bracket_checker = BracketCheck()
+    case_checker = CaseCheck()
 
     expression = input("Enter test expression: ")
     matched_brackets = bracket_checker.check_brackets(expression)
 
     while matched_brackets == False:
-        expression = input("Sorry, mismatched brackets, check and try again?")
+        expression = input("Sorry, mismatched brackets, check and try again?\n")
         matched_brackets = bracket_checker.check_brackets(expression)
+
+    all_lowercase = case_checker.check_case(expression)
+    while all_lowercase == False:
+        expression = input("Sorry, no uppercase values allowed, please rewrite and try again?\n")
+        all_lowercase = case_checker.check_case(expression)
 
     #expression = calculate_alpha()
     stream = InputStream(expression)

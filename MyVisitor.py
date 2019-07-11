@@ -13,7 +13,7 @@ class MyVisitor(LambdaCalculusVisitor):
         #print(self.visitChildren(ctx))
         #print("End of application")
         #print(self.visitChildren(ctx))
-        print("In application "+ctx.getText())
+        ##print("In application "+ctx.getText())
         self.visitChildren(ctx)
         
         #print("Child 0 = "+ctx.getChild(0).getText())
@@ -25,12 +25,12 @@ class MyVisitor(LambdaCalculusVisitor):
         #bound variable at getChild(1).getChild(0)
         #function at getChild(1).getChild(2)
         #expression at getChild(3)
-        [bound_variable, function] = self.visit(ctx.getChild(0))
+        function = self.visit(ctx.getChild(0))
 
         ##print("Function = "+str(function))
         expression = ctx.getChild(1).getText()
         ##print("Expression before = "+expression)
-        expression = calculate_alpha(bound_variable, function, expression)
+        bound_variable,expression = calculate_alpha(function, expression)
         ##print("Expression after = "+expression)
         ##print("Bound variable through abstraction = "+str(bound_variable))
         ##print("Function through abstraction = "+str(function))
@@ -81,12 +81,12 @@ class MyVisitor(LambdaCalculusVisitor):
         #     [bound_variable, function] = self.visitChildren(ctx)
         #     print("Bound variable = "+bound_variable)
         #     return bound_variable
-        print("T: "+ctx.getText())
+        ##print("T: "+ctx.getText())
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
-        print("A: "+ctx.getText())
+        ##print("A: "+ctx.getText())
         #print("A: "+str(self.visitChildren(ctx)))  
 
         #Well that's interesting.... This gives %a as I want....
@@ -106,17 +106,17 @@ class MyVisitor(LambdaCalculusVisitor):
         #Changing this to 2 returns a+1
         #self.visitChildren(ctx)
 
-        # bound_variable = self.visit(ctx.getChild(0))
-        # function = self.visit(ctx.getChild(2))
+        bound_variable = self.visit(ctx.getChild(0))
+        function = self.visit(ctx.getChild(2))
 
-        # function_by_characters = list(function)
-        # for i,letter in enumerate(function_by_characters):
-        #     if letter == bound_variable:
-        #         function_by_characters[i] = function_by_characters[i].upper()
+        function_by_characters = list(function)
+        for i,letter in enumerate(function_by_characters):
+            if letter == bound_variable:
+                function_by_characters[i] = function_by_characters[i].upper()
 
-        # modified_function = "".join(function_by_characters)
+        modified_function = "".join(function_by_characters)
         
-        return self.visit(ctx.getChild(0)),self.visit(ctx.getChild(2))
+        return modified_function
 
     # Visit a parse tree produced by LambdaCalculusParser#function.
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
@@ -128,7 +128,7 @@ class MyVisitor(LambdaCalculusVisitor):
         #print("Function = "+ctx.getText())
         #return self.visitChildren(ctx)
         #self.visitChildren(ctx)
-        print("F: "+ctx.getText())
+        ##print("F: "+ctx.getText())
         #return ctx.getText()
         
         #I should be calculating the function here and returning the result
@@ -149,7 +149,7 @@ class MyVisitor(LambdaCalculusVisitor):
         #print("Lambda term?" + self.visit(ctx.lambda_variable()))
         #print("A_t: "+str(self.visitChildren(ctx)))
         #return "A_t: "+str(self.visitChildren(ctx))
-        print("A_t: "+ctx.getText())
+        ##print("A_t: "+ctx.getText())
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#lambda_variable.

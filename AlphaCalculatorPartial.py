@@ -36,21 +36,38 @@ def rename_values(incoming, free_variables, available_letters):
     new_incoming = "".join(incoming_list)
     return new_incoming
 
-def calculate_alpha(bound_value,expression, incoming):
+def calculate_alpha(expression, incoming):
 
     found_letter = False
     expression_list = list(expression)
     i = 0
+    bound_value = ""
 
     while found_letter == False and i < len(expression):
         if expression_list[i].isalpha():
             found_letter = True
+            bound_value = get_bound_variable(expression)
             free_variables = get_free_variables(bound_value, expression)
             available_letters = get_available_letters(free_variables)
             expression = rename_values(incoming, free_variables, available_letters)
         i = i + 1
 
-    return expression
+    return bound_value,expression
+
+def get_bound_variable(expression):
+
+    bound_values = []
+    for letter in expression:
+        if letter.isupper() and letter not in bound_values:
+            bound_values.append(letter)
+        
+    number_of_bound_values = len(bound_values)
+    if number_of_bound_values > 1:
+        raise Exception("More than one bound value found - what do I do?")
+    elif number_of_bound_values < 1:
+        return ""
+    else:
+        return bound_values[0]
 
 if __name__ == "__main__":
     expression = calculate_alpha(sys.argv[1],sys.argv[2],sys.argv[3])
