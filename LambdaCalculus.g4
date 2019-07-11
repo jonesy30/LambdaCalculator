@@ -1,11 +1,11 @@
 grammar LambdaCalculus;
 
 term 
-    : parenthesis
-    | value
+    : function
     | abstraction
     | application
-    | function
+    | value
+    | parenthesis
     ;
 
 parenthesis

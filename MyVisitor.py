@@ -13,6 +13,7 @@ class MyVisitor(LambdaCalculusVisitor):
         #print(self.visitChildren(ctx))
         #print("End of application")
         #print(self.visitChildren(ctx))
+        print("In application "+ctx.getText())
         self.visitChildren(ctx)
         
         #print("Child 0 = "+ctx.getChild(0).getText())
@@ -24,10 +25,10 @@ class MyVisitor(LambdaCalculusVisitor):
         #bound variable at getChild(1).getChild(0)
         #function at getChild(1).getChild(2)
         #expression at getChild(3)
+        [bound_variable, function] = self.visit(ctx.getChild(0))
 
-        [bound_variable, function] = self.visit(ctx.getChild(1))
-
-        expression = ctx.getChild(3).getText()
+        print("Function = "+str(function))
+        expression = ctx.getChild(1).getText()
         print("Expression before = "+expression)
         expression = calculate_alpha(bound_variable, function, expression)
         print("Expression after = "+expression)
@@ -36,14 +37,20 @@ class MyVisitor(LambdaCalculusVisitor):
         ##print("Expression through abstraction = "+str(expression))
 
         new_function = function.replace(bound_variable,expression)
-        ##print("New function = "+new_function)
+        print()
+        print("New function = "+new_function)
+        print()
 
         return new_function
         #return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#expression.
-    def visitExpression(self, ctx:LambdaCalculusParser.ExpressionContext):
+    def visitValue(self, ctx:LambdaCalculusParser.ValueContext):
         return ctx.getText()
+
+    # Visit a parse tree produced by LambdaCalculusParser#parenthesis.
+    def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
+        return self.visit(ctx.getChild(1))
 
     # Visit a parse tree produced by LambdaCalculusParser#number.
     def visitNumber(self, ctx:LambdaCalculusParser.NumberContext):
@@ -71,11 +78,14 @@ class MyVisitor(LambdaCalculusVisitor):
         #     [bound_variable, function] = self.visitChildren(ctx)
         #     print("Bound variable = "+bound_variable)
         #     return bound_variable
+        print("T: "+ctx.getText())
+        print("Child of t = "+str(self.visit(ctx.getChild(0))))
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
-        #print("In abstraction "+ctx.getText())
+        print("A: "+ctx.getText())
+        print("Abstraction child = "+ctx.getChild(2).getText())
         #print("A: "+str(self.visitChildren(ctx)))  
 
         #Well that's interesting.... This gives %a as I want....
@@ -94,7 +104,7 @@ class MyVisitor(LambdaCalculusVisitor):
         #Changing this to 0 returns %a
         #Changing this to 2 returns a+1
         #self.visitChildren(ctx)
-        return self.visit(ctx.getChild(0)),ctx.getChild(2).getText()
+        return self.visit(ctx.getChild(0)),self.visit(ctx.getChild(2))
 
     # Visit a parse tree produced by LambdaCalculusParser#function.
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
@@ -105,12 +115,13 @@ class MyVisitor(LambdaCalculusVisitor):
 
         #print("Function = "+ctx.getText())
         #return self.visitChildren(ctx)
-        return "F: "+ctx.getText()
+        self.visitChildren(ctx)
+        print("F: "+ctx.getText())
+        return ctx.getText()
 
         # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
     def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
-        #print("In abstraction term "+ctx.getText())
-                
+        print("A_t: "+ctx.getText())
         #print("Children count = "+str(ctx.getChildCount()))
         #print("Children print = "+str(ctx.getChildren()))
 
@@ -144,9 +155,11 @@ class MyVisitor(LambdaCalculusVisitor):
         
         #print("L? "+(str(ctx)))
         #print("L = "+ctx.getText())
+        print("L: "+ctx.getText())
         return ctx.getText()
         #return "L: "+ctx.getText()
     
 #NOTE: doing ctx. gives a whole bunch of possible functions
     #well, it used to :(
 #NOTE: self is MyVisitor (this seems obvious)
+#NOTE: Just always visit children, even if you don't need to, what's the harm?

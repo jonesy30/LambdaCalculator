@@ -85,11 +85,8 @@ public class LambdaCalculusParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class TermContext extends ParserRuleContext {
-		public ParenthesisContext parenthesis() {
-			return getRuleContext(ParenthesisContext.class,0);
-		}
-		public ValueContext value() {
-			return getRuleContext(ValueContext.class,0);
+		public FunctionContext function() {
+			return getRuleContext(FunctionContext.class,0);
 		}
 		public AbstractionContext abstraction() {
 			return getRuleContext(AbstractionContext.class,0);
@@ -97,8 +94,11 @@ public class LambdaCalculusParser extends Parser {
 		public ApplicationContext application() {
 			return getRuleContext(ApplicationContext.class,0);
 		}
-		public FunctionContext function() {
-			return getRuleContext(FunctionContext.class,0);
+		public ValueContext value() {
+			return getRuleContext(ValueContext.class,0);
+		}
+		public ParenthesisContext parenthesis() {
+			return getRuleContext(ParenthesisContext.class,0);
 		}
 		public TermContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -130,35 +130,35 @@ public class LambdaCalculusParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(22);
-				parenthesis();
+				function();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(23);
-				value();
+				abstraction();
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(24);
-				abstraction();
+				application();
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(25);
-				application();
+				value();
 				}
 				break;
 			case 5:
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(26);
-				function();
+				parenthesis();
 				}
 				break;
 			}
@@ -706,8 +706,8 @@ public class LambdaCalculusParser extends Parser {
 		"\7\5\7:\n\7\3\b\3\b\5\b>\n\b\3\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\f\2\2"+
 		"\r\2\4\6\b\n\f\16\20\22\24\26\2\3\3\2\b\f\2C\2\35\3\2\2\2\4\37\3\2\2\2"+
 		"\6#\3\2\2\2\b\'\3\2\2\2\n*\3\2\2\2\f9\3\2\2\2\16=\3\2\2\2\20?\3\2\2\2"+
-		"\22A\3\2\2\2\24C\3\2\2\2\26E\3\2\2\2\30\36\5\4\3\2\31\36\5\16\b\2\32\36"+
-		"\5\6\4\2\33\36\5\n\6\2\34\36\5\f\7\2\35\30\3\2\2\2\35\31\3\2\2\2\35\32"+
+		"\22A\3\2\2\2\24C\3\2\2\2\26E\3\2\2\2\30\36\5\f\7\2\31\36\5\6\4\2\32\36"+
+		"\5\n\6\2\33\36\5\16\b\2\34\36\5\4\3\2\35\30\3\2\2\2\35\31\3\2\2\2\35\32"+
 		"\3\2\2\2\35\33\3\2\2\2\35\34\3\2\2\2\36\3\3\2\2\2\37 \7\r\2\2 !\5\2\2"+
 		"\2!\"\7\16\2\2\"\5\3\2\2\2#$\5\b\5\2$%\7\3\2\2%&\5\2\2\2&\7\3\2\2\2\'"+
 		"(\7\4\2\2()\5\22\n\2)\t\3\2\2\2*+\5\4\3\2+,\5\2\2\2,\13\3\2\2\2-.\5\16"+
