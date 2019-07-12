@@ -26,8 +26,9 @@ class Stack:
         return self.items.pop()
 
 def main():
-    #I need to put a bracket checker in here
     bracket_checker = BracketCheck()
+    #NOTE: Shouldn't need case checker any more, I do need to
+    #check for square brackets and question marks and disallow them though
     case_checker = CaseCheck()
 
     expression = input("Enter test expression: ")

@@ -19,7 +19,7 @@ def get_available_letters(free_variables):
     
     return alphabet_list
 
-def rename_values(incoming, free_variables, available_letters):
+def rename_values(expression, free_variables, available_letters):
     available_letters = list(available_letters)
     replace_with = []
     
@@ -28,15 +28,15 @@ def rename_values(incoming, free_variables, available_letters):
         replace_with.append(new_letter)
         available_letters.remove(new_letter)
 
-    incoming_list = list(incoming)
-    for i,character in enumerate(incoming_list):
+    expression_list = list(expression)
+    for i,character in enumerate(expression_list):
         if character.isalpha() and (character in free_variables):
-            incoming_list[i] = replace_with[free_variables.index(character)]
+            expression_list[i] = replace_with[free_variables.index(character)]
     
-    new_incoming = "".join(incoming_list)
-    return new_incoming
+    new_expression = "".join(expression_list)
+    return new_expression
 
-def calculate_alpha(expression, incoming):
+def calculate_alpha(bound_value, expression, incoming):
 
     found_letter = False
     expression_list = list(expression)
@@ -46,31 +46,19 @@ def calculate_alpha(expression, incoming):
     while found_letter == False and i < len(expression):
         if expression_list[i].isalpha():
             found_letter = True
-            bound_value = get_bound_variable(expression)
-            free_variables = get_free_variables(bound_value, expression)
+            #print("Bound value = "+bound_value)
+            free_variables = get_free_variables(bound_value, incoming)
+            #print("Free variables in incoming = "+str(free_variables))
             available_letters = get_available_letters(free_variables)
-            expression = rename_values(incoming, free_variables, available_letters)
+            #print("Expression = "+expression)
+            expression = rename_values(expression, free_variables, available_letters)
+            #print("Expression = "+expression)
         i = i + 1
 
-    return bound_value,expression
-
-def get_bound_variable(expression):
-
-    bound_values = []
-    for letter in expression:
-        if letter.isupper() and letter not in bound_values:
-            bound_values.append(letter)
-        
-    number_of_bound_values = len(bound_values)
-    if number_of_bound_values > 1:
-        raise Exception("More than one bound value found - what do I do?")
-    elif number_of_bound_values < 1:
-        return ""
-    else:
-        return bound_values[0]
+    return expression
 
 if __name__ == "__main__":
-    expression = calculate_alpha(sys.argv[1],sys.argv[2],sys.argv[3])
+    expression = calculate_alpha(sys.argv[1],sys.argv[2])
     print(expression)
 
 #this continually overrides replaced variables in smaller scopes, which means some letters aren't used when they should be
