@@ -16,21 +16,35 @@ class MyVisitor(LambdaCalculusVisitor):
 
         function = self.visit(ctx.getChild(0))
         print("Original function = "+function)
-        
+
+        subst_container_match = re.search("\[(.*?)\]", function)
+        container = subst_container_match.group(0)
+        function = function.replace(container,"",1)
+        print("Function after extracton + "+function)
+
+        bound_variable_match = re.search("/(.*?)\]", container)
+        bound_variable = bound_variable_match.group(1)
+
         #get all bound variables found in [?/bound_variable]function
-        bound_variable = re.findall("/(.*?)\]", function)
-        function = re.sub("\[(.*?)\]","",function)
+        #bound_variable = re.findall("/(.*?)\]", function)
+        #match = re.search("/(.*?)\]", function)
+        #get the first group (the inner bit of the regex) which matches this expression -- outermost first
+        #bound_variable = match.group(1)
+        #NOTE: I need to find a way of only getting rid of the first bit
+        #function = re.sub("\[(.*?)\]","",function)
+
+        print("Bound variable = "+bound_variable)
 
         print("Function after = "+str(function))
         expression = ctx.getChild(1).getText()
         ##print("Function before = "+function)
-        function = calculate_alpha(bound_variable[0],function, expression)
+        function = calculate_alpha(bound_variable,function, expression)
         ##print("Function after = "+function)
-        print("Bound variable through abstraction = "+str(bound_variable[0]))
+        print("Bound variable through abstraction = "+str(bound_variable))
         print("Function through abstraction = "+str(function))
         print("Expression through abstraction = "+str(expression))
 
-        new_function = function.replace(bound_variable[0],expression)
+        new_function = function.replace(bound_variable,expression)
         print("New function = "+new_function)
 
         return new_function
