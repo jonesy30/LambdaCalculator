@@ -66,7 +66,28 @@ class MyVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#term.
     def visitTerm(self, ctx:LambdaCalculusParser.TermContext):
         ##print("T: "+ctx.getText())
-        return self.visitChildren(ctx)
+
+        depth = ctx.depth()
+        if depth == 1:
+            print("Terminal node detected")
+            output = str(self.visitChildren(ctx))
+            container_match = re.search("\[(.*?)\]", output)
+
+            print("old function = "+output)
+            while container_match is not None:
+                print("FOUND BOUND! ")
+                bound_match = re.search("\/(.*?)\]", output)
+                found_bound = bound_match.group(1)
+                container_to_replace = container_match.group(0)
+                print("To replace = "+container_to_replace)
+                output = output.replace(container_to_replace,"%"+found_bound+".")
+                container_match = re.search("\[(.*?)\]", output)
+            
+            print("New function = "+output)
+            return output
+
+        else:
+            return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
