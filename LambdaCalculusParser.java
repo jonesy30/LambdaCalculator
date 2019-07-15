@@ -144,7 +144,7 @@ public class LambdaCalculusParser extends Parser {
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(24);
-				application();
+				application(0);
 				}
 				break;
 			case 4:
@@ -322,11 +322,23 @@ public class LambdaCalculusParser extends Parser {
 	}
 
 	public static class ApplicationContext extends ParserRuleContext {
-		public ParenthesisContext parenthesis() {
-			return getRuleContext(ParenthesisContext.class,0);
+		public FunctionContext function() {
+			return getRuleContext(FunctionContext.class,0);
 		}
 		public TermContext term() {
 			return getRuleContext(TermContext.class,0);
+		}
+		public AbstractionContext abstraction() {
+			return getRuleContext(AbstractionContext.class,0);
+		}
+		public ValueContext value() {
+			return getRuleContext(ValueContext.class,0);
+		}
+		public ParenthesisContext parenthesis() {
+			return getRuleContext(ParenthesisContext.class,0);
+		}
+		public ApplicationContext application() {
+			return getRuleContext(ApplicationContext.class,0);
 		}
 		public ApplicationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -348,15 +360,79 @@ public class LambdaCalculusParser extends Parser {
 	}
 
 	public final ApplicationContext application() throws RecognitionException {
-		ApplicationContext _localctx = new ApplicationContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_application);
+		return application(0);
+	}
+
+	private ApplicationContext application(int _p) throws RecognitionException {
+		ParserRuleContext _parentctx = _ctx;
+		int _parentState = getState();
+		ApplicationContext _localctx = new ApplicationContext(_ctx, _parentState);
+		ApplicationContext _prevctx = _localctx;
+		int _startState = 8;
+		enterRecursionRule(_localctx, 8, RULE_application, _p);
 		try {
+			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(40);
-			parenthesis();
-			setState(41);
-			term();
+			setState(53);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
+			case 1:
+				{
+				setState(41);
+				function();
+				setState(42);
+				term();
+				}
+				break;
+			case 2:
+				{
+				setState(44);
+				abstraction();
+				setState(45);
+				term();
+				}
+				break;
+			case 3:
+				{
+				setState(47);
+				value();
+				setState(48);
+				term();
+				}
+				break;
+			case 4:
+				{
+				setState(50);
+				parenthesis();
+				setState(51);
+				term();
+				}
+				break;
+			}
+			_ctx.stop = _input.LT(-1);
+			setState(59);
+			_errHandler.sync(this);
+			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
+				if ( _alt==1 ) {
+					if ( _parseListeners!=null ) triggerExitRuleEvent();
+					_prevctx = _localctx;
+					{
+					{
+					_localctx = new ApplicationContext(_parentctx, _parentState);
+					pushNewRecursionContext(_localctx, _startState, RULE_application);
+					setState(55);
+					if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+					setState(56);
+					term();
+					}
+					} 
+				}
+				setState(61);
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -365,7 +441,7 @@ public class LambdaCalculusParser extends Parser {
 			_errHandler.recover(this, re);
 		}
 		finally {
-			exitRule();
+			unrollRecursionContexts(_parentctx);
 		}
 		return _localctx;
 	}
@@ -374,14 +450,14 @@ public class LambdaCalculusParser extends Parser {
 		public ValueContext value() {
 			return getRuleContext(ValueContext.class,0);
 		}
+		public OperationContext operation() {
+			return getRuleContext(OperationContext.class,0);
+		}
 		public List<TermContext> term() {
 			return getRuleContexts(TermContext.class);
 		}
 		public TermContext term(int i) {
 			return getRuleContext(TermContext.class,i);
-		}
-		public OperationContext operation() {
-			return getRuleContext(OperationContext.class,0);
 		}
 		public FunctionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -406,42 +482,40 @@ public class LambdaCalculusParser extends Parser {
 		FunctionContext _localctx = new FunctionContext(_ctx, getState());
 		enterRule(_localctx, 10, RULE_function);
 		try {
-			setState(55);
+			setState(71);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
-			case 1:
+			switch (_input.LA(1)) {
+			case VARIABLE:
+			case NUMBER:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(43);
+				setState(62);
 				value();
-				setState(44);
+				setState(63);
+				operation();
+				setState(64);
 				term();
 				}
 				break;
-			case 2:
+			case ADD:
+			case SUBTRACT:
+			case MULTIPLY:
+			case DIVIDE:
+			case POWER:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(46);
-				value();
-				setState(47);
+				setState(66);
 				operation();
-				setState(48);
+				setState(67);
 				term();
-				}
-				break;
-			case 3:
-				enterOuterAlt(_localctx, 3);
-				{
-				setState(50);
-				operation();
-				setState(51);
-				term();
-				setState(52);
+				setState(68);
 				match(T__2);
-				setState(53);
+				setState(69);
 				term();
 				}
 				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -485,20 +559,20 @@ public class LambdaCalculusParser extends Parser {
 		ValueContext _localctx = new ValueContext(_ctx, getState());
 		enterRule(_localctx, 12, RULE_value);
 		try {
-			setState(59);
+			setState(75);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NUMBER:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(57);
+				setState(73);
 				number();
 				}
 				break;
 			case VARIABLE:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(58);
+				setState(74);
 				variable();
 				}
 				break;
@@ -544,7 +618,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(61);
+			setState(77);
 			match(VARIABLE);
 			}
 		}
@@ -586,7 +660,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(63);
+			setState(79);
 			match(VARIABLE);
 			}
 		}
@@ -628,7 +702,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(65);
+			setState(81);
 			match(NUMBER);
 			}
 		}
@@ -675,7 +749,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(67);
+			setState(83);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ADD) | (1L << SUBTRACT) | (1L << MULTIPLY) | (1L << DIVIDE) | (1L << POWER))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -698,24 +772,43 @@ public class LambdaCalculusParser extends Parser {
 		return _localctx;
 	}
 
+	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
+		switch (ruleIndex) {
+		case 4:
+			return application_sempred((ApplicationContext)_localctx, predIndex);
+		}
+		return true;
+	}
+	private boolean application_sempred(ApplicationContext _localctx, int predIndex) {
+		switch (predIndex) {
+		case 0:
+			return precpred(_ctx, 3);
+		}
+		return true;
+	}
+
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\17H\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\17X\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
 		"\f\t\f\3\2\3\2\3\2\3\2\3\2\5\2\36\n\2\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4"+
-		"\3\5\3\5\3\5\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3"+
-		"\7\5\7:\n\7\3\b\3\b\5\b>\n\b\3\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\f\2\2"+
-		"\r\2\4\6\b\n\f\16\20\22\24\26\2\3\3\2\b\f\2C\2\35\3\2\2\2\4\37\3\2\2\2"+
-		"\6#\3\2\2\2\b\'\3\2\2\2\n*\3\2\2\2\f9\3\2\2\2\16=\3\2\2\2\20?\3\2\2\2"+
-		"\22A\3\2\2\2\24C\3\2\2\2\26E\3\2\2\2\30\36\5\f\7\2\31\36\5\6\4\2\32\36"+
-		"\5\n\6\2\33\36\5\16\b\2\34\36\5\4\3\2\35\30\3\2\2\2\35\31\3\2\2\2\35\32"+
-		"\3\2\2\2\35\33\3\2\2\2\35\34\3\2\2\2\36\3\3\2\2\2\37 \7\r\2\2 !\5\2\2"+
-		"\2!\"\7\16\2\2\"\5\3\2\2\2#$\5\b\5\2$%\7\3\2\2%&\5\2\2\2&\7\3\2\2\2\'"+
-		"(\7\4\2\2()\5\22\n\2)\t\3\2\2\2*+\5\4\3\2+,\5\2\2\2,\13\3\2\2\2-.\5\16"+
-		"\b\2./\5\2\2\2/:\3\2\2\2\60\61\5\16\b\2\61\62\5\26\f\2\62\63\5\2\2\2\63"+
-		":\3\2\2\2\64\65\5\26\f\2\65\66\5\2\2\2\66\67\7\5\2\2\678\5\2\2\28:\3\2"+
-		"\2\29-\3\2\2\29\60\3\2\2\29\64\3\2\2\2:\r\3\2\2\2;>\5\24\13\2<>\5\20\t"+
-		"\2=;\3\2\2\2=<\3\2\2\2>\17\3\2\2\2?@\7\6\2\2@\21\3\2\2\2AB\7\6\2\2B\23"+
-		"\3\2\2\2CD\7\7\2\2D\25\3\2\2\2EF\t\2\2\2F\27\3\2\2\2\5\359=";
+		"\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\5\68"+
+		"\n\6\3\6\3\6\7\6<\n\6\f\6\16\6?\13\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3"+
+		"\7\5\7J\n\7\3\b\3\b\5\bN\n\b\3\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\f\2\3"+
+		"\n\r\2\4\6\b\n\f\16\20\22\24\26\2\3\3\2\b\f\2V\2\35\3\2\2\2\4\37\3\2\2"+
+		"\2\6#\3\2\2\2\b\'\3\2\2\2\n\67\3\2\2\2\fI\3\2\2\2\16M\3\2\2\2\20O\3\2"+
+		"\2\2\22Q\3\2\2\2\24S\3\2\2\2\26U\3\2\2\2\30\36\5\f\7\2\31\36\5\6\4\2\32"+
+		"\36\5\n\6\2\33\36\5\16\b\2\34\36\5\4\3\2\35\30\3\2\2\2\35\31\3\2\2\2\35"+
+		"\32\3\2\2\2\35\33\3\2\2\2\35\34\3\2\2\2\36\3\3\2\2\2\37 \7\r\2\2 !\5\2"+
+		"\2\2!\"\7\16\2\2\"\5\3\2\2\2#$\5\b\5\2$%\7\3\2\2%&\5\2\2\2&\7\3\2\2\2"+
+		"\'(\7\4\2\2()\5\22\n\2)\t\3\2\2\2*+\b\6\1\2+,\5\f\7\2,-\5\2\2\2-8\3\2"+
+		"\2\2./\5\6\4\2/\60\5\2\2\2\608\3\2\2\2\61\62\5\16\b\2\62\63\5\2\2\2\63"+
+		"8\3\2\2\2\64\65\5\4\3\2\65\66\5\2\2\2\668\3\2\2\2\67*\3\2\2\2\67.\3\2"+
+		"\2\2\67\61\3\2\2\2\67\64\3\2\2\28=\3\2\2\29:\f\5\2\2:<\5\2\2\2;9\3\2\2"+
+		"\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>\13\3\2\2\2?=\3\2\2\2@A\5\16\b\2AB\5"+
+		"\26\f\2BC\5\2\2\2CJ\3\2\2\2DE\5\26\f\2EF\5\2\2\2FG\7\5\2\2GH\5\2\2\2H"+
+		"J\3\2\2\2I@\3\2\2\2ID\3\2\2\2J\r\3\2\2\2KN\5\24\13\2LN\5\20\t\2MK\3\2"+
+		"\2\2ML\3\2\2\2N\17\3\2\2\2OP\7\6\2\2P\21\3\2\2\2QR\7\6\2\2R\23\3\2\2\2"+
+		"ST\7\7\2\2T\25\3\2\2\2UV\t\2\2\2V\27\3\2\2\2\7\35\67=IM";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

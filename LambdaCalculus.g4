@@ -21,12 +21,15 @@ abstraction_term
     ;
 
 application
-    : parenthesis term
+    : function term
+    | abstraction term
+    | application term
+    | value term
+    | parenthesis term
     ;
 
 function
-    : value term
-    | value operation term
+    : value operation term
     | operation term ',' term
     ;
 
