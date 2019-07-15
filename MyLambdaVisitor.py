@@ -14,6 +14,7 @@ class MyVisitor(LambdaCalculusVisitor):
         print("In application "+ctx.getText())
         self.visitChildren(ctx)
 
+        #label
         function = self.visit(ctx.getChild(0))
         expression = ctx.getChild(1).getText()
  
@@ -61,6 +62,7 @@ class MyVisitor(LambdaCalculusVisitor):
 
     # Visit a parse tree produced by LambdaCalculusParser#parenthesis.
     def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
+        #Label
         return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
 
     # Visit a parse tree produced by LambdaCalculusParser#number.
@@ -98,6 +100,7 @@ class MyVisitor(LambdaCalculusVisitor):
         ##print()
         ##print("A: "+ctx.getText())
 
+        #label
         bound_variable = self.visit(ctx.getChild(0))
         function = self.visit(ctx.getChild(2))
 

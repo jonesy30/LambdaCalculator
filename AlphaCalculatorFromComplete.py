@@ -70,7 +70,7 @@ def get_scopes(expression):
     if expression[0] != '%':
         current_scope.setStartIndex(0)
         scope_objects.append(current_scope)
-
+    
     for i,letter in enumerate(expression):
         if letter == '%':
             scope_id = scope_id + 1
@@ -80,12 +80,10 @@ def get_scopes(expression):
         elif letter == '(':
             current_scope.brackets.push(letter)
         elif letter == ')':
-            if current_scope.brackets.isEmpty():
+            while current_scope.brackets.isEmpty():
                 current_scope.setEndIndex(i)
                 current_scope = current_scope.getParent()
-                current_scope.brackets.pop()
-            else:
-                current_scope.brackets.pop()
+            current_scope.brackets.pop()
 
     for scope in scope_objects:
         if scope.end_index is None:
@@ -134,6 +132,22 @@ def rename_values(expression,scope_map,scope_objects):
 
     return expression
 
+#This is for testing alone
+def test_print(scope_objects,expression):
+
+    expression_list = list(expression)
+    for scope in scope_objects:
+        print()
+        print(scope.id)
+        
+        scope_string = ""
+        i = scope.start_index
+        while i < scope.end_index:
+            scope_string = scope_string + expression_list[i]
+            i = i + 1
+        
+        print(scope_string)
+
 #ToDo: Find and rename bound variables
 #Step 1: Determine the scope of a lambda term (done)
 #Step 2: Find bound variables (done)
@@ -144,7 +158,7 @@ def calculate_alpha():
     expression = check_brackets()
 
     scope_map, scope_objects = get_scopes(expression)
-
+    #test_print(scope_objects,expression)
     expression = rename_values(expression, scope_map, scope_objects)
     return expression
 
@@ -154,19 +168,6 @@ if __name__ == "__main__":
 
 #this continually overrides replaced variables in smaller scopes, which means some letters aren't used when they should be
 #this might become an issue in the future when I start looking at larger lambda terms, but for now... It works? So leave it?
-
-#This is for testing alone
-# for scope in scope_objects:
-#     print()
-#     print(scope.id)
-    
-#     scope_string = ""
-#     i = scope.start_index
-#     while i < scope.end_index:
-#         scope_string = scope_string + expression[i]
-#         i = i + 1
-    
-#     print(scope_string)
 
 
 
