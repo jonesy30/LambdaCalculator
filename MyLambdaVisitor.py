@@ -16,22 +16,24 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
+        
+        print("Application = "+ctx.getText())
         self.visitChildren(ctx)
 
         #label
         function = self.visit(ctx.getChild(0))
         expression = ctx.getChild(1).getText()
-
+        print("Function = "+function)
+        print("Expression = "+expression)
         bound_variables_left = re.findall("/(.*?)\]", function)
 
         subst_container_match = re.search("\[(.*?)\]", function)
         
-        new_function = function
         if subst_container_match is not None:
-
+            print("Match")
             container = subst_container_match.group(0)
             function = function.replace(container,"",1)
-
+            print("Function after replacement = "+function)
             to_substitute = bound_variables_left[0]
             bound_variables_left.pop(0)
 
@@ -55,7 +57,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
             new_function = function[:end_value].replace(to_substitute,expression) + function[end_value:]
         else:
-            new_function = ctx.getText()
+            #new_function = self.visitChildren(ctx)
+            new_function = self.visit(ctx.getChild(0)) + self.visit(ctx.getChild(1))
 
         return new_function
 
