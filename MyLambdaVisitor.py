@@ -22,6 +22,15 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
         #label
         function = self.visit(ctx.getChild(0))
+
+        # if isinstance(ctx.getChild(0),LambdaCalculusParser.ParenthesisContext):
+        #     print("Abstraction found!!")
+        #     print("This could be useful....")
+        #     self.visitParenthesis(ctx.getChild(0),"Hello message")
+        # else:
+        #     print("Well that didn't work as I predicted")
+        # print(str(type(ctx.getChild(0))))
+
         expression = ctx.getChild(1).getText()
         print("Function = "+function)
         print("Expression = "+expression)
@@ -67,7 +76,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         return ctx.getText()
 
     # Visit a parse tree produced by LambdaCalculusParser#parenthesis.
-    def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
+    def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext, message=None):
+        print("Parenthesis message = "+str(message))
         #Label
         return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
 
