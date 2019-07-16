@@ -104,23 +104,59 @@ def rename_values(expression,scope_map,scope_objects):
     available_letters = list(alphabet)
 
     #for scope in reversed(scope_objects):
+    # for scope in scope_objects:
+    #     term = ""
+    #     i = scope.start_index
+    #     while i < scope.end_index:
+    #         term = term + expression[i]
+    #         i = i + 1
+
+    #     expression_list = list(expression)    
+    #     bound_values = get_bound_values(term)
+    #     print("Term = "+term)
+    #     print("Bound_values = "+str(bound_values))
+
+    #     replace_with = [""] * len(bound_values)
+    #     for i,bound_value in enumerate(bound_values):
+    #         if bound_value not in available_letters:
+    #             replace_with[i] = available_letters[0]
+    #         else:
+    #             replace_with[i] = bound_value
+    #         available_letters.remove(replace_with[i])
+    #         print("Replacing "+bound_value+" with "+replace_with[i])
+
+    #     i = scope.start_index
+    #     while i < scope.end_index:
+    #         if expression[i] in bound_values:
+    #             #expression_list[i] = expression_list[i].upper()
+    #             expression_list[i] = replace_with[bound_values.index(expression[i])]
+    #         i = i + 1
+    #     expression = "".join(expression_list)
+
+    #for scope in reversed(scope_objects):
     for scope in scope_objects:
         term = ""
         i = scope.start_index
         while i < scope.end_index:
             term = term + expression[i]
             i = i + 1
-
-        expression_list = list(expression)    
-        bound_values = get_bound_values(term)
+    
+        expression_list = list(expression)
+        bound_values = get_bound_values(expression)
+        print("Bound values = "+str(bound_values))
 
         replace_with = [""] * len(bound_values)
         for i,bound_value in enumerate(bound_values):
-            if bound_value not in available_letters:
+            other_bound_values = bound_values
+            other_bound_values.remove(bound_value)
+            if bound_value in other_bound_values:
+                print("Other bound values")
                 replace_with[i] = available_letters[0]
+                print("Replacing "+str(i)+" with "+replace_with[i])
+                available_letters.remove(replace_with[i])
+
             else:
                 replace_with[i] = bound_value
-            available_letters.remove(replace_with[i])
 
         i = scope.start_index
         while i < scope.end_index:
@@ -128,7 +164,9 @@ def rename_values(expression,scope_map,scope_objects):
                 #expression_list[i] = expression_list[i].upper()
                 expression_list[i] = replace_with[bound_values.index(expression[i])]
             i = i + 1
+        
         expression = "".join(expression_list)
+        print("New expression = "+expression)
 
     return expression
 
@@ -158,7 +196,7 @@ def calculate_alpha():
     expression = check_brackets()
 
     scope_map, scope_objects = get_scopes(expression)
-    #test_print(scope_objects,expression)
+    test_print(scope_objects,expression)
     expression = rename_values(expression, scope_map, scope_objects)
     return expression
 
