@@ -103,37 +103,6 @@ def rename_values(expression,scope_map,scope_objects):
     alphabet = "abcdefghijklmnopqrstuvwxyz"
     available_letters = list(alphabet)
 
-    #for scope in reversed(scope_objects):
-    # for scope in scope_objects:
-    #     term = ""
-    #     i = scope.start_index
-    #     while i < scope.end_index:
-    #         term = term + expression[i]
-    #         i = i + 1
-
-    #     expression_list = list(expression)    
-    #     bound_values = get_bound_values(term)
-    #     print("Term = "+term)
-    #     print("Bound_values = "+str(bound_values))
-
-    #     replace_with = [""] * len(bound_values)
-    #     for i,bound_value in enumerate(bound_values):
-    #         if bound_value not in available_letters:
-    #             replace_with[i] = available_letters[0]
-    #         else:
-    #             replace_with[i] = bound_value
-    #         available_letters.remove(replace_with[i])
-    #         print("Replacing "+bound_value+" with "+replace_with[i])
-
-    #     i = scope.start_index
-    #     while i < scope.end_index:
-    #         if expression[i] in bound_values:
-    #             #expression_list[i] = expression_list[i].upper()
-    #             expression_list[i] = replace_with[bound_values.index(expression[i])]
-    #         i = i + 1
-    #     expression = "".join(expression_list)
-
-    #for scope in reversed(scope_objects):
     for scope in scope_objects:
         term = ""
         i = scope.start_index
@@ -161,7 +130,6 @@ def rename_values(expression,scope_map,scope_objects):
         i = scope.start_index
         while i < scope.end_index:
             if expression[i] in bound_values:
-                #expression_list[i] = expression_list[i].upper()
                 expression_list[i] = replace_with[bound_values.index(expression[i])]
             i = i + 1
         
@@ -185,12 +153,6 @@ def test_print(scope_objects,expression):
             i = i + 1
         
         print(scope_string)
-
-#ToDo: Find and rename bound variables
-#Step 1: Determine the scope of a lambda term (done)
-#Step 2: Find bound variables (done)
-#Step 3: Find something to rename them to (done)
-#Step 4: Rename them (also done)
 
 def calculate_alpha():
     expression = check_brackets()

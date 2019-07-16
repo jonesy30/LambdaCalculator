@@ -7,18 +7,20 @@ else:
     from LambdaCalculusParser import LambdaCalculusParser
 import re
 
-class MyVisitor(LambdaCalculusVisitor):
+class MyLambdaVisitor(LambdaCalculusVisitor):
     
+    ##Normal order reduction idea:
+    #For application, get function and incoming expression from children and substitute
+    #If there is still redexes left in the expression, visit corresponding children
+    #This supports my use of visitors and not listeners
+
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
-        print("In application "+ctx.getText())
         self.visitChildren(ctx)
 
         #label
         function = self.visit(ctx.getChild(0))
         expression = ctx.getChild(1).getText()
- 
-        print("Before function = "+function)
 
         bound_variables_left = re.findall("/(.*?)\]", function)
 
@@ -52,8 +54,9 @@ class MyVisitor(LambdaCalculusVisitor):
                 function = calculate_alpha(to_substitute, function, expression)
 
             new_function = function[:end_value].replace(to_substitute,expression) + function[end_value:]
-            print("New function = "+new_function)
-        
+        else:
+            new_function = ctx.getText()
+
         return new_function
 
     # Visit a parse tree produced by LambdaCalculusParser#expression.
@@ -75,21 +78,16 @@ class MyVisitor(LambdaCalculusVisitor):
 
         depth = ctx.depth()
         if depth == 1:
-            print("Terminal node detected")
             output = str(self.visitChildren(ctx))
             container_match = re.search("\[(.*?)\]", output)
 
-            print("old function = "+output)
             while container_match is not None:
-                print("FOUND BOUND! ")
                 bound_match = re.search("\/(.*?)\]", output)
                 found_bound = bound_match.group(1)
                 container_to_replace = container_match.group(0)
-                print("To replace = "+container_to_replace)
                 output = output.replace(container_to_replace,"%"+found_bound+".")
                 container_match = re.search("\[(.*?)\]", output)
             
-            print("New function = "+output)
             return output
 
         else:
