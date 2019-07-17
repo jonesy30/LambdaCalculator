@@ -7,7 +7,6 @@ from LambdaCalculusVisitor import LambdaCalculusVisitor
 from BracketCheck import BracketCheck
 from CaseCheck import CaseCheck
 from MyLambdaVisitor import MyLambdaVisitor
-from ArithmeticVisitor import ArithmeticVisitor
 from Stack import Stack
 
 from sympy.solvers import solve
@@ -32,28 +31,19 @@ def main():
     #     all_lowercase = case_checker.check_case(expression)
 
     #expression = calculate_alpha()
-
-    tree = get_tree(expression)
-    lambda_visitor = MyLambdaVisitor()
-    result = lambda_visitor.visit(tree)
-    print("Result = "+result)
-
-    #tree = get_tree(expression)
-    #arithmetic_visitor = ArithmeticVisitor()
-    #final_result = arithmetic_visitor.visit(tree)
-    #final_result = arithmetic_visitor.handleExpression(tree)
-    #print("Final result = "+str(final_result))
-    #printer = Listener()
-    #walker = ParseTreeWalker()
-    #walker.walk(printer, tree)
-
-def get_tree(expression):
     stream = InputStream(expression)
     lexer = LambdaCalculusLexer(stream)
+    #lexer = LambdaCalculusLexer(StdinStream())
     tokens = CommonTokenStream(lexer)
     parser = LambdaCalculusParser(tokens)
     tree = parser.term()
-    return tree
+    visitor = MyLambdaVisitor()
+    #visitor = LambdaCalculusVisitor()
+    result = visitor.visit(tree)
+    print("Result = "+result)
+    #printer = Listener()
+    #walker = ParseTreeWalker()
+    #walker.walk(printer, tree)
 
 if __name__ == '__main__':
     main()
