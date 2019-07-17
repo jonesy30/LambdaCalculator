@@ -25,74 +25,14 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         print("Application = "+ctx.getText())
 
         expression = ctx.getChild(1).getText()
-        self.incoming_values.push(expression) #NOTE: what if a non-evaluator?
+        self.incoming_values.push(expression) 
+        #NOTE: what if a non-evaluator?
+        #NOTE: have I fixed this? I may have done
 
         before_size = self.incoming_values.get_size()
         function = self.visit(ctx.getChild(0))
         after_size = self.incoming_values.get_size()
 
-        #self.visitChildren(ctx)
-        # if isinstance(ctx.getChild(0),LambdaCalculusParser.ParenthesisContext):
-        #     print("Abstraction found!!")
-        #     print("This could be useful....")
-        #     self.visitParenthesis(ctx.getChild(0),"Hello message")
-        # else:
-        #     print("Well that didn't work as I predicted")
-        # print(str(type(ctx.getChild(0))))
-
-        #bound_variables_left = re.findall("/(.*?)\]", function)
-
-        #subst_container_match = re.search("\[(.*?)\]", function)
-        
-        # if subst_container_match is not None:
-        #     print("   Match")
-        #     container = subst_container_match.group(0)
-        #     function = function.replace(container,"",1)
-        #     print("Function after replacement = "+function)
-        #     to_substitute = bound_variables_left[0]
-        #     bound_variables_left.pop(0)
-
-        #     
-        #     if len(bound_variables_left) > 0:
-        #         #More than one bound variable -- do something here
-        #         if to_substitute in bound_variables_left:
-        #             #Bound variable repeated, need to check for the next instance of it
-        #             for i,letter in enumerate(function):
-        #                 if letter == '[':
-        #                     subst_container_match = re.search("/(.*?)\]", function[i:])
-        #                     bound_value = subst_container_match.group(1)
-        #                     if to_substitute == bound_value:
-        #                         break
-        #             end_value = i
-        #             function = calculate_alpha(to_substitute, function, expression, 0, end_value)
-        #         else:
-        #             function = calculate_alpha(to_substitute, function, expression)
-        #     else:
-        #         function = calculate_alpha(to_substitute, function, expression)
-
-        #     new_function = function[:end_value].replace(to_substitute,expression) + function[end_value:]
-        # else:
-        #     #new_function = self.visitChildren(ctx)
-        #     new_function = self.visit(ctx.getChild(0)) + self.visit(ctx.getChild(1))
-
-        #return new_function
-        
-        ###This section is just a test -- will be removed (right future Yola????)
-        #I also need to be careful not to visit children too much
-        #self.visitChildren(ctx)
-        #function = self.visit(ctx.getChild(0))
-        #print("New function in application = "+function)
-
-        #return self.visitChildren(ctx)
-        #Ok, this definitely needs to be cleaned up to return something else, but that's progress at least
-       
-        #yeah, this is in no way correct
-        #Two solutions that I can see:
-            #Rewrite the grammar so LBRACKET abstraction RBRACKET is registered as an abstraction, and check whether the right subtree
-            #is an abstraction
-        #OR
-            #Check the size of the stack before and after to see whether the value has been used
-        
         returned_function = function
         if before_size == after_size:
             returned_function = function + expression
@@ -139,39 +79,29 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             return output
 
         else:
-            visit_children = self.visitChildren(ctx)
-            print("Term visit = "+visit_children)
-            return visit_children
-            #return self.visitChildren(ctx)
+            return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
-        ##print()
-        ##print("Incoming = "+str(self.incoming_values.pop()))
         print("Abstraction = "+ctx.getText())
 
+        #Pop the value as soon as you get the abstraction term, before you
+        #visit the rest of the children, so the correct term gets associated
+        #with the correct input
         to_substitute = self.visit(ctx.getChild(0))
         incoming = self.incoming_values.pop()
         function = self.visit(ctx.getChild(2))
         
-        #I need to visit and process myself, and then go downwards
-        #Not the other way around
-        #Don't know if this is the right way to do it though....
-        #definitely not this way that's for sure
-
         print("Function before abstraction = "+function)
         print("Incoming before abstraction = "+str(incoming))
 
         new_function = function
         if incoming != -1:
-            print("Incoming!! "+str(incoming))
-            print("Bound variable = "+to_substitute)
             bound_variables_left = re.findall("/(.*?)\]", function)
 
             subst_container_match = re.search("\[(.*?)\]", function)
             
             if subst_container_match is not None:
-                print("Match")
                 container = subst_container_match.group(0)
 
                 end_value = len(function)
@@ -196,37 +126,24 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             else:
                 new_function = calculate_alpha(to_substitute, function, incoming)
                 new_function = new_function.replace(to_substitute,incoming)
-        #new_function = function
-        #if incoming != -1:
-        #    new_function = calculate_alpha(bound_variable, function, incoming)
-        #    new_function = new_function.replace(bound_variable,incoming)
         else:
+            #If there's nothing to substitute, just rewrite the term in form
+            #[?/x] and pass back up the tree
             substitution_form = "[?/"+to_substitute+"]"
             new_function = substitution_form + function
-
         
         print("Function after replacement in abstraction = "+new_function)
         return new_function
 
     # Visit a parse tree produced by LambdaCalculusParser#function.
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
-        #self.visitChildren(ctx)
         print("F: "+ctx.getText())
         
         #NOTE: I should be calculating the function here and returning the result
         return "" + self.visit(ctx.getChild(0)) + ctx.getChild(1).getText() + self.visit(ctx.getChild(2))
 
-        # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
+    # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
     def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
-        #print("Children count = "+str(ctx.getChildCount()))
-        #print("Children print = "+str(ctx.getChildren()))
-
-        #This prints x
-        #print(self.visitChildren(ctx))
-        #This prints %x
-        #print(self.visitLambda_variable(ctx))
-        
-        ##print("A_t: "+ctx.getText())
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#lambda_variable.
@@ -240,3 +157,5 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 #NOTE: This could be useful?
     #print("Tree")
     #print(ctx.toStringTree())
+    #to print children: ctx.getChildren()
+    #to print number of children: ctx.getChildCount()
