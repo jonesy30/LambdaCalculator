@@ -28,10 +28,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         self.incoming_values.push(expression) #NOTE: what if a non-evaluator?
 
         before_size = self.incoming_values.get_size()
-        print("Stack size before = "+str(before_size))
         function = self.visit(ctx.getChild(0))
         after_size = self.incoming_values.get_size()
-        print("Stack size after = "+str(after_size))
 
         #self.visitChildren(ctx)
         # if isinstance(ctx.getChild(0),LambdaCalculusParser.ParenthesisContext):
@@ -42,8 +40,6 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #     print("Well that didn't work as I predicted")
         # print(str(type(ctx.getChild(0))))
 
-        print("Function_in_application = "+function)
-        print("Expression_in_application = "+expression)
         #bound_variables_left = re.findall("/(.*?)\]", function)
 
         #subst_container_match = re.search("\[(.*?)\]", function)
@@ -56,7 +52,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #     to_substitute = bound_variables_left[0]
         #     bound_variables_left.pop(0)
 
-        #     end_value = len(function)
+        #     
         #     if len(bound_variables_left) > 0:
         #         #More than one bound variable -- do something here
         #         if to_substitute in bound_variables_left:
@@ -112,9 +108,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#parenthesis.
     def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
         #Label
-        print("P: "+ctx.getText())
+        #print("P: "+ctx.getText())
         visit_children = self.visit(ctx.getChild(1))
-        print("Parenthesis visit = "+visit_children)
         return "" + ctx.getChild(0).getText() + visit_children + ctx.getChild(2).getText()
 
         #return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
@@ -155,24 +150,62 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         ##print("Incoming = "+str(self.incoming_values.pop()))
         print("Abstraction = "+ctx.getText())
 
-        bound_variable = self.visit(ctx.getChild(0))
-        function = self.visit(ctx.getChild(2))
-
+        to_substitute = self.visit(ctx.getChild(0))
         incoming = self.incoming_values.pop()
+        function = self.visit(ctx.getChild(2))
+        
+        #I need to visit and process myself, and then go downwards
+        #Not the other way around
+        #Don't know if this is the right way to do it though....
+        #definitely not this way that's for sure
+
+        print("Function before abstraction = "+function)
+        print("Incoming before abstraction = "+str(incoming))
 
         new_function = function
         if incoming != -1:
-            new_function = function.replace(bound_variable,incoming)
+            print("Incoming!! "+str(incoming))
+            print("Bound variable = "+to_substitute)
+            bound_variables_left = re.findall("/(.*?)\]", function)
+
+            subst_container_match = re.search("\[(.*?)\]", function)
+            
+            if subst_container_match is not None:
+                print("Match")
+                container = subst_container_match.group(0)
+
+                end_value = len(function)
+                if len(bound_variables_left) > 0:
+                    #More than one bound variable -- do something here
+                    if to_substitute in bound_variables_left:
+                        #Bound variable repeated, need to check for the next instance of it
+                        for i,letter in enumerate(function):
+                            if letter == '[':
+                                subst_container_match = re.search("/(.*?)\]", function[i:])
+                                bound_value = subst_container_match.group(1)
+                                if to_substitute == bound_value:
+                                    break
+                        end_value = i
+                        function = calculate_alpha(to_substitute, function, incoming, 0, end_value)
+                    else:
+                        function = calculate_alpha(to_substitute, function, incoming)
+                else:
+                    function = calculate_alpha(to_substitute, function, incoming)
+
+                new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+            else:
+                new_function = calculate_alpha(to_substitute, function, incoming)
+                new_function = new_function.replace(to_substitute,incoming)
+        #new_function = function
+        #if incoming != -1:
+        #    new_function = calculate_alpha(bound_variable, function, incoming)
+        #    new_function = new_function.replace(bound_variable,incoming)
         else:
-            substitution_form = "[?/"+bound_variable+"]"
+            substitution_form = "[?/"+to_substitute+"]"
             new_function = substitution_form + function
 
-        print("Bound variable in abstraction = "+bound_variable)
-        print("Function in abstraction = "+function)
-        ##print()
-
         
-        print("New function in abstraction = "+new_function)
+        print("Function after replacement in abstraction = "+new_function)
         return new_function
 
     # Visit a parse tree produced by LambdaCalculusParser#function.
