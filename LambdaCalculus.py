@@ -7,23 +7,10 @@ from LambdaCalculusVisitor import LambdaCalculusVisitor
 from BracketCheck import BracketCheck
 from CaseCheck import CaseCheck
 from MyLambdaVisitor import MyLambdaVisitor
+from Stack import Stack
 
 from sympy.solvers import solve
 from sympy import Symbol
-
-#taken from https://www.sanfoundry.com/python-program-implement-stack/
-class Stack:
-    def __init__(self):
-        self.items = []
-    
-    def is_empty(self):
-        return self.items == []
-    
-    def push(self, data):
-        self.items.append(data)
-    
-    def pop(self):
-        return self.items.pop()
 
 def main():
     bracket_checker = BracketCheck()

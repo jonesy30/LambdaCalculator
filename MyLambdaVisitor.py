@@ -1,5 +1,6 @@
 from LambdaCalculusVisitor import LambdaCalculusVisitor
 from AlphaCalculatorPartial import calculate_alpha
+from Stack import Stack
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .LambdaCalculusParser import LambdaCalculusParser
@@ -14,15 +15,22 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     #If there is still redexes left in the expression, visit corresponding children
     #This supports my use of visitors and not listeners
 
+    def __init__(self):
+        super()
+        self.incoming_values = Stack() #This definitely needs renamed
+
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
         
         print("Application = "+ctx.getText())
-        self.visitChildren(ctx)
 
-        #label
         function = self.visit(ctx.getChild(0))
+        expression = ctx.getChild(1).getText()
 
+        self.incoming_values.push(expression) #NOTE: what if a non-evaluator?
+        print("Stack contents = "+str(self.incoming_values.items))
+
+        self.visitChildren(ctx)
         # if isinstance(ctx.getChild(0),LambdaCalculusParser.ParenthesisContext):
         #     print("Abstraction found!!")
         #     print("This could be useful....")
@@ -31,7 +39,6 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #     print("Well that didn't work as I predicted")
         # print(str(type(ctx.getChild(0))))
 
-        expression = ctx.getChild(1).getText()
         print("Function = "+function)
         print("Expression = "+expression)
         bound_variables_left = re.findall("/(.*?)\]", function)
@@ -76,8 +83,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         return ctx.getText()
 
     # Visit a parse tree produced by LambdaCalculusParser#parenthesis.
-    def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext, message=None):
-        print("Parenthesis message = "+str(message))
+    def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
         #Label
         return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
 
@@ -109,9 +115,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
         ##print()
-        ##print("A: "+ctx.getText())
+        print("Incoming = "+str(self.incoming_values.pop()))
 
-        #label
         bound_variable = self.visit(ctx.getChild(0))
         function = self.visit(ctx.getChild(2))
 

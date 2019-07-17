@@ -1,21 +1,6 @@
 from BracketCheck import BracketCheck
+from Stack import Stack
 import sys
-
-class Stack:
-    def __init__(self):
-        self.items = []
-    
-    def isEmpty(self):
-        return self.items == []
-    
-    def push(self, data):
-        self.items.append(data)
-    
-    def pop(self):
-        return self.items.pop()
-
-    def __repr__(self):
-        return str(self.items)
 
 class ScopeObject(object):
     def __init__(self, id, parent):
