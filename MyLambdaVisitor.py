@@ -48,11 +48,15 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#parenthesis.
     def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
         #Label
-        #print("P: "+ctx.getText())
-        visit_children = self.visit(ctx.getChild(1))
-        return "" + ctx.getChild(0).getText() + visit_children + ctx.getChild(2).getText()
-
-        #return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
+        print("P: "+ctx.getText())
+        #to print number of children: ctx.getChildCount()
+        if ctx.getChildCount() == 3:
+            #NOTE: The hell is going on here? None?
+            return_string = "" + ctx.getChild(0).getText() + str(self.visit(ctx.getChild(1))) + ctx.getChild(2).getText()
+            print(return_string)
+            return return_string
+        else:
+            return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#number.
     def visitNumber(self, ctx:LambdaCalculusParser.NumberContext):
@@ -125,6 +129,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
                 new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
             else:
                 new_function = calculate_alpha(to_substitute, function, incoming)
+                print("In abstraction, "+incoming+" being replaced")
                 new_function = new_function.replace(to_substitute,incoming)
         else:
             #If there's nothing to substitute, just rewrite the term in form
