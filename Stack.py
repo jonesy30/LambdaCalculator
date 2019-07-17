@@ -13,3 +13,6 @@ class Stack:
         if self.is_empty():
             return -1
         return self.items.pop()
+    
+    def get_size(self):
+        return len(self.items)

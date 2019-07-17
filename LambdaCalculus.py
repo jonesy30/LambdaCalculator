@@ -40,7 +40,7 @@ def main():
     visitor = MyLambdaVisitor()
     #visitor = LambdaCalculusVisitor()
     result = visitor.visit(tree)
-    print(result)
+    print("Result = "+result)
     #printer = Listener()
     #walker = ParseTreeWalker()
     #walker.walk(printer, tree)
