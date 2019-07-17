@@ -46,13 +46,13 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         return ctx.getText()
 
     # Visit a parse tree produced by LambdaCalculusParser#parenthesis.
-    def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
-        #Label
-        #print("P: "+ctx.getText())
-        visit_children = self.visit(ctx.getChild(1))
-        return "" + ctx.getChild(0).getText() + visit_children + ctx.getChild(2).getText()
+    # def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
+    #     #Label
+    #     #print("P: "+ctx.getText())
+    #     visit_children = self.visit(ctx.getChild(1))
+    #     return "" + ctx.getChild(0).getText() + visit_children + ctx.getChild(2).getText()
 
-        #return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
+    #     #return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
 
     # Visit a parse tree produced by LambdaCalculusParser#number.
     def visitNumber(self, ctx:LambdaCalculusParser.NumberContext):
@@ -88,10 +88,18 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #Pop the value as soon as you get the abstraction term, before you
         #visit the rest of the children, so the correct term gets associated
         #with the correct input
+
+        #to_substitute = self.visit(ctx.getChild(0))
+        parentesis_check = ctx.getChild(0).getText()
+        #if I am a parenthesis of myself, just return as I am
+        if parentesis_check == "(":
+            return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
+        
         to_substitute = self.visit(ctx.getChild(0))
         incoming = self.incoming_values.pop()
         function = self.visit(ctx.getChild(2))
-        
+
+        print("To subsitute = "+to_substitute)
         print("Function before abstraction = "+function)
         print("Incoming before abstraction = "+str(incoming))
 

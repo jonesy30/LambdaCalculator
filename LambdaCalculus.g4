@@ -5,15 +5,11 @@ term
     | abstraction
     | application
     | value
-    | parenthesis
-    ;
-
-parenthesis
-    : LBRACKET term RBRACKET
     ;
 
 abstraction
     : abstraction_term '.' term
+    | LBRACKET abstraction RBRACKET
     ;
 
 abstraction_term
@@ -25,12 +21,13 @@ application
     | abstraction term
     | application term
     | value term
-    | parenthesis term
+    | LBRACKET application RBRACKET
     ;
 
 function
     : value operation term
     | operation term ',' term
+    | LBRACKET function RBRACKET
     ;
 
 value

@@ -17,15 +17,6 @@ class LambdaCalculusListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by LambdaCalculusParser#parenthesis.
-    def enterParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
-        pass
-
-    # Exit a parse tree produced by LambdaCalculusParser#parenthesis.
-    def exitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
-        pass
-
-
     # Enter a parse tree produced by LambdaCalculusParser#abstraction.
     def enterAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
         pass

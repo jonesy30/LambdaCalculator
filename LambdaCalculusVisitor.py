@@ -14,11 +14,6 @@ class LambdaCalculusVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by LambdaCalculusParser#parenthesis.
-    def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
         return self.visitChildren(ctx)
