@@ -47,7 +47,6 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         print("Application = "+ctx.getText())
 
         parentesis_check = ctx.getChild(0).getText()
-        print("Parenthesis check = "+parentesis_check)
         #if I am a parenthesis of myself, just return as I am
         if parentesis_check == "(":
             return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
@@ -89,30 +88,30 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #returned_function = self.visit(ctx.getChild(0))
         #print("Function get child 2 = "+returned_function)
 
-        print("Returned value in application = "+returned_function)
+        print("Returned value in application = "+str(returned_function))
 
         #I think this has to be here, because I want to change myself to a new type depending on the input
         #But I still need to fix the term * term issue (left recursion)
-        stream = InputStream(returned_function)
-        lexer = LambdaCalculusLexer(stream)
-        #lexer = LambdaCalculusLexer(StdinStream())
-        tokens = CommonTokenStream(lexer)
-        parser = LambdaCalculusParser(tokens)
-        tree = parser.term()
+        # stream = InputStream(returned_function)
+        # lexer = LambdaCalculusLexer(stream)
+        # #lexer = LambdaCalculusLexer(StdinStream())
+        # tokens = CommonTokenStream(lexer)
+        # parser = LambdaCalculusParser(tokens)
+        # tree = parser.term()
 
-        ctx.removeLastChild()
-        ctx.addChild(tree.getChild(0))
+        # ctx.removeLastChild()
+        # ctx.addChild(tree.getChild(0))
 
-        print()
-        print("Adding tree")
-        print(str(type(tree)))
-        print("Node = "+tree.getChild(0).getText()+" type = "+str(type(tree.getChild(0))))
+        # print()
+        # print("Adding tree")
+        # print(str(type(tree)))
+        # print("Node = "+tree.getChild(0).getText()+" type = "+str(type(tree.getChild(0))))
 
-        print()
+        # print()
 
-        print("In application "+str(ctx.getText()) +", type of function = "+str(type(ctx.getChild(0))))
-        print("My child = "+str(ctx.getChild(0).getText()))
-        print("Child type = "+str(type(ctx.getChild(0))))
+        # print("In application "+str(ctx.getText()) +", type of function = "+str(type(ctx.getChild(0))))
+        # print("My child = "+str(ctx.getChild(0).getText()))
+        # print("Child type = "+str(type(ctx.getChild(0))))
 
         return returned_function
 
@@ -131,9 +130,9 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
     # Visit a parse tree produced by LambdaCalculusParser#number.
     def visitNumber(self, ctx:LambdaCalculusParser.NumberContext):
+        #return self.visitChildren(ctx)
+        return ctx.getText()
 
-        return self.visitChildren(ctx)
-    
     # Visit a parse tree produced by LambdaCalculusParser#term.
     def visitTerm(self, ctx:LambdaCalculusParser.TermContext):
         print("T: "+ctx.getText())
@@ -171,22 +170,38 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
         #The abstraction puts lambda terms into [?/x] form, this chunk of code just converts it back before it gets
         #passed to the user for readability
-        depth = ctx.depth()
-        if depth == 1:
-            output = str(self.visitChildren(ctx))
-            container_match = re.search("\[(.*?)\]", output)
+        
+        #*************************************
+        #NOTE TODO: GO BACK TO THIS AND WORK OUT HOW TO PRINT THE OUTPUT PROPERLY
+        # depth = ctx.depth()
+        # if depth == 1:
+        #     output = str(self.visitChildren(ctx))
+        #     container_match = re.search("\[(.*?)\]", output)
 
-            while container_match is not None:
-                bound_match = re.search("\/(.*?)\]", output)
-                found_bound = bound_match.group(1)
-                container_to_replace = container_match.group(0)
-                output = output.replace(container_to_replace,"%"+found_bound+".")
-                container_match = re.search("\[(.*?)\]", output)
+        #     while container_match is not None:
+        #         bound_match = re.search("\/(.*?)\]", output)
+        #         found_bound = bound_match.group(1)
+        #         container_to_replace = container_match.group(0)
+        #         output = output.replace(container_to_replace,"%"+found_bound+".")
+        #         container_match = re.search("\[(.*?)\]", output)
             
-            return output
+        #     return output
 
-        else:
-            return self.visitChildren(ctx)
+        # else:
+        #    return self.visitChildren(ctx)
+
+        output_string = ""
+        for term in self.visitChildren(ctx):
+            print("Term output = "+str(term))
+            print("Type = "+str(type(term)))
+
+            if isinstance(term,str):
+                output_string = output_string + term
+            else:
+                output_string = output_string + term.getText()
+        
+        return output_string
+            #output_string = output_string+term.getText()
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
@@ -199,8 +214,15 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #to_substitute = self.visit(ctx.getChild(0))
         parentesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
+        
+        print("Child 0 = "+ctx.getChild(0).getText())
+        print("Child 1 = "+ctx.getChild(1).getText())
+        print("Child 2 = "+ctx.getChild(2).getText())
+        
         if parentesis_check == "(":
-            return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
+            #return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
+
+            return [ctx.getChild(0),self.visit(ctx.getChild(1)),ctx.getChild(2)]
         
         to_substitute = self.visit(ctx.getChild(0))
         incoming = self.incoming_values.pop()
@@ -258,6 +280,12 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         
         print("Function after replacement in abstraction = "+new_function)
 
+        #What do I return here?
+        #I think I need to get my interval, change the text of my own tokens, and then return ctx
+        #That could work, right?
+        #It's going to be a LONG day tomorrow
+        #NOTE: this way, I can't guarantee that I am going to contain a lambda variable (I might not any more)
+        #But this could actually work!!
         return new_function
 
     # Visit a parse tree produced by LambdaCalculusParser#function.
