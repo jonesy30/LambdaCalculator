@@ -7,35 +7,38 @@ import sys
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\17")
-        buf.write("\\\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16")
+        buf.write("e\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
         buf.write("\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3\2\3\2\3\2\3\2\5\2\33")
         buf.write("\n\2\3\3\3\3\5\3\37\n\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3")
-        buf.write("\4\3\4\3\4\3\4\3\4\3\4\5\4.\n\4\3\5\3\5\3\5\3\5\3\5\3")
-        buf.write("\5\3\5\3\5\5\58\n\5\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3")
-        buf.write("\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7K\n\7\3\7\3\7\7")
-        buf.write("\7O\n\7\f\7\16\7R\13\7\3\b\3\b\3\t\3\t\3\n\3\n\3\13\3")
-        buf.write("\13\3\13\2\3\f\f\2\4\6\b\n\f\16\20\22\24\2\3\3\2\b\f\2")
-        buf.write("\\\2\32\3\2\2\2\4\36\3\2\2\2\6-\3\2\2\2\b\67\3\2\2\2\n")
-        buf.write("9\3\2\2\2\fJ\3\2\2\2\16S\3\2\2\2\20U\3\2\2\2\22W\3\2\2")
-        buf.write("\2\24Y\3\2\2\2\26\33\5\4\3\2\27\33\5\6\4\2\30\33\5\b\5")
-        buf.write("\2\31\33\5\f\7\2\32\26\3\2\2\2\32\27\3\2\2\2\32\30\3\2")
-        buf.write("\2\2\32\31\3\2\2\2\33\3\3\2\2\2\34\37\5\22\n\2\35\37\5")
-        buf.write("\16\b\2\36\34\3\2\2\2\36\35\3\2\2\2\37\5\3\2\2\2 !\5\4")
-        buf.write("\3\2!\"\5\24\13\2\"#\5\2\2\2#.\3\2\2\2$%\5\24\13\2%&\5")
-        buf.write("\2\2\2&\'\7\3\2\2\'(\5\2\2\2(.\3\2\2\2)*\7\r\2\2*+\5\6")
-        buf.write("\4\2+,\7\16\2\2,.\3\2\2\2- \3\2\2\2-$\3\2\2\2-)\3\2\2")
-        buf.write("\2.\7\3\2\2\2/\60\5\n\6\2\60\61\7\4\2\2\61\62\5\2\2\2")
-        buf.write("\628\3\2\2\2\63\64\7\r\2\2\64\65\5\b\5\2\65\66\7\16\2")
-        buf.write("\2\668\3\2\2\2\67/\3\2\2\2\67\63\3\2\2\28\t\3\2\2\29:")
-        buf.write("\7\5\2\2:;\5\20\t\2;\13\3\2\2\2<=\b\7\1\2=>\5\b\5\2>?")
-        buf.write("\5\2\2\2?K\3\2\2\2@A\5\6\4\2AB\5\2\2\2BK\3\2\2\2CD\5\4")
-        buf.write("\3\2DE\5\2\2\2EK\3\2\2\2FG\7\r\2\2GH\5\f\7\2HI\7\16\2")
-        buf.write("\2IK\3\2\2\2J<\3\2\2\2J@\3\2\2\2JC\3\2\2\2JF\3\2\2\2K")
-        buf.write("P\3\2\2\2LM\f\7\2\2MO\5\2\2\2NL\3\2\2\2OR\3\2\2\2PN\3")
-        buf.write("\2\2\2PQ\3\2\2\2Q\r\3\2\2\2RP\3\2\2\2ST\7\6\2\2T\17\3")
-        buf.write("\2\2\2UV\7\6\2\2V\21\3\2\2\2WX\7\7\2\2X\23\3\2\2\2YZ\t")
-        buf.write("\2\2\2Z\25\3\2\2\2\b\32\36-\67JP")
+        buf.write("\4\3\4\3\4\3\4\3\4\3\4\5\4.\n\4\3\4\3\4\3\4\3\4\7\4\64")
+        buf.write("\n\4\f\4\16\4\67\13\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5")
+        buf.write("\5\5A\n\5\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7")
+        buf.write("\3\7\3\7\3\7\3\7\3\7\3\7\5\7T\n\7\3\7\3\7\7\7X\n\7\f\7")
+        buf.write("\16\7[\13\7\3\b\3\b\3\t\3\t\3\n\3\n\3\13\3\13\3\13\2\4")
+        buf.write("\6\f\f\2\4\6\b\n\f\16\20\22\24\2\3\3\2\7\13\2f\2\32\3")
+        buf.write("\2\2\2\4\36\3\2\2\2\6-\3\2\2\2\b@\3\2\2\2\nB\3\2\2\2\f")
+        buf.write("S\3\2\2\2\16\\\3\2\2\2\20^\3\2\2\2\22`\3\2\2\2\24b\3\2")
+        buf.write("\2\2\26\33\5\4\3\2\27\33\5\6\4\2\30\33\5\b\5\2\31\33\5")
+        buf.write("\f\7\2\32\26\3\2\2\2\32\27\3\2\2\2\32\30\3\2\2\2\32\31")
+        buf.write("\3\2\2\2\33\3\3\2\2\2\34\37\5\22\n\2\35\37\5\16\b\2\36")
+        buf.write("\34\3\2\2\2\36\35\3\2\2\2\37\5\3\2\2\2 !\b\4\1\2!\"\5")
+        buf.write("\4\3\2\"#\5\24\13\2#$\5\2\2\2$.\3\2\2\2%&\5\b\5\2&\'\5")
+        buf.write("\24\13\2\'(\5\2\2\2(.\3\2\2\2)*\7\f\2\2*+\5\6\4\2+,\7")
+        buf.write("\r\2\2,.\3\2\2\2- \3\2\2\2-%\3\2\2\2-)\3\2\2\2.\65\3\2")
+        buf.write("\2\2/\60\f\5\2\2\60\61\5\24\13\2\61\62\5\2\2\2\62\64\3")
+        buf.write("\2\2\2\63/\3\2\2\2\64\67\3\2\2\2\65\63\3\2\2\2\65\66\3")
+        buf.write("\2\2\2\66\7\3\2\2\2\67\65\3\2\2\289\5\n\6\29:\7\3\2\2")
+        buf.write(":;\5\2\2\2;A\3\2\2\2<=\7\f\2\2=>\5\b\5\2>?\7\r\2\2?A\3")
+        buf.write("\2\2\2@8\3\2\2\2@<\3\2\2\2A\t\3\2\2\2BC\7\4\2\2CD\5\20")
+        buf.write("\t\2D\13\3\2\2\2EF\b\7\1\2FG\5\b\5\2GH\5\2\2\2HT\3\2\2")
+        buf.write("\2IJ\5\4\3\2JK\5\2\2\2KT\3\2\2\2LM\5\6\4\2MN\5\2\2\2N")
+        buf.write("T\3\2\2\2OP\7\f\2\2PQ\5\f\7\2QR\7\r\2\2RT\3\2\2\2SE\3")
+        buf.write("\2\2\2SI\3\2\2\2SL\3\2\2\2SO\3\2\2\2TY\3\2\2\2UV\f\7\2")
+        buf.write("\2VX\5\2\2\2WU\3\2\2\2X[\3\2\2\2YW\3\2\2\2YZ\3\2\2\2Z")
+        buf.write("\r\3\2\2\2[Y\3\2\2\2\\]\7\5\2\2]\17\3\2\2\2^_\7\5\2\2")
+        buf.write("_\21\3\2\2\2`a\7\6\2\2a\23\3\2\2\2bc\t\2\2\2c\25\3\2\2")
+        buf.write("\2\t\32\36-\65@SY")
         return buf.getvalue()
 
 
@@ -49,12 +52,12 @@ class LambdaCalculusParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "','", "'.'", "'%'", "<INVALID>", "<INVALID>", 
+    literalNames = [ "<INVALID>", "'.'", "'%'", "<INVALID>", "<INVALID>", 
                      "'+'", "'-'", "'*'", "'/'", "'^'", "'('", "')'" ]
 
-    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "VARIABLE", "NUMBER", "ADD", "SUBTRACT", "MULTIPLY", 
-                      "DIVIDE", "POWER", "LBRACKET", "RBRACKET", "WS" ]
+    symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "VARIABLE", 
+                      "NUMBER", "ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", 
+                      "POWER", "LBRACKET", "RBRACKET", "WS" ]
 
     RULE_term = 0
     RULE_value = 1
@@ -74,17 +77,16 @@ class LambdaCalculusParser ( Parser ):
     EOF = Token.EOF
     T__0=1
     T__1=2
-    T__2=3
-    VARIABLE=4
-    NUMBER=5
-    ADD=6
-    SUBTRACT=7
-    MULTIPLY=8
-    DIVIDE=9
-    POWER=10
-    LBRACKET=11
-    RBRACKET=12
-    WS=13
+    VARIABLE=3
+    NUMBER=4
+    ADD=5
+    SUBTRACT=6
+    MULTIPLY=7
+    DIVIDE=8
+    POWER=9
+    LBRACKET=10
+    RBRACKET=11
+    WS=12
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -153,7 +155,7 @@ class LambdaCalculusParser ( Parser ):
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
                 self.state = 21
-                self.function()
+                self.function(0)
                 pass
 
             elif la_ == 3:
@@ -254,11 +256,12 @@ class LambdaCalculusParser ( Parser ):
             return self.getTypedRuleContext(LambdaCalculusParser.OperationContext,0)
 
 
-        def term(self, i:int=None):
-            if i is None:
-                return self.getTypedRuleContexts(LambdaCalculusParser.TermContext)
-            else:
-                return self.getTypedRuleContext(LambdaCalculusParser.TermContext,i)
+        def term(self):
+            return self.getTypedRuleContext(LambdaCalculusParser.TermContext,0)
+
+
+        def abstraction(self):
+            return self.getTypedRuleContext(LambdaCalculusParser.AbstractionContext,0)
 
 
         def LBRACKET(self):
@@ -290,53 +293,75 @@ class LambdaCalculusParser ( Parser ):
 
 
 
-
-    def function(self):
-
-        localctx = LambdaCalculusParser.FunctionContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 4, self.RULE_function)
+    def function(self, _p:int=0):
+        _parentctx = self._ctx
+        _parentState = self.state
+        localctx = LambdaCalculusParser.FunctionContext(self, self._ctx, _parentState)
+        _prevctx = localctx
+        _startState = 4
+        self.enterRecursionRule(localctx, 4, self.RULE_function, _p)
         try:
+            self.enterOuterAlt(localctx, 1)
             self.state = 43
             self._errHandler.sync(self)
-            token = self._input.LA(1)
-            if token in [LambdaCalculusParser.VARIABLE, LambdaCalculusParser.NUMBER]:
-                self.enterOuterAlt(localctx, 1)
-                self.state = 30
-                self.value()
+            la_ = self._interp.adaptivePredict(self._input,2,self._ctx)
+            if la_ == 1:
                 self.state = 31
-                self.operation()
+                self.value()
                 self.state = 32
+                self.operation()
+                self.state = 33
                 self.term()
                 pass
-            elif token in [LambdaCalculusParser.ADD, LambdaCalculusParser.SUBTRACT, LambdaCalculusParser.MULTIPLY, LambdaCalculusParser.DIVIDE, LambdaCalculusParser.POWER]:
-                self.enterOuterAlt(localctx, 2)
-                self.state = 34
-                self.operation()
+
+            elif la_ == 2:
                 self.state = 35
-                self.term()
+                self.abstraction()
                 self.state = 36
-                self.match(LambdaCalculusParser.T__0)
+                self.operation()
                 self.state = 37
                 self.term()
                 pass
-            elif token in [LambdaCalculusParser.LBRACKET]:
-                self.enterOuterAlt(localctx, 3)
+
+            elif la_ == 3:
                 self.state = 39
                 self.match(LambdaCalculusParser.LBRACKET)
                 self.state = 40
-                self.function()
+                self.function(0)
                 self.state = 41
                 self.match(LambdaCalculusParser.RBRACKET)
                 pass
-            else:
-                raise NoViableAltException(self)
+
+
+            self._ctx.stop = self._input.LT(-1)
+            self.state = 51
+            self._errHandler.sync(self)
+            _alt = self._interp.adaptivePredict(self._input,3,self._ctx)
+            while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
+                if _alt==1:
+                    if self._parseListeners is not None:
+                        self.triggerExitRuleEvent()
+                    _prevctx = localctx
+                    localctx = LambdaCalculusParser.FunctionContext(self, _parentctx, _parentState)
+                    self.pushNewRecursionContext(localctx, _startState, self.RULE_function)
+                    self.state = 45
+                    if not self.precpred(self._ctx, 3):
+                        from antlr4.error.Errors import FailedPredicateException
+                        raise FailedPredicateException(self, "self.precpred(self._ctx, 3)")
+                    self.state = 46
+                    self.operation()
+                    self.state = 47
+                    self.term() 
+                self.state = 53
+                self._errHandler.sync(self)
+                _alt = self._interp.adaptivePredict(self._input,3,self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
             self._errHandler.recover(self, re)
         finally:
-            self.exitRule()
+            self.unrollRecursionContexts(_parentctx)
         return localctx
 
     class AbstractionContext(ParserRuleContext):
@@ -388,25 +413,25 @@ class LambdaCalculusParser ( Parser ):
         localctx = LambdaCalculusParser.AbstractionContext(self, self._ctx, self.state)
         self.enterRule(localctx, 6, self.RULE_abstraction)
         try:
-            self.state = 53
+            self.state = 62
             self._errHandler.sync(self)
             token = self._input.LA(1)
-            if token in [LambdaCalculusParser.T__2]:
+            if token in [LambdaCalculusParser.T__1]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 45
+                self.state = 54
                 self.abstraction_term()
-                self.state = 46
-                self.match(LambdaCalculusParser.T__1)
-                self.state = 47
+                self.state = 55
+                self.match(LambdaCalculusParser.T__0)
+                self.state = 56
                 self.term()
                 pass
             elif token in [LambdaCalculusParser.LBRACKET]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 49
+                self.state = 58
                 self.match(LambdaCalculusParser.LBRACKET)
-                self.state = 50
+                self.state = 59
                 self.abstraction()
-                self.state = 51
+                self.state = 60
                 self.match(LambdaCalculusParser.RBRACKET)
                 pass
             else:
@@ -456,9 +481,9 @@ class LambdaCalculusParser ( Parser ):
         self.enterRule(localctx, 8, self.RULE_abstraction_term)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 55
-            self.match(LambdaCalculusParser.T__2)
-            self.state = 56
+            self.state = 64
+            self.match(LambdaCalculusParser.T__1)
+            self.state = 65
             self.lambda_variable()
         except RecognitionException as re:
             localctx.exception = re
@@ -482,12 +507,12 @@ class LambdaCalculusParser ( Parser ):
             return self.getTypedRuleContext(LambdaCalculusParser.TermContext,0)
 
 
-        def function(self):
-            return self.getTypedRuleContext(LambdaCalculusParser.FunctionContext,0)
-
-
         def value(self):
             return self.getTypedRuleContext(LambdaCalculusParser.ValueContext,0)
+
+
+        def function(self):
+            return self.getTypedRuleContext(LambdaCalculusParser.FunctionContext,0)
 
 
         def LBRACKET(self):
@@ -528,44 +553,44 @@ class LambdaCalculusParser ( Parser ):
         self.enterRecursionRule(localctx, 10, self.RULE_application, _p)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 72
+            self.state = 81
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,4,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,5,self._ctx)
             if la_ == 1:
-                self.state = 59
+                self.state = 68
                 self.abstraction()
-                self.state = 60
+                self.state = 69
                 self.term()
                 pass
 
             elif la_ == 2:
-                self.state = 62
-                self.function()
-                self.state = 63
+                self.state = 71
+                self.value()
+                self.state = 72
                 self.term()
                 pass
 
             elif la_ == 3:
-                self.state = 65
-                self.value()
-                self.state = 66
+                self.state = 74
+                self.function(0)
+                self.state = 75
                 self.term()
                 pass
 
             elif la_ == 4:
-                self.state = 68
+                self.state = 77
                 self.match(LambdaCalculusParser.LBRACKET)
-                self.state = 69
+                self.state = 78
                 self.application(0)
-                self.state = 70
+                self.state = 79
                 self.match(LambdaCalculusParser.RBRACKET)
                 pass
 
 
             self._ctx.stop = self._input.LT(-1)
-            self.state = 78
+            self.state = 87
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,5,self._ctx)
+            _alt = self._interp.adaptivePredict(self._input,6,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
                     if self._parseListeners is not None:
@@ -573,15 +598,15 @@ class LambdaCalculusParser ( Parser ):
                     _prevctx = localctx
                     localctx = LambdaCalculusParser.ApplicationContext(self, _parentctx, _parentState)
                     self.pushNewRecursionContext(localctx, _startState, self.RULE_application)
-                    self.state = 74
+                    self.state = 83
                     if not self.precpred(self._ctx, 5):
                         from antlr4.error.Errors import FailedPredicateException
                         raise FailedPredicateException(self, "self.precpred(self._ctx, 5)")
-                    self.state = 75
+                    self.state = 84
                     self.term() 
-                self.state = 80
+                self.state = 89
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,5,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,6,self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -626,7 +651,7 @@ class LambdaCalculusParser ( Parser ):
         self.enterRule(localctx, 12, self.RULE_variable)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 81
+            self.state = 90
             self.match(LambdaCalculusParser.VARIABLE)
         except RecognitionException as re:
             localctx.exception = re
@@ -671,7 +696,7 @@ class LambdaCalculusParser ( Parser ):
         self.enterRule(localctx, 14, self.RULE_lambda_variable)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 83
+            self.state = 92
             self.match(LambdaCalculusParser.VARIABLE)
         except RecognitionException as re:
             localctx.exception = re
@@ -716,7 +741,7 @@ class LambdaCalculusParser ( Parser ):
         self.enterRule(localctx, 16, self.RULE_number)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 85
+            self.state = 94
             self.match(LambdaCalculusParser.NUMBER)
         except RecognitionException as re:
             localctx.exception = re
@@ -774,7 +799,7 @@ class LambdaCalculusParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 87
+            self.state = 96
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << LambdaCalculusParser.ADD) | (1 << LambdaCalculusParser.SUBTRACT) | (1 << LambdaCalculusParser.MULTIPLY) | (1 << LambdaCalculusParser.DIVIDE) | (1 << LambdaCalculusParser.POWER))) != 0)):
                 self._errHandler.recoverInline(self)
@@ -794,6 +819,7 @@ class LambdaCalculusParser ( Parser ):
     def sempred(self, localctx:RuleContext, ruleIndex:int, predIndex:int):
         if self._predicates == None:
             self._predicates = dict()
+        self._predicates[2] = self.function_sempred
         self._predicates[5] = self.application_sempred
         pred = self._predicates.get(ruleIndex, None)
         if pred is None:
@@ -801,8 +827,13 @@ class LambdaCalculusParser ( Parser ):
         else:
             return pred(localctx, predIndex)
 
-    def application_sempred(self, localctx:ApplicationContext, predIndex:int):
+    def function_sempred(self, localctx:FunctionContext, predIndex:int):
             if predIndex == 0:
+                return self.precpred(self._ctx, 3)
+         
+
+    def application_sempred(self, localctx:ApplicationContext, predIndex:int):
+            if predIndex == 1:
                 return self.precpred(self._ctx, 5)
          
 

@@ -3,7 +3,7 @@ grammar LambdaCalculus;
 term 
     : value
     | function
-    |abstraction
+    | abstraction
     | application
     ;
 
@@ -14,7 +14,8 @@ value
 
 function
     : value operation term
-    | operation term ',' term
+    | function operation term
+    | abstraction operation term
     | LBRACKET function RBRACKET
     ;
 
@@ -30,8 +31,8 @@ abstraction_term
 application
     : application term 
     | abstraction term
-    | function term
     | value term
+    | function term
     | LBRACKET application RBRACKET
     ;
 

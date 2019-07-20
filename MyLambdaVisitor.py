@@ -77,9 +77,17 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         print("Stack size after = "+str(after_size)+" in "+ctx.getText())
 
         returned_function = function
-        if before_size == after_size:
+        if isinstance(ctx.getChild(0),LambdaCalculusParser.AbstractionContext):
+            print("I am an abstraction - remove expression")
+        else:
+            print("Not an abstraction -- keep expression")
             returned_function = function + expression
             self.incoming_values.pop()
+
+        # returned_function = function
+        # if before_size == after_size:
+        #     returned_function = function + expression
+        #     self.incoming_values.pop()
 
         #returned_function = self.visit(ctx.getChild(0))
         #print("Function get child 2 = "+returned_function)
