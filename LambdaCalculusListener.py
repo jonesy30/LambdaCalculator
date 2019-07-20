@@ -17,6 +17,24 @@ class LambdaCalculusListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by LambdaCalculusParser#value.
+    def enterValue(self, ctx:LambdaCalculusParser.ValueContext):
+        pass
+
+    # Exit a parse tree produced by LambdaCalculusParser#value.
+    def exitValue(self, ctx:LambdaCalculusParser.ValueContext):
+        pass
+
+
+    # Enter a parse tree produced by LambdaCalculusParser#function.
+    def enterFunction(self, ctx:LambdaCalculusParser.FunctionContext):
+        pass
+
+    # Exit a parse tree produced by LambdaCalculusParser#function.
+    def exitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
+        pass
+
+
     # Enter a parse tree produced by LambdaCalculusParser#abstraction.
     def enterAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
         pass
@@ -41,24 +59,6 @@ class LambdaCalculusListener(ParseTreeListener):
 
     # Exit a parse tree produced by LambdaCalculusParser#application.
     def exitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
-        pass
-
-
-    # Enter a parse tree produced by LambdaCalculusParser#function.
-    def enterFunction(self, ctx:LambdaCalculusParser.FunctionContext):
-        pass
-
-    # Exit a parse tree produced by LambdaCalculusParser#function.
-    def exitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
-        pass
-
-
-    # Enter a parse tree produced by LambdaCalculusParser#value.
-    def enterValue(self, ctx:LambdaCalculusParser.ValueContext):
-        pass
-
-    # Exit a parse tree produced by LambdaCalculusParser#value.
-    def exitValue(self, ctx:LambdaCalculusParser.ValueContext):
         pass
 
 

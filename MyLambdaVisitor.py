@@ -68,11 +68,10 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         after_size = self.incoming_values.get_size()
 
         #Ok, so this is a string not a node
-        #print("In application, type of function = "+str(type(function)))
+        #print("In application "+str(ctx.getText()) +", type of function = "+str(type(ctx.getChild(0))))
         #print("What happens if I visit function again?")
         #self.incoming_values.push("Hello!")
         #print(str(self.visit(function)))
-        print("Function get child 1 = "+function)
 
         print("Stack size before = "+str(before_size)+" in "+ctx.getText())
         print("Stack size after = "+str(after_size)+" in "+ctx.getText())
@@ -86,6 +85,21 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #print("Function get child 2 = "+returned_function)
 
         print("Returned value in application = "+returned_function)
+
+        #I think this has to be here, because I want to change myself to a new type depending on the input
+        #But I still need to fix the term * term issue (left recursion)
+        stream = InputStream(returned_function)
+        lexer = LambdaCalculusLexer(stream)
+        #lexer = LambdaCalculusLexer(StdinStream())
+        tokens = CommonTokenStream(lexer)
+        parser = LambdaCalculusParser(tokens)
+        tree = parser.term()
+
+        ctx.removeLastChild()
+        ctx.addChild(tree)
+        print("Adding tree")
+
+        print("In application "+str(ctx.getText()) +", type of function = "+str(type(ctx.getChild(0))))
 
         return returned_function
 
@@ -230,16 +244,6 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             new_function = substitution_form + function
         
         print("Function after replacement in abstraction = "+new_function)
-
-        stream = InputStream(new_function)
-        lexer = LambdaCalculusLexer(stream)
-        #lexer = LambdaCalculusLexer(StdinStream())
-        tokens = CommonTokenStream(lexer)
-        parser = LambdaCalculusParser(tokens)
-        tree = parser.term()
-
-        ctx.removeLastChild()
-        ctx.addChild(tree)
 
         return new_function
 
