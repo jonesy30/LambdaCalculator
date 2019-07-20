@@ -286,6 +286,11 @@ public class LambdaCalculusParser extends Parser {
 	}
 
 	public static class ApplicationContext extends ParserRuleContext {
+		public TerminalNode LBRACKET() { return getToken(LambdaCalculusParser.LBRACKET, 0); }
+		public ApplicationContext application() {
+			return getRuleContext(ApplicationContext.class,0);
+		}
+		public TerminalNode RBRACKET() { return getToken(LambdaCalculusParser.RBRACKET, 0); }
 		public FunctionContext function() {
 			return getRuleContext(FunctionContext.class,0);
 		}
@@ -298,11 +303,6 @@ public class LambdaCalculusParser extends Parser {
 		public ValueContext value() {
 			return getRuleContext(ValueContext.class,0);
 		}
-		public TerminalNode LBRACKET() { return getToken(LambdaCalculusParser.LBRACKET, 0); }
-		public ApplicationContext application() {
-			return getRuleContext(ApplicationContext.class,0);
-		}
-		public TerminalNode RBRACKET() { return getToken(LambdaCalculusParser.RBRACKET, 0); }
 		public ApplicationContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -343,35 +343,35 @@ public class LambdaCalculusParser extends Parser {
 			case 1:
 				{
 				setState(40);
-				function();
+				match(LBRACKET);
 				setState(41);
-				term();
+				application(0);
+				setState(42);
+				match(RBRACKET);
 				}
 				break;
 			case 2:
 				{
-				setState(43);
-				abstraction();
 				setState(44);
+				function();
+				setState(45);
 				term();
 				}
 				break;
 			case 3:
 				{
-				setState(46);
-				value();
 				setState(47);
+				abstraction();
+				setState(48);
 				term();
 				}
 				break;
 			case 4:
 				{
-				setState(49);
-				match(LBRACKET);
 				setState(50);
-				application(0);
+				value();
 				setState(51);
-				match(RBRACKET);
+				term();
 				}
 				break;
 			}
@@ -388,7 +388,7 @@ public class LambdaCalculusParser extends Parser {
 					_localctx = new ApplicationContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_application);
 					setState(55);
-					if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 					setState(56);
 					term();
 					}
@@ -763,7 +763,7 @@ public class LambdaCalculusParser extends Parser {
 	private boolean application_sempred(ApplicationContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 0:
-			return precpred(_ctx, 3);
+			return precpred(_ctx, 2);
 		}
 		return true;
 	}
@@ -781,11 +781,11 @@ public class LambdaCalculusParser extends Parser {
 		"\30\33\5\b\5\2\31\33\5\f\7\2\32\26\3\2\2\2\32\27\3\2\2\2\32\30\3\2\2\2"+
 		"\32\31\3\2\2\2\33\3\3\2\2\2\34\35\5\6\4\2\35\36\7\3\2\2\36\37\5\2\2\2"+
 		"\37%\3\2\2\2 !\7\r\2\2!\"\5\4\3\2\"#\7\16\2\2#%\3\2\2\2$\34\3\2\2\2$ "+
-		"\3\2\2\2%\5\3\2\2\2&\'\7\4\2\2\'(\5\20\t\2(\7\3\2\2\2)*\b\5\1\2*+\5\n"+
-		"\6\2+,\5\2\2\2,8\3\2\2\2-.\5\4\3\2./\5\2\2\2/8\3\2\2\2\60\61\5\f\7\2\61"+
-		"\62\5\2\2\2\628\3\2\2\2\63\64\7\r\2\2\64\65\5\b\5\2\65\66\7\16\2\2\66"+
-		"8\3\2\2\2\67)\3\2\2\2\67-\3\2\2\2\67\60\3\2\2\2\67\63\3\2\2\28=\3\2\2"+
-		"\29:\f\5\2\2:<\5\2\2\2;9\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>\t\3\2"+
+		"\3\2\2\2%\5\3\2\2\2&\'\7\4\2\2\'(\5\20\t\2(\7\3\2\2\2)*\b\5\1\2*+\7\r"+
+		"\2\2+,\5\b\5\2,-\7\16\2\2-8\3\2\2\2./\5\n\6\2/\60\5\2\2\2\608\3\2\2\2"+
+		"\61\62\5\4\3\2\62\63\5\2\2\2\638\3\2\2\2\64\65\5\f\7\2\65\66\5\2\2\2\66"+
+		"8\3\2\2\2\67)\3\2\2\2\67.\3\2\2\2\67\61\3\2\2\2\67\64\3\2\2\28=\3\2\2"+
+		"\29:\f\4\2\2:<\5\2\2\2;9\3\2\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>\t\3\2"+
 		"\2\2?=\3\2\2\2@A\5\f\7\2AB\5\24\13\2BC\5\2\2\2CN\3\2\2\2DE\5\24\13\2E"+
 		"F\5\2\2\2FG\7\5\2\2GH\5\2\2\2HN\3\2\2\2IJ\7\r\2\2JK\5\n\6\2KL\7\16\2\2"+
 		"LN\3\2\2\2M@\3\2\2\2MD\3\2\2\2MI\3\2\2\2N\13\3\2\2\2OR\5\22\n\2PR\5\16"+
