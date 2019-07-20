@@ -27,25 +27,13 @@ public class LambdaCalculusBaseListener implements LambdaCalculusListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterValue(LambdaCalculusParser.ValueContext ctx) { }
+	@Override public void enterApplication(LambdaCalculusParser.ApplicationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitValue(LambdaCalculusParser.ValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFunction(LambdaCalculusParser.FunctionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFunction(LambdaCalculusParser.FunctionContext ctx) { }
+	@Override public void exitApplication(LambdaCalculusParser.ApplicationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -75,13 +63,25 @@ public class LambdaCalculusBaseListener implements LambdaCalculusListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterApplication(LambdaCalculusParser.ApplicationContext ctx) { }
+	@Override public void enterFunction(LambdaCalculusParser.FunctionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitApplication(LambdaCalculusParser.ApplicationContext ctx) { }
+	@Override public void exitFunction(LambdaCalculusParser.FunctionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterValue(LambdaCalculusParser.ValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitValue(LambdaCalculusParser.ValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

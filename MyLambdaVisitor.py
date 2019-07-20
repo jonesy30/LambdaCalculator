@@ -73,21 +73,18 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #self.incoming_values.push("Hello!")
         #print(str(self.visit(function)))
 
-        print("Stack size before = "+str(before_size)+" in "+ctx.getText())
-        print("Stack size after = "+str(after_size)+" in "+ctx.getText())
-
-        returned_function = function
-        if isinstance(ctx.getChild(0),LambdaCalculusParser.AbstractionContext):
-            print("I am an abstraction - remove expression")
-        else:
-            print("Not an abstraction -- keep expression")
-            returned_function = function + expression
-            self.incoming_values.pop()
-
         # returned_function = function
-        # if before_size == after_size:
+        # if isinstance(ctx.getChild(0),LambdaCalculusParser.AbstractionContext):
+        #     print("I am an abstraction - remove expression")
+        # else:
+        #     print("Not an abstraction -- keep expression")
         #     returned_function = function + expression
         #     self.incoming_values.pop()
+
+        returned_function = function
+        if before_size == after_size:
+            returned_function = function + expression
+            self.incoming_values.pop()
 
         #returned_function = self.visit(ctx.getChild(0))
         #print("Function get child 2 = "+returned_function)
@@ -104,10 +101,18 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         tree = parser.term()
 
         ctx.removeLastChild()
-        ctx.addChild(tree)
+        ctx.addChild(tree.getChild(0))
+
+        print()
         print("Adding tree")
+        print(str(type(tree)))
+        print("Node = "+tree.getChild(0).getText()+" type = "+str(type(tree.getChild(0))))
+
+        print()
 
         print("In application "+str(ctx.getText()) +", type of function = "+str(type(ctx.getChild(0))))
+        print("My child = "+str(ctx.getChild(0).getText()))
+        print("Child type = "+str(type(ctx.getChild(0))))
 
         return returned_function
 
@@ -258,10 +263,6 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#function.
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
         #print("F: "+ctx.getText())
-        print("In function")
-        print("Child 0 = "+(ctx.getChild(0).getText()))
-        print("Child 1 = "+(ctx.getChild(1).getText()))
-        print("Child 2 = "+(ctx.getChild(2).getText()))
 
         parentesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
