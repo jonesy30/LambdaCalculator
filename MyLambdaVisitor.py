@@ -80,10 +80,31 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #     returned_function = function + expression
         #     self.incoming_values.pop()
 
-        returned_function = function
+        #returned_function = function
+        #print("Text = "+returned_function.getText())
+
+        # for node in returned_function:
+        #     print("Text = "+node.getText())
+
+        returned_function = []
+        print("Function = "+str(function))
+
+        for node in function:
+            print("Term output = "+str(node))
+            print("Type = "+str(type(node)))
+
+            returned_function.append(node)
+
+        print("Returned function = "+str(returned_function))
+
+        print("Expression = "+expression)
         if before_size == after_size:
-            returned_function = function + expression
+            # returned_function = function + expression
+            # #returned_function.append(expression)
+            # self.incoming_values.pop()
+            returned_function.append(expression)
             self.incoming_values.pop()
+
 
         #returned_function = self.visit(ctx.getChild(0))
         #print("Function get child 2 = "+returned_function)
@@ -190,17 +211,30 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         # else:
         #    return self.visitChildren(ctx)
 
-        output_string = ""
-        for term in self.visitChildren(ctx):
-            print("Term output = "+str(term))
-            print("Type = "+str(type(term)))
+        #NOTE: I should only be converting to text at the end
+        depth = ctx.depth()
+        if depth == 1:
+            output_string = ""
+            for term in self.visitChildren(ctx):
+                print("Term output = "+str(term))
+                print("Type = "+str(type(term)))
 
-            if isinstance(term,str):
-                output_string = output_string + term
-            else:
-                output_string = output_string + term.getText()
-        
-        return output_string
+                if isinstance(term,str):
+                    output_string = output_string + term
+                else:
+                    output_string = output_string + term.getText()
+            
+            return output_string
+        else:
+            returned = []
+            for term in self.visitChildren(ctx):
+                if isinstance(term, list):
+                    for node in term:
+                        returned.append(node)
+                else:
+                    returned.append(term)
+            
+            return returned
             #output_string = output_string+term.getText()
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
@@ -213,6 +247,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
         #to_substitute = self.visit(ctx.getChild(0))
         parentesis_check = ctx.getChild(0).getText()
+        print("Parenthesis check = "+parentesis_check)
         #if I am a parenthesis of myself, just return as I am
         
         print("Child 0 = "+ctx.getChild(0).getText())
@@ -229,16 +264,42 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         function = self.visit(ctx.getChild(2))
 
         print("To subsitute = "+to_substitute)
-        print("Function before abstraction = "+function)
+        print("Function before abstraction = "+str(function))
         print("Incoming before abstraction = "+str(incoming))
 
         new_function = function
+
+        #<test>
+        print("Function string = "+str(function))
+        output_array = []
+        for term in function:
+            print("Term = "+str(term))
+            if isinstance(term,str):
+                output_array.append(term)
+            else:
+                output_array.append(term.getText())
+
+        print("Function now is this:")
+        print(str(output_array))
+        #</test>
+
+        function_string = ""
+        for term in function:
+            print("Term output = "+str(term))
+            print("Type = "+str(type(term)))
+
+            if isinstance(term,str):
+                function_string = function_string + term
+            else:
+                function_string = function_string + term.getText()
+        
+        #TO PUT BACK IN - JUST TAKING OUT FOR A TEST
         if incoming != -1:
             #bound_variables_left = re.findall("/(.*?)\]", function)
-            bound_variables_left = re.findall("%(.*?)\.",function)
+            bound_variables_left = re.findall("%(.*?)\.",function_string)
 
             #subst_container_match = re.search("\[(.*?)\]", function)
-            subst_container_match = re.search("%(.*?)\.",function)
+            subst_container_match = re.search("%(.*?)\.",function_string)
             
             print("Bound variables left = "+str(bound_variables_left))
             print("Subst container match = "+str(subst_container_match))
@@ -247,29 +308,29 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
                 container = subst_container_match.group(0)
                 print("Container match = "+container)
 
-                end_value = len(function)
+                end_value = len(function_string)
                 if len(bound_variables_left) > 0:
                     #More than one bound variable -- do something here
                     if to_substitute in bound_variables_left:
                         #Bound variable repeated, need to check for the next instance of it
-                        for i,letter in enumerate(function):
+                        for i,letter in enumerate(function_string):
                             #if letter == '[':
                             if letter == '%':
                                 #subst_container_match = re.search("/(.*?)\]", function[i:])
-                                subst_container_match = re.search("%(.*?)\.",function[i:])
+                                subst_container_match = re.search("%(.*?)\.",function_string[i:])
                                 bound_value = subst_container_match.group(1)
                                 if to_substitute == bound_value:
                                     break
                         end_value = i
-                        function = calculate_alpha(to_substitute, function, incoming, 0, end_value)
+                        function = calculate_alpha(to_substitute, function_string, incoming, 0, end_value)
                     else:
-                        function = calculate_alpha(to_substitute, function, incoming)
+                        function = calculate_alpha(to_substitute, function_string, incoming)
                 else:
-                    function = calculate_alpha(to_substitute, function, incoming)
+                    function = calculate_alpha(to_substitute, function_string, incoming)
 
-                new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+                new_function = function[:end_value].replace(to_substitute,incoming) + function_string[end_value:]
             else:
-                new_function = calculate_alpha(to_substitute, function, incoming)
+                new_function = calculate_alpha(to_substitute, function_string, incoming)
                 new_function = new_function.replace(to_substitute,incoming)
         else:
             #If there's nothing to substitute, just rewrite the term in form
@@ -294,11 +355,17 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
         parentesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
-        if parentesis_check == "(":
-            return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
         
+        returned = []
+        if parentesis_check == "(":
+            #return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
+            return [ctx.getChild(0).getText(),self.visit(ctx.getChild(1)),ctx.getChild(2).getText()]
+        else:
+            return [self.visit(ctx.getChild(0)),ctx.getChild(1).getText(),self.visit(ctx.getChild(2))]
+            #do I need to return the value of this or the text version (probably the node)
+    
         #NOTE: I should be calculating the function here and returning the result
-        return "" + self.visit(ctx.getChild(0)) + ctx.getChild(1).getText() + self.visit(ctx.getChild(2))
+        #return "" + self.visit(ctx.getChild(0)) + ctx.getChild(1).getText() + self.visit(ctx.getChild(2))
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
     def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
