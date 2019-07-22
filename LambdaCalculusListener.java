@@ -17,6 +17,16 @@ public interface LambdaCalculusListener extends ParseTreeListener {
 	 */
 	void exitTerm(LambdaCalculusParser.TermContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link LambdaCalculusParser#application}.
+	 * @param ctx the parse tree
+	 */
+	void enterApplication(LambdaCalculusParser.ApplicationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LambdaCalculusParser#application}.
+	 * @param ctx the parse tree
+	 */
+	void exitApplication(LambdaCalculusParser.ApplicationContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LambdaCalculusParser#abstraction}.
 	 * @param ctx the parse tree
 	 */
@@ -36,16 +46,6 @@ public interface LambdaCalculusListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAbstraction_term(LambdaCalculusParser.Abstraction_termContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link LambdaCalculusParser#application}.
-	 * @param ctx the parse tree
-	 */
-	void enterApplication(LambdaCalculusParser.ApplicationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link LambdaCalculusParser#application}.
-	 * @param ctx the parse tree
-	 */
-	void exitApplication(LambdaCalculusParser.ApplicationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LambdaCalculusParser#function}.
 	 * @param ctx the parse tree

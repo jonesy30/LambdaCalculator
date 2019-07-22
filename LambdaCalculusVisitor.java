@@ -16,6 +16,12 @@ public interface LambdaCalculusVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTerm(LambdaCalculusParser.TermContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LambdaCalculusParser#application}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitApplication(LambdaCalculusParser.ApplicationContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LambdaCalculusParser#abstraction}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -27,12 +33,6 @@ public interface LambdaCalculusVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAbstraction_term(LambdaCalculusParser.Abstraction_termContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link LambdaCalculusParser#application}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitApplication(LambdaCalculusParser.ApplicationContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LambdaCalculusParser#function}.
 	 * @param ctx the parse tree
