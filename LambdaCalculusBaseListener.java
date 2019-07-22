@@ -27,7 +27,23 @@ public class LambdaCalculusBaseListener implements LambdaCalculusListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+<<<<<<< HEAD
 	@Override public void enterApplication(LambdaCalculusParser.ApplicationContext ctx) { }
+=======
+	@Override public void enterParenthesis(LambdaCalculusParser.ParenthesisContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParenthesis(LambdaCalculusParser.ParenthesisContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAbstraction(LambdaCalculusParser.AbstractionContext ctx) { }
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 	/**
 	 * {@inheritDoc}
 	 *

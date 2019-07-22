@@ -14,8 +14,18 @@ class LambdaCalculusVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+<<<<<<< HEAD
     # Visit a parse tree produced by LambdaCalculusParser#value.
     def visitValue(self, ctx:LambdaCalculusParser.ValueContext):
+=======
+    # Visit a parse tree produced by LambdaCalculusParser#parenthesis.
+    def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by LambdaCalculusParser#abstraction.
+    def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
         return self.visitChildren(ctx)
 
 

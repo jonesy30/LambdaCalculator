@@ -17,7 +17,6 @@ application
 
 abstraction
     : abstraction_term '.' term
-    | LBRACKET abstraction RBRACKET
     ;
 
 abstraction_term

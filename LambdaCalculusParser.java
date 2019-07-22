@@ -19,12 +19,21 @@ public class LambdaCalculusParser extends Parser {
 		T__0=1, T__1=2, VARIABLE=3, NUMBER=4, ADD=5, SUBTRACT=6, MULTIPLY=7, DIVIDE=8, 
 		POWER=9, LBRACKET=10, RBRACKET=11, WS=12;
 	public static final int
+<<<<<<< HEAD
 		RULE_term = 0, RULE_application = 1, RULE_abstraction = 2, RULE_abstraction_term = 3, 
 		RULE_function = 4, RULE_value = 5, RULE_variable = 6, RULE_lambda_variable = 7, 
 		RULE_number = 8, RULE_operation = 9;
 	public static final String[] ruleNames = {
 		"term", "application", "abstraction", "abstraction_term", "function", 
 		"value", "variable", "lambda_variable", "number", "operation"
+=======
+		RULE_term = 0, RULE_parenthesis = 1, RULE_abstraction = 2, RULE_abstraction_term = 3, 
+		RULE_application = 4, RULE_function = 5, RULE_value = 6, RULE_variable = 7, 
+		RULE_lambda_variable = 8, RULE_number = 9, RULE_operation = 10;
+	public static final String[] ruleNames = {
+		"term", "parenthesis", "abstraction", "abstraction_term", "application", 
+		"function", "value", "variable", "lambda_variable", "number", "operation"
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 	};
 
 	private static final String[] _LITERAL_NAMES = {
@@ -94,8 +103,13 @@ public class LambdaCalculusParser extends Parser {
 		public ValueContext value() {
 			return getRuleContext(ValueContext.class,0);
 		}
+<<<<<<< HEAD
 		public ApplicationContext application() {
 			return getRuleContext(ApplicationContext.class,0);
+=======
+		public ParenthesisContext parenthesis() {
+			return getRuleContext(ParenthesisContext.class,0);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 		}
 		public TermContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -120,37 +134,114 @@ public class LambdaCalculusParser extends Parser {
 		TermContext _localctx = new TermContext(_ctx, getState());
 		enterRule(_localctx, 0, RULE_term);
 		try {
-			setState(24);
+			setState(27);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
+<<<<<<< HEAD
 				setState(20);
 				abstraction();
+=======
+				setState(22);
+				function();
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
+<<<<<<< HEAD
 				setState(21);
 				function(0);
+=======
+				setState(23);
+				abstraction();
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 				}
 				break;
 			case 3:
 				enterOuterAlt(_localctx, 3);
 				{
+<<<<<<< HEAD
 				setState(22);
 				value();
+=======
+				setState(24);
+				application(0);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 				}
 				break;
 			case 4:
 				enterOuterAlt(_localctx, 4);
 				{
+<<<<<<< HEAD
 				setState(23);
 				application(0);
+=======
+				setState(25);
+				value();
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 				}
 				break;
+			case 5:
+				enterOuterAlt(_localctx, 5);
+				{
+				setState(26);
+				parenthesis();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class ParenthesisContext extends ParserRuleContext {
+		public TerminalNode LBRACKET() { return getToken(LambdaCalculusParser.LBRACKET, 0); }
+		public TermContext term() {
+			return getRuleContext(TermContext.class,0);
+		}
+		public TerminalNode RBRACKET() { return getToken(LambdaCalculusParser.RBRACKET, 0); }
+		public ParenthesisContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_parenthesis; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).enterParenthesis(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitParenthesis(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitParenthesis(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final ParenthesisContext parenthesis() throws RecognitionException {
+		ParenthesisContext _localctx = new ParenthesisContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_parenthesis);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(29);
+			match(LBRACKET);
+			setState(30);
+			term();
+			setState(31);
+			match(RBRACKET);
 			}
 		}
 		catch (RecognitionException re) {
@@ -297,11 +388,6 @@ public class LambdaCalculusParser extends Parser {
 		public TermContext term() {
 			return getRuleContext(TermContext.class,0);
 		}
-		public TerminalNode LBRACKET() { return getToken(LambdaCalculusParser.LBRACKET, 0); }
-		public AbstractionContext abstraction() {
-			return getRuleContext(AbstractionContext.class,0);
-		}
-		public TerminalNode RBRACKET() { return getToken(LambdaCalculusParser.RBRACKET, 0); }
 		public AbstractionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -325,6 +411,7 @@ public class LambdaCalculusParser extends Parser {
 		AbstractionContext _localctx = new AbstractionContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_abstraction);
 		try {
+<<<<<<< HEAD
 			setState(57);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
@@ -352,6 +439,16 @@ public class LambdaCalculusParser extends Parser {
 				break;
 			default:
 				throw new NoViableAltException(this);
+=======
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(33);
+			abstraction_term();
+			setState(34);
+			match(T__0);
+			setState(35);
+			term();
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 			}
 		}
 		catch (RecognitionException re) {
@@ -394,9 +491,15 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
+<<<<<<< HEAD
 			setState(59);
 			match(T__1);
 			setState(60);
+=======
+			setState(37);
+			match(T__1);
+			setState(38);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 			lambda_variable();
 			}
 		}
@@ -424,12 +527,25 @@ public class LambdaCalculusParser extends Parser {
 		public AbstractionContext abstraction() {
 			return getRuleContext(AbstractionContext.class,0);
 		}
+<<<<<<< HEAD
 		public TerminalNode LBRACKET() { return getToken(LambdaCalculusParser.LBRACKET, 0); }
 		public FunctionContext function() {
 			return getRuleContext(FunctionContext.class,0);
 		}
 		public TerminalNode RBRACKET() { return getToken(LambdaCalculusParser.RBRACKET, 0); }
 		public FunctionContext(ParserRuleContext parent, int invokingState) {
+=======
+		public ValueContext value() {
+			return getRuleContext(ValueContext.class,0);
+		}
+		public ParenthesisContext parenthesis() {
+			return getRuleContext(ParenthesisContext.class,0);
+		}
+		public ApplicationContext application() {
+			return getRuleContext(ApplicationContext.class,0);
+		}
+		public ApplicationContext(ParserRuleContext parent, int invokingState) {
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_function; }
@@ -455,16 +571,24 @@ public class LambdaCalculusParser extends Parser {
 	private FunctionContext function(int _p) throws RecognitionException {
 		ParserRuleContext _parentctx = _ctx;
 		int _parentState = getState();
+<<<<<<< HEAD
 		FunctionContext _localctx = new FunctionContext(_ctx, _parentState);
 		FunctionContext _prevctx = _localctx;
 		int _startState = 8;
 		enterRecursionRule(_localctx, 8, RULE_function, _p);
+=======
+		ApplicationContext _localctx = new ApplicationContext(_ctx, _parentState);
+		ApplicationContext _prevctx = _localctx;
+		int _startState = 8;
+		enterRecursionRule(_localctx, 8, RULE_application, _p);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(75);
 			_errHandler.sync(this);
+<<<<<<< HEAD
 			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
 			case 1:
 				{
@@ -473,34 +597,67 @@ public class LambdaCalculusParser extends Parser {
 				setState(64);
 				operation();
 				setState(65);
+=======
+			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
+			case 1:
+				{
+				setState(41);
+				function();
+				setState(42);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 				term();
 				}
 				break;
 			case 2:
 				{
+<<<<<<< HEAD
 				setState(67);
 				abstraction();
 				setState(68);
 				operation();
 				setState(69);
+=======
+				setState(44);
+				abstraction();
+				setState(45);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 				term();
 				}
 				break;
 			case 3:
 				{
+<<<<<<< HEAD
 				setState(71);
 				match(LBRACKET);
 				setState(72);
 				function(0);
 				setState(73);
 				match(RBRACKET);
+=======
+				setState(47);
+				value();
+				setState(48);
+				term();
+				}
+				break;
+			case 4:
+				{
+				setState(50);
+				parenthesis();
+				setState(51);
+				term();
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 				}
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
 			setState(83);
 			_errHandler.sync(this);
+<<<<<<< HEAD
 			_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
+=======
+			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
@@ -520,7 +677,11 @@ public class LambdaCalculusParser extends Parser {
 				}
 				setState(85);
 				_errHandler.sync(this);
+<<<<<<< HEAD
 				_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
+=======
+				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 			}
 			}
 		}
@@ -535,6 +696,92 @@ public class LambdaCalculusParser extends Parser {
 		return _localctx;
 	}
 
+<<<<<<< HEAD
+=======
+	public static class FunctionContext extends ParserRuleContext {
+		public ValueContext value() {
+			return getRuleContext(ValueContext.class,0);
+		}
+		public OperationContext operation() {
+			return getRuleContext(OperationContext.class,0);
+		}
+		public List<TermContext> term() {
+			return getRuleContexts(TermContext.class);
+		}
+		public TermContext term(int i) {
+			return getRuleContext(TermContext.class,i);
+		}
+		public FunctionContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_function; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).enterFunction(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitFunction(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof LambdaCalculusVisitor ) return ((LambdaCalculusVisitor<? extends T>)visitor).visitFunction(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final FunctionContext function() throws RecognitionException {
+		FunctionContext _localctx = new FunctionContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_function);
+		try {
+			setState(71);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case VARIABLE:
+			case NUMBER:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(62);
+				value();
+				setState(63);
+				operation();
+				setState(64);
+				term();
+				}
+				break;
+			case ADD:
+			case SUBTRACT:
+			case MULTIPLY:
+			case DIVIDE:
+			case POWER:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(66);
+				operation();
+				setState(67);
+				term();
+				setState(68);
+				match(T__2);
+				setState(69);
+				term();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 	public static class ValueContext extends ParserRuleContext {
 		public NumberContext number() {
 			return getRuleContext(NumberContext.class,0);
@@ -563,22 +810,34 @@ public class LambdaCalculusParser extends Parser {
 
 	public final ValueContext value() throws RecognitionException {
 		ValueContext _localctx = new ValueContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_value);
+		enterRule(_localctx, 12, RULE_value);
 		try {
+<<<<<<< HEAD
 			setState(88);
+=======
+			setState(75);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NUMBER:
 				enterOuterAlt(_localctx, 1);
 				{
+<<<<<<< HEAD
 				setState(86);
+=======
+				setState(73);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 				number();
 				}
 				break;
 			case VARIABLE:
 				enterOuterAlt(_localctx, 2);
 				{
+<<<<<<< HEAD
 				setState(87);
+=======
+				setState(74);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 				variable();
 				}
 				break;
@@ -620,11 +879,15 @@ public class LambdaCalculusParser extends Parser {
 
 	public final VariableContext variable() throws RecognitionException {
 		VariableContext _localctx = new VariableContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_variable);
+		enterRule(_localctx, 14, RULE_variable);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
+<<<<<<< HEAD
 			setState(90);
+=======
+			setState(77);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 			match(VARIABLE);
 			}
 		}
@@ -662,11 +925,15 @@ public class LambdaCalculusParser extends Parser {
 
 	public final Lambda_variableContext lambda_variable() throws RecognitionException {
 		Lambda_variableContext _localctx = new Lambda_variableContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_lambda_variable);
+		enterRule(_localctx, 16, RULE_lambda_variable);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
+<<<<<<< HEAD
 			setState(92);
+=======
+			setState(79);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 			match(VARIABLE);
 			}
 		}
@@ -704,11 +971,15 @@ public class LambdaCalculusParser extends Parser {
 
 	public final NumberContext number() throws RecognitionException {
 		NumberContext _localctx = new NumberContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_number);
+		enterRule(_localctx, 18, RULE_number);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
+<<<<<<< HEAD
 			setState(94);
+=======
+			setState(81);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 			match(NUMBER);
 			}
 		}
@@ -750,12 +1021,16 @@ public class LambdaCalculusParser extends Parser {
 
 	public final OperationContext operation() throws RecognitionException {
 		OperationContext _localctx = new OperationContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_operation);
+		enterRule(_localctx, 20, RULE_operation);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
+<<<<<<< HEAD
 			setState(96);
+=======
+			setState(83);
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ADD) | (1L << SUBTRACT) | (1L << MULTIPLY) | (1L << DIVIDE) | (1L << POWER))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -780,7 +1055,11 @@ public class LambdaCalculusParser extends Parser {
 
 	public boolean sempred(RuleContext _localctx, int ruleIndex, int predIndex) {
 		switch (ruleIndex) {
+<<<<<<< HEAD
 		case 1:
+=======
+		case 4:
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 			return application_sempred((ApplicationContext)_localctx, predIndex);
 		case 4:
 			return function_sempred((FunctionContext)_localctx, predIndex);
@@ -803,6 +1082,7 @@ public class LambdaCalculusParser extends Parser {
 	}
 
 	public static final String _serializedATN =
+<<<<<<< HEAD
 		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16e\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3"+
 		"\2\3\2\3\2\3\2\5\2\33\n\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
@@ -828,6 +1108,29 @@ public class LambdaCalculusParser extends Parser {
 		"\16\b\2ZX\3\2\2\2ZY\3\2\2\2[\r\3\2\2\2\\]\7\5\2\2]\17\3\2\2\2^_\7\5\2"+
 		"\2_\21\3\2\2\2`a\7\6\2\2a\23\3\2\2\2bc\t\2\2\2c\25\3\2\2\2\t\32*\60;M"+
 		"UZ";
+=======
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\17X\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
+		"\f\t\f\3\2\3\2\3\2\3\2\3\2\5\2\36\n\2\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4"+
+		"\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\5\68"+
+		"\n\6\3\6\3\6\7\6<\n\6\f\6\16\6?\13\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3"+
+		"\7\5\7J\n\7\3\b\3\b\5\bN\n\b\3\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\f\2\3"+
+		"\n\r\2\4\6\b\n\f\16\20\22\24\26\2\3\3\2\b\f\2V\2\35\3\2\2\2\4\37\3\2\2"+
+		"\2\6#\3\2\2\2\b\'\3\2\2\2\n\67\3\2\2\2\fI\3\2\2\2\16M\3\2\2\2\20O\3\2"+
+		"\2\2\22Q\3\2\2\2\24S\3\2\2\2\26U\3\2\2\2\30\36\5\f\7\2\31\36\5\6\4\2\32"+
+		"\36\5\n\6\2\33\36\5\16\b\2\34\36\5\4\3\2\35\30\3\2\2\2\35\31\3\2\2\2\35"+
+		"\32\3\2\2\2\35\33\3\2\2\2\35\34\3\2\2\2\36\3\3\2\2\2\37 \7\r\2\2 !\5\2"+
+		"\2\2!\"\7\16\2\2\"\5\3\2\2\2#$\5\b\5\2$%\7\3\2\2%&\5\2\2\2&\7\3\2\2\2"+
+		"\'(\7\4\2\2()\5\22\n\2)\t\3\2\2\2*+\b\6\1\2+,\5\f\7\2,-\5\2\2\2-8\3\2"+
+		"\2\2./\5\6\4\2/\60\5\2\2\2\608\3\2\2\2\61\62\5\16\b\2\62\63\5\2\2\2\63"+
+		"8\3\2\2\2\64\65\5\4\3\2\65\66\5\2\2\2\668\3\2\2\2\67*\3\2\2\2\67.\3\2"+
+		"\2\2\67\61\3\2\2\2\67\64\3\2\2\28=\3\2\2\29:\f\5\2\2:<\5\2\2\2;9\3\2\2"+
+		"\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>\13\3\2\2\2?=\3\2\2\2@A\5\16\b\2AB\5"+
+		"\26\f\2BC\5\2\2\2CJ\3\2\2\2DE\5\26\f\2EF\5\2\2\2FG\7\5\2\2GH\5\2\2\2H"+
+		"J\3\2\2\2I@\3\2\2\2ID\3\2\2\2J\r\3\2\2\2KN\5\24\13\2LN\5\20\t\2MK\3\2"+
+		"\2\2ML\3\2\2\2N\17\3\2\2\2OP\7\6\2\2P\21\3\2\2\2QR\7\6\2\2R\23\3\2\2\2"+
+		"ST\7\7\2\2T\25\3\2\2\2UV\t\2\2\2V\27\3\2\2\2\7\35\67=IM";
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

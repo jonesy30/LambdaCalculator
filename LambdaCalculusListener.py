@@ -17,6 +17,7 @@ class LambdaCalculusListener(ParseTreeListener):
         pass
 
 
+<<<<<<< HEAD
     # Enter a parse tree produced by LambdaCalculusParser#value.
     def enterValue(self, ctx:LambdaCalculusParser.ValueContext):
         pass
@@ -32,6 +33,14 @@ class LambdaCalculusListener(ParseTreeListener):
 
     # Exit a parse tree produced by LambdaCalculusParser#function.
     def exitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
+=======
+    # Enter a parse tree produced by LambdaCalculusParser#parenthesis.
+    def enterParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
+        pass
+
+    # Exit a parse tree produced by LambdaCalculusParser#parenthesis.
+    def exitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
+>>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
         pass
 
 
