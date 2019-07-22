@@ -1,10 +1,18 @@
 grammar LambdaCalculus;
 
 term 
-    : function
-    | abstraction
-    | application
+    : abstraction
+    | function
     | value
+    | application
+    ;
+
+application
+    : application term 
+    | abstraction term
+    | value term
+    | function term
+    | LBRACKET application RBRACKET
     ;
 
 abstraction
@@ -16,17 +24,10 @@ abstraction_term
     : '%' lambda_variable
     ;
 
-application
-    : function term
-    | abstraction term
-    | application term
-    | value term
-    | LBRACKET application RBRACKET
-    ;
-
 function
     : value operation term
-    | operation term ',' term
+    | function operation term
+    | abstraction operation term
     | LBRACKET function RBRACKET
     ;
 
