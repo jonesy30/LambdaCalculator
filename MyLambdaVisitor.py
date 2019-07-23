@@ -12,6 +12,7 @@ import re
 
 class MyLambdaVisitor(LambdaCalculusVisitor):
 
+    #NOTE: Sort out the order of these functions so it makes more sense!
     def __init__(self):
         super()
         self.incoming_values = Stack() #NOTE: This definitely needs renamed
@@ -24,10 +25,11 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         parenthesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
         if parenthesis_check == "(":
-            return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
+            child_value,child_type = self.visit(ctx.getChild(1))
+            return "" + ctx.getChild(0).getText() + child_value + ctx.getChild(2).getText(),child_type
 
-        function = self.visit(ctx.getChild(0))
-        expression = self.visit(ctx.getChild(1))
+        function,function_type = self.visit(ctx.getChild(0))
+        expression,expression_type = self.visit(ctx.getChild(1))
 
         #NOTE: I definitely don't need to change form any more
         function = self.convert_back_abstraction_form(function)
@@ -49,36 +51,33 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #print("Term in tree = "+str(type(am_I_an_abstraction)))
         #If the left hand tree is an abstraction - you're not done! Keep processing using the right hand side of the tree
         if isinstance(am_I_an_abstraction,LambdaCalculusParser.AbstractionContext):
-            self.incoming_values.push(expression)
-            function = self.visit(am_I_an_abstraction)
+            self.incoming_values.push(tuple([expression,expression_type]))
+            function,function_type = self.visit(am_I_an_abstraction)
         else:
             function = function + expression
 
         print("Returned value in application = "+function)
-        return function
-
-    # Visit a parse tree produced by LambdaCalculusParser#expression.
-    def visitValue(self, ctx:LambdaCalculusParser.ValueContext):
-        return ctx.getText()
-
-    # Visit a parse tree produced by LambdaCalculusParser#number.
-    def visitNumber(self, ctx:LambdaCalculusParser.NumberContext):
-        return self.visitChildren(ctx)
+        return function,function_type
     
     # Visit a parse tree produced by LambdaCalculusParser#term.
     def visitTerm(self, ctx:LambdaCalculusParser.TermContext):
         print("T: "+ctx.getText())
 
+        #NOTE: do I need a parenthesis check in here? I don't think I do, since I'm just returning children
         #The abstraction puts lambda terms into [?/x] form, this chunk of code just converts it back before it gets
         #passed to the user for readability
         depth = ctx.depth()
         if depth == 1:
             
-            output = str(self.visitChildren(ctx))
+            #output,return_type = str(self.visitChildren(ctx))
+            output,return_type = self.visitChildren(ctx)
+            output = str(output)
+            return_type = str(return_type)
+            #returned = str(self.visitChildren(ctx))
             #NOTE: do I need this in here if I'm just doing the same thing in the abstraction? Or should I just get rid of this
             #NOTE: string manipulation altogether?
             output = self.convert_back_abstraction_form(output)            
-            return output
+            return output,return_type
 
         else:
             return self.visitChildren(ctx)
@@ -90,16 +89,22 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         parenthesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
         if parenthesis_check == "(":
-            return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
+            child_value,child_type = self.visit(ctx.getChild(1))
+            return "" + ctx.getChild(0).getText() + child_value + ctx.getChild(2).getText(),child_type
         
         #Pop the value as soon as you get the abstraction term, before you
         #visit the rest of the children, so the correct term gets associated
         #with the correct input
         
         #NOTE: These all definitely need renamed
-        to_substitute = self.visit(ctx.getChild(0))
+        to_substitute,to_substitute_type = self.visit(ctx.getChild(0))
         incoming = self.incoming_values.pop()
-        function = self.visit(ctx.getChild(2))
+        incoming_type = None
+        if isinstance(incoming,tuple):
+            incoming = incoming[0]
+            incoming_type = incoming[1]
+        print("Popped type = "+str(incoming_type))
+        function,function_type = self.visit(ctx.getChild(2))
 
         print("To substitute = "+to_substitute)
         print("Function before abstraction = "+function)
@@ -142,25 +147,71 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             new_function = substitution_form + function
         
         print("Function after replacement in abstraction = "+new_function)
-        return new_function
+        #TODO: Implement proper typing here
+        return new_function,function_type
 
     # Visit a parse tree produced by LambdaCalculusParser#function.
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
         parenthesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
         if parenthesis_check == "(":
-            return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
+            child_value,child_type = self.visit(ctx.getChild(1))
+            return "" + ctx.getChild(0).getText() + child_value + ctx.getChild(2).getText(),child_type
         
         #NOTE: I should be calculating the function here and returning the result
-        return "" + self.visit(ctx.getChild(0)) + ctx.getChild(1).getText() + self.visit(ctx.getChild(2))
+        left,__ = self.visit(ctx.getChild(0))
+        #TODO: Determine the typing rules here
+        right,return_type = self.visit(ctx.getChild(2))
+        op = ctx.getChild(1).getText()
+
+        return_string = "" + left + op + right
+        return return_string,return_type
+        #return "" + self.visit(ctx.getChild(0)) + ctx.getChild(1).getText() + self.visit(ctx.getChild(2))
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
     def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
-        return self.visitChildren(ctx)
+        return self.visit(ctx.getChild(1))
+        #return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#lambda_variable.
     def visitLambda_variable(self, ctx:LambdaCalculusParser.Lambda_variableContext):
-        return ctx.getText()
+        if ctx.getChild(2) is None:
+            return ctx.getChild(0).getText(),None
+        else:
+            return ctx.getChild(0).getText(),ctx.getChild(2).getText()
+        
+        #return ctx.getChild(0).getText()
+        #return ctx.getText()
+    
+    # Visit a parse tree produced by LambdaCalculusParser#variable.
+    def visitVariable(self, ctx:LambdaCalculusParser.VariableContext):
+        if ctx.getChild(2) is None:
+            return ctx.getChild(0).getText(),None
+        else:
+            return ctx.getChild(0).getText(),ctx.getChild(2).getText()
+        
+        #return ctx.getChild(0).getText()
+        #return self.visitChildren(ctx)
+
+    # Visit a parse tree produced by LambdaCalculusParser#number.
+    def visitNumber(self, ctx:LambdaCalculusParser.NumberContext):
+        if ctx.getChild(2) is None:
+            return ctx.getChild(0).getText(),None
+        else:
+            return ctx.getChild(0).getText(),ctx.getChild(2).getText()
+
+        #return ctx.getChild(0).getText()
+        #return self.visitChildren(ctx)
+    
+    # Visit a parse tree produced by LambdaCalculusParser#operation.
+    def visitOperation(self, ctx:LambdaCalculusParser.OperationContext):
+        return self.visitChildren(ctx)
+    
+    
+    # Visit a parse tree produced by LambdaCalculusParser#expression.
+    def visitValue(self, ctx:LambdaCalculusParser.ValueContext):
+        return self.visitChildren(ctx)
+        #return ctx.getText()
 
     #NOTE: this absolutely definitely needs renamed
     def convert_back_abstraction_form(self, returned_abstraction):
