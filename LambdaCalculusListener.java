@@ -17,7 +17,6 @@ public interface LambdaCalculusListener extends ParseTreeListener {
 	 */
 	void exitTerm(LambdaCalculusParser.TermContext ctx);
 	/**
-<<<<<<< HEAD
 	 * Enter a parse tree produced by {@link LambdaCalculusParser#application}.
 	 * @param ctx the parse tree
 	 */
@@ -27,17 +26,6 @@ public interface LambdaCalculusListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitApplication(LambdaCalculusParser.ApplicationContext ctx);
-=======
-	 * Enter a parse tree produced by {@link LambdaCalculusParser#parenthesis}.
-	 * @param ctx the parse tree
-	 */
-	void enterParenthesis(LambdaCalculusParser.ParenthesisContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link LambdaCalculusParser#parenthesis}.
-	 * @param ctx the parse tree
-	 */
-	void exitParenthesis(LambdaCalculusParser.ParenthesisContext ctx);
->>>>>>> parent of 14204d1... Making grammar changes so the term directly underneath an application is an abstraction when applicable
 	/**
 	 * Enter a parse tree produced by {@link LambdaCalculusParser#abstraction}.
 	 * @param ctx the parse tree

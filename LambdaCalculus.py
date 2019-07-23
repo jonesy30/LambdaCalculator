@@ -37,7 +37,7 @@ def main():
     tokens = CommonTokenStream(lexer)
     parser = LambdaCalculusParser(tokens)
     tree = parser.term()
-    visitor = MyLambdaVisitor(tokens)
+    visitor = MyLambdaVisitor()
     #visitor = LambdaCalculusVisitor()
     result = visitor.visit(tree)
     print("Result = "+str(result))

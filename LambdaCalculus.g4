@@ -17,6 +17,7 @@ application
 
 abstraction
     : abstraction_term '.' term
+    | LBRACKET abstraction RBRACKET
     ;
 
 abstraction_term
@@ -33,6 +34,7 @@ function
 value
     : number
     | variable
+    | LBRACKET value RBRACKET
     ;
 
 variable

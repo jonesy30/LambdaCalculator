@@ -4,8 +4,10 @@ from Stack import Stack
 from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .LambdaCalculusParser import LambdaCalculusParser
+    from .LambdaCalculusLexer import LambdaCalculusLexer
 else:
     from LambdaCalculusParser import LambdaCalculusParser
+    from LambdaCalculusLexer import LambdaCalculusLexer
 import re
 
 class MyLambdaVisitor(LambdaCalculusVisitor):
@@ -37,6 +39,28 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         if before_size == after_size:
             returned_function = function + expression
             self.incoming_values.pop()
+
+        #Get the tree created by the output of the left hand tree
+        stream = InputStream(returned_function)
+        lexer = LambdaCalculusLexer(stream)
+        tokens = CommonTokenStream(lexer)
+        parser = LambdaCalculusParser(tokens)
+        tree = parser.term()
+
+        #Find the type of the first root node (ignoring terms)
+        am_I_an_abstraction = tree
+        while isinstance(am_I_an_abstraction,LambdaCalculusParser.TermContext):
+            print("Term found, get child")
+            print("Term in tree = "+str(type(am_I_an_abstraction)))
+            am_I_an_abstraction = am_I_an_abstraction.getChild(0)
+
+        print("Term in tree = "+str(type(am_I_an_abstraction)))
+        #This (it might be only one getChild(0)) will tell me the tpe of the returned M
+        #And therefore whether I need to do more to it to get the final value
+        if isinstance(am_I_an_abstraction,LambdaCalculusParser.AbstractionContext):
+            print("I am not done here")
+        else:
+            print("I am done here")
 
         print("Returned value in application = "+returned_function)
         return returned_function
@@ -106,7 +130,6 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         new_function = function
         if incoming != -1:
             bound_variables_left = re.findall("/(.*?)\]", function)
-
             subst_container_match = re.search("\[(.*?)\]", function)
             
             if subst_container_match is not None:
@@ -146,6 +169,11 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#function.
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
         print("F: "+ctx.getText())
+
+        parentesis_check = ctx.getChild(0).getText()
+        #if I am a parenthesis of myself, just return as I am
+        if parentesis_check == "(":
+            return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
         
         #NOTE: I should be calculating the function here and returning the result
         return "" + self.visit(ctx.getChild(0)) + ctx.getChild(1).getText() + self.visit(ctx.getChild(2))

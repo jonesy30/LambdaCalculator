@@ -45,7 +45,6 @@ def calculate_alpha(bound_value, expression, incoming, start_value = 0, end_valu
     found_letter = False
     expression_list = list(expression)
     i = 0
-    bound_value = ""
 
     while found_letter == False and i < end_value:
         if expression_list[i].isalpha():
@@ -59,7 +58,7 @@ def calculate_alpha(bound_value, expression, incoming, start_value = 0, end_valu
             #print("Expression = "+expression)
             expression = rename_values(expression, free_variables, available_letters, start_value, end_value)
         i = i + 1
-
+    
     return expression
 
 if __name__ == "__main__":
