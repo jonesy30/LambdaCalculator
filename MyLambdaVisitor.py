@@ -11,15 +11,10 @@ else:
 import re
 
 class MyLambdaVisitor(LambdaCalculusVisitor):
-    
-    ##Normal order reduction idea:
-    #For application, get function and incoming expression from children and substitute
-    #If there is still redexes left in the expression, visit corresponding children
-    #This supports my use of visitors and not listeners
 
     def __init__(self):
         super()
-        self.incoming_values = Stack() #This definitely needs renamed
+        self.incoming_values = Stack() #NOTE: This definitely needs renamed
 
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
@@ -31,29 +26,14 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         if parenthesis_check == "(":
             return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
 
-        #NOTE: I need to evaluate the second tree
-        #expression = ctx.getChild(1).getText()
-        #self.incoming_values.push(expression) 
-
-        #before_size = self.incoming_values.get_size()
         function = self.visit(ctx.getChild(0))
         expression = self.visit(ctx.getChild(1))
-
-        print("In application, function = "+str(function))
-        print("In application, expression = "+str(expression))
 
         #NOTE: I definitely don't need to change form any more
         function = self.convert_back_abstraction_form(function)
         expression = self.convert_back_abstraction_form(expression)
-        #after_size = self.incoming_values.get_size()
-
-        # returned_function = function
-        # if before_size == after_size:
-        #     returned_function = function + expression
-        #     self.incoming_values.pop()
 
         #Get the tree created by the output of the left hand tree
-
         stream = InputStream(function)
         lexer = LambdaCalculusLexer(stream)
         tokens = CommonTokenStream(lexer)
@@ -63,20 +43,16 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #Find the type of the first root node (ignoring terms)
         am_I_an_abstraction = tree
         while isinstance(am_I_an_abstraction,LambdaCalculusParser.TermContext):
-            print("Term found, get child")
-            print("Term in tree = "+str(type(am_I_an_abstraction)))
+            #print("Term in tree = "+str(type(am_I_an_abstraction)))
             am_I_an_abstraction = am_I_an_abstraction.getChild(0)
 
-        print("Term in tree = "+str(type(am_I_an_abstraction)))
-        #This (it might be only one getChild(0)) will tell me the tpe of the returned M
-        #And therefore whether I need to do more to it to get the final value
+        #print("Term in tree = "+str(type(am_I_an_abstraction)))
+        #If the left hand tree is an abstraction - you're not done! Keep processing using the right hand side of the tree
         if isinstance(am_I_an_abstraction,LambdaCalculusParser.AbstractionContext):
-            print("I am not done here - pushing and visiting")
             self.incoming_values.push(expression)
             function = self.visit(am_I_an_abstraction)
         else:
             function = function + expression
-            print("I am done here, adding expression to function")
 
         print("Returned value in application = "+function)
         return function
@@ -84,15 +60,6 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#expression.
     def visitValue(self, ctx:LambdaCalculusParser.ValueContext):
         return ctx.getText()
-
-    # Visit a parse tree produced by LambdaCalculusParser#parenthesis.
-    # def visitParenthesis(self, ctx:LambdaCalculusParser.ParenthesisContext):
-    #     #Label
-    #     #print("P: "+ctx.getText())
-    #     visit_children = self.visit(ctx.getChild(1))
-    #     return "" + ctx.getChild(0).getText() + visit_children + ctx.getChild(2).getText()
-
-    #     #return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
 
     # Visit a parse tree produced by LambdaCalculusParser#number.
     def visitNumber(self, ctx:LambdaCalculusParser.NumberContext):
@@ -109,8 +76,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             
             output = str(self.visitChildren(ctx))
             #NOTE: do I need this in here if I'm just doing the same thing in the abstraction? Or should I just get rid of this
-            #string manipulation altogether?
-            print("In term, output is = "+str(output))
+            #NOTE: string manipulation altogether?
             output = self.convert_back_abstraction_form(output)            
             return output
 
@@ -121,21 +87,21 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
         print("Abstraction = "+ctx.getText())
 
-        #Pop the value as soon as you get the abstraction term, before you
-        #visit the rest of the children, so the correct term gets associated
-        #with the correct input
-
-        #to_substitute = self.visit(ctx.getChild(0))
         parenthesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
         if parenthesis_check == "(":
             return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
         
+        #Pop the value as soon as you get the abstraction term, before you
+        #visit the rest of the children, so the correct term gets associated
+        #with the correct input
+        
+        #NOTE: These all definitely need renamed
         to_substitute = self.visit(ctx.getChild(0))
         incoming = self.incoming_values.pop()
         function = self.visit(ctx.getChild(2))
 
-        print("To subsitute = "+to_substitute)
+        print("To substitute = "+to_substitute)
         print("Function before abstraction = "+function)
         print("Incoming before abstraction = "+str(incoming))
 
@@ -180,8 +146,6 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
     # Visit a parse tree produced by LambdaCalculusParser#function.
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
-        print("F: "+ctx.getText())
-
         parenthesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
         if parenthesis_check == "(":
@@ -212,14 +176,3 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             container_match = re.search("\[(.*?)\]", returned_abstraction)
         
         return returned_abstraction
-
-    
-#NOTE: doing ctx. gives a whole bunch of possible functions
-    #well, it used to :(
-#NOTE: self is MyVisitor (this seems obvious)
-#NOTE: Just always visit children, even if you don't need to, what's the harm?
-#NOTE: This could be useful?
-    #print("Tree")
-    #print(ctx.toStringTree())
-    #to print children: ctx.getChildren()
-    #to print number of children: ctx.getChildCount()
