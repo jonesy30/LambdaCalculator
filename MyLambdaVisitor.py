@@ -26,22 +26,27 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         
         print("Application = "+ctx.getText())
 
-        expression = ctx.getChild(1).getText()
-        self.incoming_values.push(expression) 
-        #NOTE: what if a non-evaluator?
-        #NOTE: have I fixed this? I may have done
+        #NOTE: I need to evaluate the second tree
+        #expression = ctx.getChild(1).getText()
+        #self.incoming_values.push(expression) 
 
-        before_size = self.incoming_values.get_size()
+        #before_size = self.incoming_values.get_size()
         function = self.visit(ctx.getChild(0))
-        after_size = self.incoming_values.get_size()
+        expression = self.visit(ctx.getChild(1))
 
-        returned_function = function
-        if before_size == after_size:
-            returned_function = function + expression
-            self.incoming_values.pop()
+        #NOTE: I definitely don't need to change form any more
+        function = self.convert_back_abstraction_form(function)
+        expression = self.convert_back_abstraction_form(expression)
+        #after_size = self.incoming_values.get_size()
+
+        # returned_function = function
+        # if before_size == after_size:
+        #     returned_function = function + expression
+        #     self.incoming_values.pop()
 
         #Get the tree created by the output of the left hand tree
-        stream = InputStream(returned_function)
+
+        stream = InputStream(function)
         lexer = LambdaCalculusLexer(stream)
         tokens = CommonTokenStream(lexer)
         parser = LambdaCalculusParser(tokens)
@@ -58,12 +63,15 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #This (it might be only one getChild(0)) will tell me the tpe of the returned M
         #And therefore whether I need to do more to it to get the final value
         if isinstance(am_I_an_abstraction,LambdaCalculusParser.AbstractionContext):
-            print("I am not done here")
+            print("I am not done here - pushing and visiting")
+            self.incoming_values.push(expression)
+            function = self.visit(am_I_an_abstraction)
         else:
-            print("I am done here")
+            function = function + expression
+            print("I am done here, adding expression to function")
 
-        print("Returned value in application = "+returned_function)
-        return returned_function
+        print("Returned value in application = "+function)
+        return function
 
     # Visit a parse tree produced by LambdaCalculusParser#expression.
     def visitValue(self, ctx:LambdaCalculusParser.ValueContext):
@@ -90,16 +98,11 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #passed to the user for readability
         depth = ctx.depth()
         if depth == 1:
-            output = str(self.visitChildren(ctx))
-            container_match = re.search("\[(.*?)\]", output)
-
-            while container_match is not None:
-                bound_match = re.search("\/(.*?)\]", output)
-                found_bound = bound_match.group(1)
-                container_to_replace = container_match.group(0)
-                output = output.replace(container_to_replace,"%"+found_bound+".")
-                container_match = re.search("\[(.*?)\]", output)
             
+            output = str(self.visitChildren(ctx))
+            #NOTE: do I need this in here if I'm just doing the same thing in the abstraction? Or should I just get rid of this
+            #string manipulation altogether?
+            output = self.convert_back_abstraction_form(output)            
             return output
 
         else:
@@ -185,6 +188,20 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#lambda_variable.
     def visitLambda_variable(self, ctx:LambdaCalculusParser.Lambda_variableContext):
         return ctx.getText()
+
+    #NOTE: this absolutely definitely needs renamed
+    def convert_back_abstraction_form(self, returned_abstraction):
+        
+        container_match = re.search("\[(.*?)\]", returned_abstraction)
+        while container_match is not None:
+            bound_match = re.search("\/(.*?)\]", returned_abstraction)
+            found_bound = bound_match.group(1)
+            container_to_replace = container_match.group(0)
+            returned_abstraction = returned_abstraction.replace(container_to_replace,"%"+found_bound+".")
+            container_match = re.search("\[(.*?)\]", returned_abstraction)
+        
+        return returned_abstraction
+
     
 #NOTE: doing ctx. gives a whole bunch of possible functions
     #well, it used to :(
