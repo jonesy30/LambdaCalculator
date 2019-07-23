@@ -39,14 +39,20 @@ value
 
 variable
     : VARIABLE
+    | VARIABLE':''Bool'
+    | VARIABLE':''Int'
     ;
 
 lambda_variable
     : VARIABLE
+    | VARIABLE':''Bool'
+    | VARIABLE':''Int'
     ;
 
 number
     : NUMBER
+    | NUMBER':''Bool'
+    | NUMBER':''Int'
     ;
 
 operation

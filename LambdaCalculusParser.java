@@ -16,8 +16,8 @@ public class LambdaCalculusParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, VARIABLE=3, NUMBER=4, ADD=5, SUBTRACT=6, MULTIPLY=7, DIVIDE=8, 
-		POWER=9, LBRACKET=10, RBRACKET=11, WS=12;
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, VARIABLE=6, NUMBER=7, ADD=8, SUBTRACT=9, 
+		MULTIPLY=10, DIVIDE=11, POWER=12, LBRACKET=13, RBRACKET=14, WS=15;
 	public static final int
 		RULE_term = 0, RULE_application = 1, RULE_abstraction = 2, RULE_abstraction_term = 3, 
 		RULE_function = 4, RULE_value = 5, RULE_variable = 6, RULE_lambda_variable = 7, 
@@ -28,12 +28,12 @@ public class LambdaCalculusParser extends Parser {
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "'.'", "'%'", null, null, "'+'", "'-'", "'*'", "'/'", "'^'", "'('", 
-		"')'"
+		null, "'.'", "'%'", "':'", "'Bool'", "'Int'", null, null, "'+'", "'-'", 
+		"'*'", "'/'", "'^'", "'('", "')'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, "VARIABLE", "NUMBER", "ADD", "SUBTRACT", "MULTIPLY", 
-		"DIVIDE", "POWER", "LBRACKET", "RBRACKET", "WS"
+		null, null, null, null, null, null, "VARIABLE", "NUMBER", "ADD", "SUBTRACT", 
+		"MULTIPLY", "DIVIDE", "POWER", "LBRACKET", "RBRACKET", "WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -638,10 +638,38 @@ public class LambdaCalculusParser extends Parser {
 		VariableContext _localctx = new VariableContext(_ctx, getState());
 		enterRule(_localctx, 12, RULE_variable);
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(94);
-			match(VARIABLE);
+			setState(101);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(94);
+				match(VARIABLE);
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(95);
+				match(VARIABLE);
+				setState(96);
+				match(T__2);
+				setState(97);
+				match(T__3);
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(98);
+				match(VARIABLE);
+				setState(99);
+				match(T__2);
+				setState(100);
+				match(T__4);
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -680,10 +708,38 @@ public class LambdaCalculusParser extends Parser {
 		Lambda_variableContext _localctx = new Lambda_variableContext(_ctx, getState());
 		enterRule(_localctx, 14, RULE_lambda_variable);
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(96);
-			match(VARIABLE);
+			setState(110);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(103);
+				match(VARIABLE);
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(104);
+				match(VARIABLE);
+				setState(105);
+				match(T__2);
+				setState(106);
+				match(T__3);
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(107);
+				match(VARIABLE);
+				setState(108);
+				match(T__2);
+				setState(109);
+				match(T__4);
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -722,10 +778,38 @@ public class LambdaCalculusParser extends Parser {
 		NumberContext _localctx = new NumberContext(_ctx, getState());
 		enterRule(_localctx, 16, RULE_number);
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(98);
-			match(NUMBER);
+			setState(119);
+			_errHandler.sync(this);
+			switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
+			case 1:
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(112);
+				match(NUMBER);
+				}
+				break;
+			case 2:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(113);
+				match(NUMBER);
+				setState(114);
+				match(T__2);
+				setState(115);
+				match(T__3);
+				}
+				break;
+			case 3:
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(116);
+				match(NUMBER);
+				setState(117);
+				match(T__2);
+				setState(118);
+				match(T__4);
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -771,7 +855,7 @@ public class LambdaCalculusParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(100);
+			setState(121);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ADD) | (1L << SUBTRACT) | (1L << MULTIPLY) | (1L << DIVIDE) | (1L << POWER))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -819,31 +903,37 @@ public class LambdaCalculusParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\16i\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\21~\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3"+
 		"\2\3\2\3\2\3\2\5\2\33\n\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
 		"\3\3\3\3\3\3\5\3+\n\3\3\3\3\3\7\3/\n\3\f\3\16\3\62\13\3\3\4\3\4\3\4\3"+
 		"\4\3\4\3\4\3\4\3\4\5\4<\n\4\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3"+
 		"\6\3\6\3\6\3\6\3\6\3\6\5\6N\n\6\3\6\3\6\3\6\3\6\7\6T\n\6\f\6\16\6W\13"+
-		"\6\3\7\3\7\3\7\3\7\3\7\3\7\5\7_\n\7\3\b\3\b\3\t\3\t\3\n\3\n\3\13\3\13"+
-		"\3\13\2\4\4\n\f\2\4\6\b\n\f\16\20\22\24\2\3\3\2\7\13\2k\2\32\3\2\2\2\4"+
-		"*\3\2\2\2\6;\3\2\2\2\b=\3\2\2\2\nM\3\2\2\2\f^\3\2\2\2\16`\3\2\2\2\20b"+
-		"\3\2\2\2\22d\3\2\2\2\24f\3\2\2\2\26\33\5\6\4\2\27\33\5\n\6\2\30\33\5\f"+
-		"\7\2\31\33\5\4\3\2\32\26\3\2\2\2\32\27\3\2\2\2\32\30\3\2\2\2\32\31\3\2"+
-		"\2\2\33\3\3\2\2\2\34\35\b\3\1\2\35\36\5\6\4\2\36\37\5\2\2\2\37+\3\2\2"+
-		"\2 !\5\f\7\2!\"\5\2\2\2\"+\3\2\2\2#$\5\n\6\2$%\5\2\2\2%+\3\2\2\2&\'\7"+
-		"\f\2\2\'(\5\4\3\2()\7\r\2\2)+\3\2\2\2*\34\3\2\2\2* \3\2\2\2*#\3\2\2\2"+
-		"*&\3\2\2\2+\60\3\2\2\2,-\f\7\2\2-/\5\2\2\2.,\3\2\2\2/\62\3\2\2\2\60.\3"+
-		"\2\2\2\60\61\3\2\2\2\61\5\3\2\2\2\62\60\3\2\2\2\63\64\5\b\5\2\64\65\7"+
-		"\3\2\2\65\66\5\2\2\2\66<\3\2\2\2\678\7\f\2\289\5\6\4\29:\7\r\2\2:<\3\2"+
-		"\2\2;\63\3\2\2\2;\67\3\2\2\2<\7\3\2\2\2=>\7\4\2\2>?\5\20\t\2?\t\3\2\2"+
-		"\2@A\b\6\1\2AB\5\f\7\2BC\5\24\13\2CD\5\2\2\2DN\3\2\2\2EF\5\6\4\2FG\5\24"+
-		"\13\2GH\5\2\2\2HN\3\2\2\2IJ\7\f\2\2JK\5\n\6\2KL\7\r\2\2LN\3\2\2\2M@\3"+
-		"\2\2\2ME\3\2\2\2MI\3\2\2\2NU\3\2\2\2OP\f\5\2\2PQ\5\24\13\2QR\5\2\2\2R"+
-		"T\3\2\2\2SO\3\2\2\2TW\3\2\2\2US\3\2\2\2UV\3\2\2\2V\13\3\2\2\2WU\3\2\2"+
-		"\2X_\5\22\n\2Y_\5\16\b\2Z[\7\f\2\2[\\\5\f\7\2\\]\7\r\2\2]_\3\2\2\2^X\3"+
-		"\2\2\2^Y\3\2\2\2^Z\3\2\2\2_\r\3\2\2\2`a\7\5\2\2a\17\3\2\2\2bc\7\5\2\2"+
-		"c\21\3\2\2\2de\7\6\2\2e\23\3\2\2\2fg\t\2\2\2g\25\3\2\2\2\t\32*\60;MU^";
+		"\6\3\7\3\7\3\7\3\7\3\7\3\7\5\7_\n\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\5\bh\n"+
+		"\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\tq\n\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\5"+
+		"\nz\n\n\3\13\3\13\3\13\2\4\4\n\f\2\4\6\b\n\f\16\20\22\24\2\3\3\2\n\16"+
+		"\2\u0086\2\32\3\2\2\2\4*\3\2\2\2\6;\3\2\2\2\b=\3\2\2\2\nM\3\2\2\2\f^\3"+
+		"\2\2\2\16g\3\2\2\2\20p\3\2\2\2\22y\3\2\2\2\24{\3\2\2\2\26\33\5\6\4\2\27"+
+		"\33\5\n\6\2\30\33\5\f\7\2\31\33\5\4\3\2\32\26\3\2\2\2\32\27\3\2\2\2\32"+
+		"\30\3\2\2\2\32\31\3\2\2\2\33\3\3\2\2\2\34\35\b\3\1\2\35\36\5\6\4\2\36"+
+		"\37\5\2\2\2\37+\3\2\2\2 !\5\f\7\2!\"\5\2\2\2\"+\3\2\2\2#$\5\n\6\2$%\5"+
+		"\2\2\2%+\3\2\2\2&\'\7\17\2\2\'(\5\4\3\2()\7\20\2\2)+\3\2\2\2*\34\3\2\2"+
+		"\2* \3\2\2\2*#\3\2\2\2*&\3\2\2\2+\60\3\2\2\2,-\f\7\2\2-/\5\2\2\2.,\3\2"+
+		"\2\2/\62\3\2\2\2\60.\3\2\2\2\60\61\3\2\2\2\61\5\3\2\2\2\62\60\3\2\2\2"+
+		"\63\64\5\b\5\2\64\65\7\3\2\2\65\66\5\2\2\2\66<\3\2\2\2\678\7\17\2\289"+
+		"\5\6\4\29:\7\20\2\2:<\3\2\2\2;\63\3\2\2\2;\67\3\2\2\2<\7\3\2\2\2=>\7\4"+
+		"\2\2>?\5\20\t\2?\t\3\2\2\2@A\b\6\1\2AB\5\f\7\2BC\5\24\13\2CD\5\2\2\2D"+
+		"N\3\2\2\2EF\5\6\4\2FG\5\24\13\2GH\5\2\2\2HN\3\2\2\2IJ\7\17\2\2JK\5\n\6"+
+		"\2KL\7\20\2\2LN\3\2\2\2M@\3\2\2\2ME\3\2\2\2MI\3\2\2\2NU\3\2\2\2OP\f\5"+
+		"\2\2PQ\5\24\13\2QR\5\2\2\2RT\3\2\2\2SO\3\2\2\2TW\3\2\2\2US\3\2\2\2UV\3"+
+		"\2\2\2V\13\3\2\2\2WU\3\2\2\2X_\5\22\n\2Y_\5\16\b\2Z[\7\17\2\2[\\\5\f\7"+
+		"\2\\]\7\20\2\2]_\3\2\2\2^X\3\2\2\2^Y\3\2\2\2^Z\3\2\2\2_\r\3\2\2\2`h\7"+
+		"\b\2\2ab\7\b\2\2bc\7\5\2\2ch\7\6\2\2de\7\b\2\2ef\7\5\2\2fh\7\7\2\2g`\3"+
+		"\2\2\2ga\3\2\2\2gd\3\2\2\2h\17\3\2\2\2iq\7\b\2\2jk\7\b\2\2kl\7\5\2\2l"+
+		"q\7\6\2\2mn\7\b\2\2no\7\5\2\2oq\7\7\2\2pi\3\2\2\2pj\3\2\2\2pm\3\2\2\2"+
+		"q\21\3\2\2\2rz\7\t\2\2st\7\t\2\2tu\7\5\2\2uz\7\6\2\2vw\7\t\2\2wx\7\5\2"+
+		"\2xz\7\7\2\2yr\3\2\2\2ys\3\2\2\2yv\3\2\2\2z\23\3\2\2\2{|\t\2\2\2|\25\3"+
+		"\2\2\2\f\32*\60;MU^gpy";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
