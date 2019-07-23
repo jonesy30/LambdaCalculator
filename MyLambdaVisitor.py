@@ -26,6 +26,11 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         
         print("Application = "+ctx.getText())
 
+        parenthesis_check = ctx.getChild(0).getText()
+        #if I am a parenthesis of myself, just return as I am
+        if parenthesis_check == "(":
+            return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
+
         #NOTE: I need to evaluate the second tree
         #expression = ctx.getChild(1).getText()
         #self.incoming_values.push(expression) 
@@ -33,6 +38,9 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #before_size = self.incoming_values.get_size()
         function = self.visit(ctx.getChild(0))
         expression = self.visit(ctx.getChild(1))
+
+        print("In application, function = "+str(function))
+        print("In application, expression = "+str(expression))
 
         #NOTE: I definitely don't need to change form any more
         function = self.convert_back_abstraction_form(function)
@@ -102,6 +110,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             output = str(self.visitChildren(ctx))
             #NOTE: do I need this in here if I'm just doing the same thing in the abstraction? Or should I just get rid of this
             #string manipulation altogether?
+            print("In term, output is = "+str(output))
             output = self.convert_back_abstraction_form(output)            
             return output
 
@@ -117,9 +126,9 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         #with the correct input
 
         #to_substitute = self.visit(ctx.getChild(0))
-        parentesis_check = ctx.getChild(0).getText()
+        parenthesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
-        if parentesis_check == "(":
+        if parenthesis_check == "(":
             return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
         
         to_substitute = self.visit(ctx.getChild(0))
@@ -173,9 +182,9 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
         print("F: "+ctx.getText())
 
-        parentesis_check = ctx.getChild(0).getText()
+        parenthesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
-        if parentesis_check == "(":
+        if parenthesis_check == "(":
             return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
         
         #NOTE: I should be calculating the function here and returning the result
@@ -192,6 +201,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     #NOTE: this absolutely definitely needs renamed
     def convert_back_abstraction_form(self, returned_abstraction):
         
+        print("Returned abstraction = "+str(returned_abstraction))
+
         container_match = re.search("\[(.*?)\]", returned_abstraction)
         while container_match is not None:
             bound_match = re.search("\/(.*?)\]", returned_abstraction)
