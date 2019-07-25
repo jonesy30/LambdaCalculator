@@ -16,6 +16,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     def __init__(self):
         super()
         self.incoming_values = Stack() #NOTE: This definitely needs renamed
+        self.valid_typing = True
 
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
@@ -98,11 +99,20 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         
         #NOTE: These all definitely need renamed
         to_substitute,to_substitute_type = self.visit(ctx.getChild(0))
-        incoming = self.incoming_values.pop()
+        incoming_tuple = self.incoming_values.pop()
+        print("Incoming tuple = "+str(incoming_tuple))
+
+        incoming = None
         incoming_type = None
-        if isinstance(incoming,tuple):
-            incoming = incoming[0]
-            incoming_type = incoming[1]
+        
+        if incoming_tuple == -1:
+            incoming = incoming_tuple
+        else:
+            incoming = incoming_tuple[0]
+            incoming_type = incoming_tuple[1]
+        
+        print("Incoming = "+str(incoming))
+
         print("Popped type = "+str(incoming_type))
         function,function_type = self.visit(ctx.getChild(2))
 
@@ -140,6 +150,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             else:
                 new_function = calculate_alpha(to_substitute, function, incoming)
                 new_function = new_function.replace(to_substitute,incoming)
+                #NOTE: I think here I need to visit the function with my new incoming value, and have it work out what the type should be
+                #NOTE: But how do I do this now?
         else:
             #If there's nothing to substitute, just rewrite the term in form
             #[?/x] and pass back up the tree
