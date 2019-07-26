@@ -37,11 +37,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         expression = self.convert_back_abstraction_form(expression)
 
         #Get the tree created by the output of the left hand tree
-        stream = InputStream(function)
-        lexer = LambdaCalculusLexer(stream)
-        tokens = CommonTokenStream(lexer)
-        parser = LambdaCalculusParser(tokens)
-        tree = parser.term()
+        tree = self.create_tree(function)
 
         #Find the type of the first root node (ignoring terms)
         am_I_an_abstraction = tree
@@ -72,12 +68,10 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             
             #output,return_type = str(self.visitChildren(ctx))
             output,return_type = self.visitChildren(ctx)
-            output = str(output)
-            return_type = str(return_type)
-            #returned = str(self.visitChildren(ctx))
             #NOTE: do I need this in here if I'm just doing the same thing in the abstraction? Or should I just get rid of this
             #NOTE: string manipulation altogether?
-            output = self.convert_back_abstraction_form(output)            
+            
+            output,return_type = self.post_process(output, return_type)
             return output,return_type,self.valid_typing
 
         else:
@@ -99,6 +93,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         
         #NOTE: These all definitely need renamed
         to_substitute,to_substitute_type = self.visit(ctx.getChild(0))
+        print("To substitute type on incoming = "+str(to_substitute_type))
         incoming_tuple = self.incoming_values.pop()
         print("Incoming tuple = "+str(incoming_tuple))
 
@@ -149,11 +144,42 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
                 new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
             else:
                 new_function = calculate_alpha(to_substitute, function, incoming)
+                print()
+                print("To substitute type = "+str(to_substitute_type))
+                print("To substitute = "+str(to_substitute))
+                print("Incoming type = "+str(incoming_type))
+                print()
+
+                if to_substitute_type is not None:
+                    if incoming_type is not None:
+                        if to_substitute_type != incoming_type:
+                            print()
+                            print("Incoming type does not match specified input type")
+                            print()
+                            self.valid_typing = False
+
+                if incoming_type is not None:
+                    print("To substitute type is not none")
+                    print(str(to_substitute_type))
+                    incoming = incoming + ":" + incoming_type
                 new_function = new_function.replace(to_substitute,incoming)
+
+                print()
+                print("New function before tree creation = "+str(new_function))
+                print()
+                tree = self.create_tree(new_function)
+
+                new_function,function_type,valid_typing = self.visit(tree)
+
+                if valid_typing == False:
+                    self.valid_typing = False
+                print()
+                print("New function after tree creation = "+str(new_function))          
+                print()  
         else:
             #If there's nothing to substitute, just rewrite the term in form
             #[?/x] and pass back up the tree
-            substitution_form = "[?/"+to_substitute+"]"
+            substitution_form = "[?/"+to_substitute+":"+to_substitute_type+"]"
             new_function = substitution_form + function
         
         print("Function after replacement in abstraction = "+new_function)
@@ -203,7 +229,10 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
     def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
-        return self.visit(ctx.getChild(1))
+        child = self.visit(ctx.getChild(1))
+        print("In abstraction term, child = "+str(child))
+        return child
+        #return self.visit(ctx.getChild(1))
         #return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#lambda_variable.
@@ -211,6 +240,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         if ctx.getChild(2) is None:
             return ctx.getChild(0).getText(),None
         else:
+            print("In lambda variable "+ctx.getChild(0).getText())
+            print("Type = "+ctx.getChild(2).getText())
             return ctx.getChild(0).getText(),ctx.getChild(2).getText()
         
         #return ctx.getChild(0).getText()
@@ -260,3 +291,28 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             container_match = re.search("\[(.*?)\]", returned_abstraction)
         
         return returned_abstraction    
+    
+    def post_process(self, output, return_type):
+
+        bad_strings = [":int",":Int",":INT",":bool",":Bool",":BOOL"]
+
+        output = str(output)
+        return_type = str(return_type)
+        #returned = str(self.visitChildren(ctx))
+        #NOTE: do I need this in here if I'm just doing the same thing in the abstraction? Or should I just get rid of this
+        #NOTE: string manipulation altogether?
+        output = self.convert_back_abstraction_form(output) 
+
+        for string in bad_strings:
+            output = output.replace(string,"")
+
+        return output,return_type
+
+    def create_tree(self, function):
+        stream = InputStream(function)
+        lexer = LambdaCalculusLexer(stream)
+        tokens = CommonTokenStream(lexer)
+        parser = LambdaCalculusParser(tokens)
+        tree = parser.term()
+
+        return tree
