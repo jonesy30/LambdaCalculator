@@ -41,16 +41,55 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             #print("Term in tree = "+str(type(am_I_an_abstraction)))
             am_I_an_abstraction = am_I_an_abstraction.getChild(0)
 
+        application_type = None
         #print("Term in tree = "+str(type(am_I_an_abstraction)))
         #If the left hand tree is an abstraction - you're not done! Keep processing using the right hand side of the tree
         if isinstance(am_I_an_abstraction,LambdaCalculusParser.AbstractionContext):
             self.incoming_values.push(tuple([expression,expression_type]))
             function,function_type = self.visit(am_I_an_abstraction)
+
+            #Type check the application
+            application_type_journey = []
+
+            if function_type is not None:
+                print("Function type not none!")
+                function_type_journey = function_type.split("->")
+                if expression_type is not None:
+                    expression_type_journey = expression_type.split("->")
+                    application_type_journey = []
+
+                    if len(function_type_journey) > len(expression_type_journey):
+                        type_mismatch = False
+                        while len(expression_type_journey) > 0:
+                            if function_type_journey[0] != expression_type_journey[0]:
+                                expression_type_journey = []
+                                type_mismatch = True
+                            else:
+                                del function_type_journey[0]
+                                del expression_type_journey[0]
+                        if type_mismatch == False:
+                            application_type_journey = function_type_journey
+                else:
+                    print("In else")
+                    print("Function type journey = "+str(function_type_journey))
+                    del function_type_journey[0]
+                    application_type_journey = function_type_journey
+        
+            if application_type_journey == [] or application_type_journey == None:
+                application_type = "None"
+            else:
+                print("Application_type_journey = "+str(application_type_journey))
+                application_type = ""
+                for i,journey_step in enumerate(application_type_journey):
+                    application_type = application_type + "->" + application_type_journey[i]
+                application_type=application_type[2:]
+
+            print("Application_type = "+str(application_type))
         else:
             function = function + expression
 
         print("Returned value in application = "+function)
-        return function,function_type
+        return function,application_type
     
     # Visit a parse tree produced by LambdaCalculusParser#term.
     def visitTerm(self, ctx:LambdaCalculusParser.TermContext):
@@ -61,7 +100,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             
             #output,return_type = str(self.visitChildren(ctx))
             output,return_type = self.visitChildren(ctx)
-            
+
+            #NOTE: Format this so output returns a string and not an array            
             output,return_type = self.post_process(output, return_type)
             return output,return_type,self.valid_typing
 
@@ -107,6 +147,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         print("Incoming before abstraction = "+str(incoming))
 
         new_function = function
+
+        #If there is a value to subsitute into this abstraction
         if incoming != -1:
             bound_variables_left = re.findall("%(.*?)\.", function)
             subst_container_match = re.search("%(.*?)\.", function)
@@ -115,26 +157,31 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
                 container = subst_container_match.group(0)
 
                 end_value = len(function)
+                #If there is more than zero bound variables found in the string
                 if len(bound_variables_left) > 0:
                     for i,bound_variable in enumerate(bound_variables_left):
+                        #NOTE: REPEATED CODE 1
                         type_match = re.search(":(.*)", bound_variable)
                         bound_variables_left[i] = bound_variable.replace(type_match.group(0),"")
 
                     #More than one bound variable -- do something here
                     if to_substitute in bound_variables_left:
-                        #Bound variable repeated, need to check for the next instance of it
+                        #Bound variable repeated, need to check for the next instance of it and stop evaluating there
                         for i,letter in enumerate(function):
                             if letter == '%':
                                 subst_container_match = re.search("%(.*?)\.", function[i:])
                                 bound_value = subst_container_match.group(1)
+                                #NOTE: REPEATED CODE 1
                                 type_match = re.search(":(.*)", bound_variable)
                                 bound_value = bound_value.replace(type_match.group(0),"")
                                 if to_substitute == bound_value:
                                     break
                         end_value = i
                         function = calculate_alpha(to_substitute, function, incoming, 0, end_value)
+                    #If there is not more than one of the same bound variable detected, just alpha convert as normal
                     else:
                         function = calculate_alpha(to_substitute, function, incoming)
+                #If there are no bound variables inside the string found
                 else:
                     function = calculate_alpha(to_substitute, function, incoming)
 
@@ -147,11 +194,12 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
                 print("Incoming type = "+str(incoming_type))
                 print()
 
+                #Check valid/invalid type
                 if to_substitute_type is not None:
-                    to_substitute_type = to_substitute_type.lower()
+                    to_substitute_type_journey = to_substitute_type.split("->")
                     if incoming_type is not None:
-                        incoming_type = incoming_type.lower()
-                        if to_substitute_type != incoming_type:
+                        incoming_type_journey = incoming_type.split("->")
+                        if to_substitute_type_journey[0] != incoming_type_journey[0]:
                             print()
                             print("Incoming type does not match specified input type")
                             print()
@@ -175,6 +223,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
                 print()
                 print("New function after tree creation = "+str(new_function))          
                 print()  
+        #If there is not a value to substitute into this abstraction
         else:
             #If there's nothing to substitute, just rewrite the term in form
             #[?/x] and pass back up the tree
@@ -182,9 +231,11 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             substitution_form = "%"+str(to_substitute)+":"+str(to_substitute_type)+"."
             new_function = substitution_form + function
         
+        abstraction_type = str(to_substitute_type) + "->" + str(function_type)
         print("Function after replacement in abstraction = "+new_function)
+        print("Abstraction type = "+str(abstraction_type))
         #TODO: Implement proper typing here
-        return new_function,function_type
+        return new_function,abstraction_type
 
     # Visit a parse tree produced by LambdaCalculusParser#function.
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
