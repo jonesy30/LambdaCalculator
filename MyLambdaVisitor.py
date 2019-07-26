@@ -151,7 +151,9 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
                 print()
 
                 if to_substitute_type is not None:
+                    to_substitute_type = to_substitute_type.lower()
                     if incoming_type is not None:
+                        incoming_type = incoming_type.lower()
                         if to_substitute_type != incoming_type:
                             print()
                             print("Incoming type does not match specified input type")
@@ -229,10 +231,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
     def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
-        child = self.visit(ctx.getChild(1))
-        print("In abstraction term, child = "+str(child))
-        return child
-        #return self.visit(ctx.getChild(1))
+        return self.visit(ctx.getChild(1))
         #return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#lambda_variable.
@@ -242,7 +241,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         else:
             print("In lambda variable "+ctx.getChild(0).getText())
             print("Type = "+ctx.getChild(2).getText())
-            return ctx.getChild(0).getText(),ctx.getChild(2).getText()
+            #return ctx.getChild(0).getText(),ctx.getChild(2).getText()
+            return ctx.getChild(0).getText(),self.visit(ctx.getChild(2))
         
         #return ctx.getChild(0).getText()
         #return ctx.getText()
@@ -252,7 +252,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         if ctx.getChild(2) is None:
             return ctx.getChild(0).getText(),None
         else:
-            return ctx.getChild(0).getText(),ctx.getChild(2).getText()
+            return ctx.getChild(0).getText(),self.visit(ctx.getChild(2))
         
         #return ctx.getChild(0).getText()
         #return self.visitChildren(ctx)
@@ -262,7 +262,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         if ctx.getChild(2) is None:
             return ctx.getChild(0).getText(),None
         else:
-            return ctx.getChild(0).getText(),ctx.getChild(2).getText()
+            return ctx.getChild(0).getText(),self.visit(ctx.getChild(2))
 
         #return ctx.getChild(0).getText()
         #return self.visitChildren(ctx)
@@ -276,6 +276,23 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     def visitValue(self, ctx:LambdaCalculusParser.ValueContext):
         return self.visitChildren(ctx)
         #return ctx.getText()
+    
+    # Visit a parse tree produced by LambdaCalculusParser#ground_type.
+    def visitGround_type(self, ctx:LambdaCalculusParser.Ground_typeContext):
+        return ctx.getText()
+    
+    # Visit a parse tree produced by LambdaCalculusParser#term_type.
+    def visitTerm_type(self, ctx:LambdaCalculusParser.Term_typeContext):
+        #child = self.visitChildren(ctx)
+        #print("In term type: "+str(child))
+        #return self.visitChildren(ctx)
+
+        return self.visit(ctx.getChild(0))
+
+        # if ctx.getChildCount() > 1:
+        #     return self.visit(ctx.getChild(0)),self.visit(ctx.getChild(2))
+        # else:
+        #     return self.visit(ctx.getChild(0)),None
 
     #NOTE: this absolutely definitely needs renamed
     def convert_back_abstraction_form(self, returned_abstraction):

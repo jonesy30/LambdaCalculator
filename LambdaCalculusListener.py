@@ -89,6 +89,24 @@ class LambdaCalculusListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by LambdaCalculusParser#term_type.
+    def enterTerm_type(self, ctx:LambdaCalculusParser.Term_typeContext):
+        pass
+
+    # Exit a parse tree produced by LambdaCalculusParser#term_type.
+    def exitTerm_type(self, ctx:LambdaCalculusParser.Term_typeContext):
+        pass
+
+
+    # Enter a parse tree produced by LambdaCalculusParser#ground_type.
+    def enterGround_type(self, ctx:LambdaCalculusParser.Ground_typeContext):
+        pass
+
+    # Exit a parse tree produced by LambdaCalculusParser#ground_type.
+    def exitGround_type(self, ctx:LambdaCalculusParser.Ground_typeContext):
+        pass
+
+
     # Enter a parse tree produced by LambdaCalculusParser#operation.
     def enterOperation(self, ctx:LambdaCalculusParser.OperationContext):
         pass

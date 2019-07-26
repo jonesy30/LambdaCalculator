@@ -39,32 +39,31 @@ value
 
 variable
     : VARIABLE
-    | VARIABLE':''Bool'
-    | VARIABLE':''bool'
-    | VARIABLE':''BOOL'
-    | VARIABLE':''Int'
-    | VARIABLE':''int'
-    | VARIABLE':''INT'
+    | VARIABLE':'term_type
     ;
 
 lambda_variable
     : VARIABLE
-    | VARIABLE':''Bool'
-    | VARIABLE':''bool'
-    | VARIABLE':''BOOL'
-    | VARIABLE':''Int'
-    | VARIABLE':''int'
-    | VARIABLE':''INT'
+    | VARIABLE':'term_type
     ;
 
 number
     : NUMBER
-    | NUMBER':''Bool'
-    | NUMBER':''bool'
-    | NUMBER':''BOOL'
-    | NUMBER':''Int'
-    | NUMBER':''int'
-    | NUMBER':''INT'
+    | NUMBER':'term_type
+    ;
+
+term_type
+    : ground_type
+    | term_type '->' term_type
+    ;
+
+ground_type
+    : 'Bool'
+    | 'bool'
+    | 'BOOL'
+    | 'Int'
+    | 'int'
+    | 'INT'
     ;
 
 operation

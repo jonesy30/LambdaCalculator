@@ -54,6 +54,16 @@ class LambdaCalculusVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by LambdaCalculusParser#term_type.
+    def visitTerm_type(self, ctx:LambdaCalculusParser.Term_typeContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by LambdaCalculusParser#ground_type.
+    def visitGround_type(self, ctx:LambdaCalculusParser.Ground_typeContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by LambdaCalculusParser#operation.
     def visitOperation(self, ctx:LambdaCalculusParser.OperationContext):
         return self.visitChildren(ctx)
