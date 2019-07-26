@@ -7,7 +7,7 @@ import sys
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\26")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\31")
         buf.write("\u0086\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\3\2")
         buf.write("\3\2\3\2\3\2\5\2\37\n\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3")
@@ -19,35 +19,35 @@ def serializedATN():
         buf.write("\b\3\b\5\bi\n\b\3\t\3\t\3\t\3\t\5\to\n\t\3\n\3\n\3\n\3")
         buf.write("\n\5\nu\n\n\3\13\3\13\3\13\3\13\3\13\3\13\7\13}\n\13\f")
         buf.write("\13\16\13\u0080\13\13\3\f\3\f\3\r\3\r\3\r\2\5\4\n\24\16")
-        buf.write("\2\4\6\b\n\f\16\20\22\24\26\30\2\4\3\2\7\f\3\2\17\23\2")
-        buf.write("\u008a\2\36\3\2\2\2\4.\3\2\2\2\6?\3\2\2\2\bA\3\2\2\2\n")
-        buf.write("Q\3\2\2\2\fb\3\2\2\2\16h\3\2\2\2\20n\3\2\2\2\22t\3\2\2")
-        buf.write("\2\24v\3\2\2\2\26\u0081\3\2\2\2\30\u0083\3\2\2\2\32\37")
-        buf.write("\5\6\4\2\33\37\5\n\6\2\34\37\5\f\7\2\35\37\5\4\3\2\36")
-        buf.write("\32\3\2\2\2\36\33\3\2\2\2\36\34\3\2\2\2\36\35\3\2\2\2")
-        buf.write("\37\3\3\2\2\2 !\b\3\1\2!\"\5\6\4\2\"#\5\2\2\2#/\3\2\2")
-        buf.write("\2$%\5\f\7\2%&\5\2\2\2&/\3\2\2\2\'(\5\n\6\2()\5\2\2\2")
-        buf.write(")/\3\2\2\2*+\7\24\2\2+,\5\4\3\2,-\7\25\2\2-/\3\2\2\2.")
-        buf.write(" \3\2\2\2.$\3\2\2\2.\'\3\2\2\2.*\3\2\2\2/\64\3\2\2\2\60")
-        buf.write("\61\f\7\2\2\61\63\5\2\2\2\62\60\3\2\2\2\63\66\3\2\2\2")
-        buf.write("\64\62\3\2\2\2\64\65\3\2\2\2\65\5\3\2\2\2\66\64\3\2\2")
-        buf.write("\2\678\5\b\5\289\7\3\2\29:\5\2\2\2:@\3\2\2\2;<\7\24\2")
-        buf.write("\2<=\5\6\4\2=>\7\25\2\2>@\3\2\2\2?\67\3\2\2\2?;\3\2\2")
-        buf.write("\2@\7\3\2\2\2AB\7\4\2\2BC\5\20\t\2C\t\3\2\2\2DE\b\6\1")
-        buf.write("\2EF\5\f\7\2FG\5\30\r\2GH\5\2\2\2HR\3\2\2\2IJ\5\6\4\2")
-        buf.write("JK\5\30\r\2KL\5\2\2\2LR\3\2\2\2MN\7\24\2\2NO\5\n\6\2O")
-        buf.write("P\7\25\2\2PR\3\2\2\2QD\3\2\2\2QI\3\2\2\2QM\3\2\2\2RY\3")
-        buf.write("\2\2\2ST\f\5\2\2TU\5\30\r\2UV\5\2\2\2VX\3\2\2\2WS\3\2")
-        buf.write("\2\2X[\3\2\2\2YW\3\2\2\2YZ\3\2\2\2Z\13\3\2\2\2[Y\3\2\2")
-        buf.write("\2\\c\5\22\n\2]c\5\16\b\2^_\7\24\2\2_`\5\f\7\2`a\7\25")
+        buf.write("\2\4\6\b\n\f\16\20\22\24\26\30\2\4\3\2\7\17\3\2\22\26")
+        buf.write("\2\u008a\2\36\3\2\2\2\4.\3\2\2\2\6?\3\2\2\2\bA\3\2\2\2")
+        buf.write("\nQ\3\2\2\2\fb\3\2\2\2\16h\3\2\2\2\20n\3\2\2\2\22t\3\2")
+        buf.write("\2\2\24v\3\2\2\2\26\u0081\3\2\2\2\30\u0083\3\2\2\2\32")
+        buf.write("\37\5\6\4\2\33\37\5\n\6\2\34\37\5\f\7\2\35\37\5\4\3\2")
+        buf.write("\36\32\3\2\2\2\36\33\3\2\2\2\36\34\3\2\2\2\36\35\3\2\2")
+        buf.write("\2\37\3\3\2\2\2 !\b\3\1\2!\"\5\6\4\2\"#\5\2\2\2#/\3\2")
+        buf.write("\2\2$%\5\f\7\2%&\5\2\2\2&/\3\2\2\2\'(\5\n\6\2()\5\2\2")
+        buf.write("\2)/\3\2\2\2*+\7\27\2\2+,\5\4\3\2,-\7\30\2\2-/\3\2\2\2")
+        buf.write(". \3\2\2\2.$\3\2\2\2.\'\3\2\2\2.*\3\2\2\2/\64\3\2\2\2")
+        buf.write("\60\61\f\7\2\2\61\63\5\2\2\2\62\60\3\2\2\2\63\66\3\2\2")
+        buf.write("\2\64\62\3\2\2\2\64\65\3\2\2\2\65\5\3\2\2\2\66\64\3\2")
+        buf.write("\2\2\678\5\b\5\289\7\3\2\29:\5\2\2\2:@\3\2\2\2;<\7\27")
+        buf.write("\2\2<=\5\6\4\2=>\7\30\2\2>@\3\2\2\2?\67\3\2\2\2?;\3\2")
+        buf.write("\2\2@\7\3\2\2\2AB\7\4\2\2BC\5\20\t\2C\t\3\2\2\2DE\b\6")
+        buf.write("\1\2EF\5\f\7\2FG\5\30\r\2GH\5\2\2\2HR\3\2\2\2IJ\5\6\4")
+        buf.write("\2JK\5\30\r\2KL\5\2\2\2LR\3\2\2\2MN\7\27\2\2NO\5\n\6\2")
+        buf.write("OP\7\30\2\2PR\3\2\2\2QD\3\2\2\2QI\3\2\2\2QM\3\2\2\2RY")
+        buf.write("\3\2\2\2ST\f\5\2\2TU\5\30\r\2UV\5\2\2\2VX\3\2\2\2WS\3")
+        buf.write("\2\2\2X[\3\2\2\2YW\3\2\2\2YZ\3\2\2\2Z\13\3\2\2\2[Y\3\2")
+        buf.write("\2\2\\c\5\22\n\2]c\5\16\b\2^_\7\27\2\2_`\5\f\7\2`a\7\30")
         buf.write("\2\2ac\3\2\2\2b\\\3\2\2\2b]\3\2\2\2b^\3\2\2\2c\r\3\2\2")
-        buf.write("\2di\7\r\2\2ef\7\r\2\2fg\7\5\2\2gi\5\24\13\2hd\3\2\2\2")
-        buf.write("he\3\2\2\2i\17\3\2\2\2jo\7\r\2\2kl\7\r\2\2lm\7\5\2\2m")
-        buf.write("o\5\24\13\2nj\3\2\2\2nk\3\2\2\2o\21\3\2\2\2pu\7\16\2\2")
-        buf.write("qr\7\16\2\2rs\7\5\2\2su\5\24\13\2tp\3\2\2\2tq\3\2\2\2")
-        buf.write("u\23\3\2\2\2vw\b\13\1\2wx\5\26\f\2x~\3\2\2\2yz\f\3\2\2")
-        buf.write("z{\7\6\2\2{}\5\24\13\4|y\3\2\2\2}\u0080\3\2\2\2~|\3\2")
-        buf.write("\2\2~\177\3\2\2\2\177\25\3\2\2\2\u0080~\3\2\2\2\u0081")
+        buf.write("\2di\7\20\2\2ef\7\20\2\2fg\7\5\2\2gi\5\24\13\2hd\3\2\2")
+        buf.write("\2he\3\2\2\2i\17\3\2\2\2jo\7\20\2\2kl\7\20\2\2lm\7\5\2")
+        buf.write("\2mo\5\24\13\2nj\3\2\2\2nk\3\2\2\2o\21\3\2\2\2pu\7\21")
+        buf.write("\2\2qr\7\21\2\2rs\7\5\2\2su\5\24\13\2tp\3\2\2\2tq\3\2")
+        buf.write("\2\2u\23\3\2\2\2vw\b\13\1\2wx\5\26\f\2x~\3\2\2\2yz\f\3")
+        buf.write("\2\2z{\7\6\2\2{}\5\24\13\4|y\3\2\2\2}\u0080\3\2\2\2~|")
+        buf.write("\3\2\2\2~\177\3\2\2\2\177\25\3\2\2\2\u0080~\3\2\2\2\u0081")
         buf.write("\u0082\t\2\2\2\u0082\27\3\2\2\2\u0083\u0084\t\3\2\2\u0084")
         buf.write("\31\3\2\2\2\r\36.\64?QYbhnt~")
         return buf.getvalue()
@@ -64,15 +64,16 @@ class LambdaCalculusParser ( Parser ):
     sharedContextCache = PredictionContextCache()
 
     literalNames = [ "<INVALID>", "'.'", "'%'", "':'", "'->'", "'Bool'", 
-                     "'bool'", "'BOOL'", "'Int'", "'int'", "'INT'", "<INVALID>", 
-                     "<INVALID>", "'+'", "'-'", "'*'", "'/'", "'^'", "'('", 
-                     "')'" ]
+                     "'bool'", "'BOOL'", "'Int'", "'int'", "'INT'", "'None'", 
+                     "'none'", "'NONE'", "<INVALID>", "<INVALID>", "'+'", 
+                     "'-'", "'*'", "'/'", "'^'", "'('", "')'" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "VARIABLE", 
-                      "NUMBER", "ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", 
-                      "POWER", "LBRACKET", "RBRACKET", "WS" ]
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "VARIABLE", "NUMBER", "ADD", 
+                      "SUBTRACT", "MULTIPLY", "DIVIDE", "POWER", "LBRACKET", 
+                      "RBRACKET", "WS" ]
 
     RULE_term = 0
     RULE_application = 1
@@ -102,16 +103,19 @@ class LambdaCalculusParser ( Parser ):
     T__7=8
     T__8=9
     T__9=10
-    VARIABLE=11
-    NUMBER=12
-    ADD=13
-    SUBTRACT=14
-    MULTIPLY=15
-    DIVIDE=16
-    POWER=17
-    LBRACKET=18
-    RBRACKET=19
-    WS=20
+    T__10=11
+    T__11=12
+    T__12=13
+    VARIABLE=14
+    NUMBER=15
+    ADD=16
+    SUBTRACT=17
+    MULTIPLY=18
+    DIVIDE=19
+    POWER=20
+    LBRACKET=21
+    RBRACKET=22
+    WS=23
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -972,7 +976,7 @@ class LambdaCalculusParser ( Parser ):
             self.enterOuterAlt(localctx, 1)
             self.state = 127
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << LambdaCalculusParser.T__4) | (1 << LambdaCalculusParser.T__5) | (1 << LambdaCalculusParser.T__6) | (1 << LambdaCalculusParser.T__7) | (1 << LambdaCalculusParser.T__8) | (1 << LambdaCalculusParser.T__9))) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << LambdaCalculusParser.T__4) | (1 << LambdaCalculusParser.T__5) | (1 << LambdaCalculusParser.T__6) | (1 << LambdaCalculusParser.T__7) | (1 << LambdaCalculusParser.T__8) | (1 << LambdaCalculusParser.T__9) | (1 << LambdaCalculusParser.T__10) | (1 << LambdaCalculusParser.T__11) | (1 << LambdaCalculusParser.T__12))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)

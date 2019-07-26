@@ -64,6 +64,9 @@ ground_type
     | 'Int'
     | 'int'
     | 'INT'
+    | 'None'
+    | 'none'
+    | 'NONE'
     ;
 
 operation

@@ -32,10 +32,6 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         function,function_type = self.visit(ctx.getChild(0))
         expression,expression_type = self.visit(ctx.getChild(1))
 
-        #NOTE: I definitely don't need to change form any more
-        function = self.convert_back_abstraction_form(function)
-        expression = self.convert_back_abstraction_form(expression)
-
         #Get the tree created by the output of the left hand tree
         tree = self.create_tree(function)
 
@@ -60,16 +56,11 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     def visitTerm(self, ctx:LambdaCalculusParser.TermContext):
         print("T: "+ctx.getText())
 
-        #NOTE: do I need a parenthesis check in here? I don't think I do, since I'm just returning children
-        #The abstraction puts lambda terms into [?/x] form, this chunk of code just converts it back before it gets
-        #passed to the user for readability
         depth = ctx.depth()
         if depth == 1:
             
             #output,return_type = str(self.visitChildren(ctx))
             output,return_type = self.visitChildren(ctx)
-            #NOTE: do I need this in here if I'm just doing the same thing in the abstraction? Or should I just get rid of this
-            #NOTE: string manipulation altogether?
             
             output,return_type = self.post_process(output, return_type)
             return output,return_type,self.valid_typing
@@ -117,8 +108,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
         new_function = function
         if incoming != -1:
-            bound_variables_left = re.findall("/(.*?)\]", function)
-            subst_container_match = re.search("\[(.*?)\]", function)
+            bound_variables_left = re.findall("%(.*?)\.", function)
+            subst_container_match = re.search("%(.*?)\.", function)
             
             if subst_container_match is not None:
                 container = subst_container_match.group(0)
@@ -129,8 +120,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
                     if to_substitute in bound_variables_left:
                         #Bound variable repeated, need to check for the next instance of it
                         for i,letter in enumerate(function):
-                            if letter == '[':
-                                subst_container_match = re.search("/(.*?)\]", function[i:])
+                            if letter == '%':
+                                subst_container_match = re.search("%(.*?)\.", function[i:])
                                 bound_value = subst_container_match.group(1)
                                 if to_substitute == bound_value:
                                     break
@@ -181,7 +172,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         else:
             #If there's nothing to substitute, just rewrite the term in form
             #[?/x] and pass back up the tree
-            substitution_form = "[?/"+to_substitute+":"+to_substitute_type+"]"
+            print("To substitute = "+to_substitute)
+            substitution_form = "%"+str(to_substitute)+":"+str(to_substitute_type)+"."
             new_function = substitution_form + function
         
         print("Function after replacement in abstraction = "+new_function)
@@ -294,32 +286,12 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         # else:
         #     return self.visit(ctx.getChild(0)),None
 
-    #NOTE: this absolutely definitely needs renamed
-    def convert_back_abstraction_form(self, returned_abstraction):
-        
-        print("Returned abstraction = "+str(returned_abstraction))
-
-        container_match = re.search("\[(.*?)\]", returned_abstraction)
-        while container_match is not None:
-            bound_match = re.search("\/(.*?)\]", returned_abstraction)
-            found_bound = bound_match.group(1)
-            container_to_replace = container_match.group(0)
-            returned_abstraction = returned_abstraction.replace(container_to_replace,"%"+found_bound+".")
-            container_match = re.search("\[(.*?)\]", returned_abstraction)
-        
-        return returned_abstraction    
-    
     def post_process(self, output, return_type):
 
-        bad_strings = [":int",":Int",":INT",":bool",":Bool",":BOOL"]
+        bad_strings = [":int",":Int",":INT",":bool",":Bool",":BOOL",":None",":NONE",":none"]
 
         output = str(output)
         return_type = str(return_type)
-        #returned = str(self.visitChildren(ctx))
-        #NOTE: do I need this in here if I'm just doing the same thing in the abstraction? Or should I just get rid of this
-        #NOTE: string manipulation altogether?
-        output = self.convert_back_abstraction_form(output) 
-
         for string in bad_strings:
             output = output.replace(string,"")
 
