@@ -116,6 +116,10 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
                 end_value = len(function)
                 if len(bound_variables_left) > 0:
+                    for i,bound_variable in enumerate(bound_variables_left):
+                        type_match = re.search(":(.*)", bound_variable)
+                        bound_variables_left[i] = bound_variable.replace(type_match.group(0),"")
+
                     #More than one bound variable -- do something here
                     if to_substitute in bound_variables_left:
                         #Bound variable repeated, need to check for the next instance of it
@@ -123,6 +127,8 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
                             if letter == '%':
                                 subst_container_match = re.search("%(.*?)\.", function[i:])
                                 bound_value = subst_container_match.group(1)
+                                type_match = re.search(":(.*)", bound_variable)
+                                bound_value = bound_value.replace(type_match.group(0),"")
                                 if to_substitute == bound_value:
                                     break
                         end_value = i
@@ -269,17 +275,14 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         return self.visitChildren(ctx)
         #return ctx.getText()
     
-    # Visit a parse tree produced by LambdaCalculusParser#ground_type.
-    def visitGround_type(self, ctx:LambdaCalculusParser.Ground_typeContext):
-        return ctx.getText()
-    
     # Visit a parse tree produced by LambdaCalculusParser#term_type.
-    def visitTerm_type(self, ctx:LambdaCalculusParser.Term_typeContext):
+    def visitFunction_type(self, ctx:LambdaCalculusParser.Function_typeContext):
         #child = self.visitChildren(ctx)
         #print("In term type: "+str(child))
         #return self.visitChildren(ctx)
 
-        return self.visit(ctx.getChild(0))
+        return ctx.getText()
+        #return self.visit(ctx.getChild(0))
 
         # if ctx.getChildCount() > 1:
         #     return self.visit(ctx.getChild(0)),self.visit(ctx.getChild(2))

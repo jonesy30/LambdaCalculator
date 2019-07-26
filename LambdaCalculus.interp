@@ -60,7 +60,7 @@ value
 variable
 lambda_variable
 number
-term_type
+function_type
 ground_type
 operation
 

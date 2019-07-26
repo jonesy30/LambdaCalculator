@@ -84,13 +84,13 @@ class LambdaCalculusParser ( Parser ):
     RULE_variable = 6
     RULE_lambda_variable = 7
     RULE_number = 8
-    RULE_term_type = 9
+    RULE_function_type = 9
     RULE_ground_type = 10
     RULE_operation = 11
 
     ruleNames =  [ "term", "application", "abstraction", "abstraction_term", 
                    "function", "value", "variable", "lambda_variable", "number", 
-                   "term_type", "ground_type", "operation" ]
+                   "function_type", "ground_type", "operation" ]
 
     EOF = Token.EOF
     T__0=1
@@ -673,8 +673,8 @@ class LambdaCalculusParser ( Parser ):
         def VARIABLE(self):
             return self.getToken(LambdaCalculusParser.VARIABLE, 0)
 
-        def term_type(self):
-            return self.getTypedRuleContext(LambdaCalculusParser.Term_typeContext,0)
+        def function_type(self):
+            return self.getTypedRuleContext(LambdaCalculusParser.Function_typeContext,0)
 
 
         def getRuleIndex(self):
@@ -718,7 +718,7 @@ class LambdaCalculusParser ( Parser ):
                 self.state = 100
                 self.match(LambdaCalculusParser.T__2)
                 self.state = 101
-                self.term_type(0)
+                self.function_type(0)
                 pass
 
 
@@ -739,8 +739,8 @@ class LambdaCalculusParser ( Parser ):
         def VARIABLE(self):
             return self.getToken(LambdaCalculusParser.VARIABLE, 0)
 
-        def term_type(self):
-            return self.getTypedRuleContext(LambdaCalculusParser.Term_typeContext,0)
+        def function_type(self):
+            return self.getTypedRuleContext(LambdaCalculusParser.Function_typeContext,0)
 
 
         def getRuleIndex(self):
@@ -784,7 +784,7 @@ class LambdaCalculusParser ( Parser ):
                 self.state = 106
                 self.match(LambdaCalculusParser.T__2)
                 self.state = 107
-                self.term_type(0)
+                self.function_type(0)
                 pass
 
 
@@ -805,8 +805,8 @@ class LambdaCalculusParser ( Parser ):
         def NUMBER(self):
             return self.getToken(LambdaCalculusParser.NUMBER, 0)
 
-        def term_type(self):
-            return self.getTypedRuleContext(LambdaCalculusParser.Term_typeContext,0)
+        def function_type(self):
+            return self.getTypedRuleContext(LambdaCalculusParser.Function_typeContext,0)
 
 
         def getRuleIndex(self):
@@ -850,7 +850,7 @@ class LambdaCalculusParser ( Parser ):
                 self.state = 112
                 self.match(LambdaCalculusParser.T__2)
                 self.state = 113
-                self.term_type(0)
+                self.function_type(0)
                 pass
 
 
@@ -862,7 +862,7 @@ class LambdaCalculusParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class Term_typeContext(ParserRuleContext):
+    class Function_typeContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
@@ -872,39 +872,39 @@ class LambdaCalculusParser ( Parser ):
             return self.getTypedRuleContext(LambdaCalculusParser.Ground_typeContext,0)
 
 
-        def term_type(self, i:int=None):
+        def function_type(self, i:int=None):
             if i is None:
-                return self.getTypedRuleContexts(LambdaCalculusParser.Term_typeContext)
+                return self.getTypedRuleContexts(LambdaCalculusParser.Function_typeContext)
             else:
-                return self.getTypedRuleContext(LambdaCalculusParser.Term_typeContext,i)
+                return self.getTypedRuleContext(LambdaCalculusParser.Function_typeContext,i)
 
 
         def getRuleIndex(self):
-            return LambdaCalculusParser.RULE_term_type
+            return LambdaCalculusParser.RULE_function_type
 
         def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterTerm_type" ):
-                listener.enterTerm_type(self)
+            if hasattr( listener, "enterFunction_type" ):
+                listener.enterFunction_type(self)
 
         def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitTerm_type" ):
-                listener.exitTerm_type(self)
+            if hasattr( listener, "exitFunction_type" ):
+                listener.exitFunction_type(self)
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitTerm_type" ):
-                return visitor.visitTerm_type(self)
+            if hasattr( visitor, "visitFunction_type" ):
+                return visitor.visitFunction_type(self)
             else:
                 return visitor.visitChildren(self)
 
 
 
-    def term_type(self, _p:int=0):
+    def function_type(self, _p:int=0):
         _parentctx = self._ctx
         _parentState = self.state
-        localctx = LambdaCalculusParser.Term_typeContext(self, self._ctx, _parentState)
+        localctx = LambdaCalculusParser.Function_typeContext(self, self._ctx, _parentState)
         _prevctx = localctx
         _startState = 18
-        self.enterRecursionRule(localctx, 18, self.RULE_term_type, _p)
+        self.enterRecursionRule(localctx, 18, self.RULE_function_type, _p)
         try:
             self.enterOuterAlt(localctx, 1)
             self.state = 117
@@ -918,8 +918,8 @@ class LambdaCalculusParser ( Parser ):
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
-                    localctx = LambdaCalculusParser.Term_typeContext(self, _parentctx, _parentState)
-                    self.pushNewRecursionContext(localctx, _startState, self.RULE_term_type)
+                    localctx = LambdaCalculusParser.Function_typeContext(self, _parentctx, _parentState)
+                    self.pushNewRecursionContext(localctx, _startState, self.RULE_function_type)
                     self.state = 119
                     if not self.precpred(self._ctx, 1):
                         from antlr4.error.Errors import FailedPredicateException
@@ -927,7 +927,7 @@ class LambdaCalculusParser ( Parser ):
                     self.state = 120
                     self.match(LambdaCalculusParser.T__3)
                     self.state = 121
-                    self.term_type(2) 
+                    self.function_type(2) 
                 self.state = 126
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,10,self._ctx)
@@ -1059,7 +1059,7 @@ class LambdaCalculusParser ( Parser ):
             self._predicates = dict()
         self._predicates[1] = self.application_sempred
         self._predicates[4] = self.function_sempred
-        self._predicates[9] = self.term_type_sempred
+        self._predicates[9] = self.function_type_sempred
         pred = self._predicates.get(ruleIndex, None)
         if pred is None:
             raise Exception("No predicate with index:" + str(ruleIndex))
@@ -1076,7 +1076,7 @@ class LambdaCalculusParser ( Parser ):
                 return self.precpred(self._ctx, 3)
          
 
-    def term_type_sempred(self, localctx:Term_typeContext, predIndex:int):
+    def function_type_sempred(self, localctx:Function_typeContext, predIndex:int):
             if predIndex == 2:
                 return self.precpred(self._ctx, 1)
          

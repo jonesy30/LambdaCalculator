@@ -39,22 +39,22 @@ value
 
 variable
     : VARIABLE
-    | VARIABLE':'term_type
+    | VARIABLE':'function_type
     ;
 
 lambda_variable
     : VARIABLE
-    | VARIABLE':'term_type
+    | VARIABLE':'function_type
     ;
 
 number
     : NUMBER
-    | NUMBER':'term_type
+    | NUMBER':'function_type
     ;
 
-term_type
+function_type
     : ground_type
-    | term_type '->' term_type
+    | function_type '->' function_type
     ;
 
 ground_type

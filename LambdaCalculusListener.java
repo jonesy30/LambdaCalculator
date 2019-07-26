@@ -97,15 +97,15 @@ public interface LambdaCalculusListener extends ParseTreeListener {
 	 */
 	void exitNumber(LambdaCalculusParser.NumberContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LambdaCalculusParser#term_type}.
+	 * Enter a parse tree produced by {@link LambdaCalculusParser#function_type}.
 	 * @param ctx the parse tree
 	 */
-	void enterTerm_type(LambdaCalculusParser.Term_typeContext ctx);
+	void enterFunction_type(LambdaCalculusParser.Function_typeContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LambdaCalculusParser#term_type}.
+	 * Exit a parse tree produced by {@link LambdaCalculusParser#function_type}.
 	 * @param ctx the parse tree
 	 */
-	void exitTerm_type(LambdaCalculusParser.Term_typeContext ctx);
+	void exitFunction_type(LambdaCalculusParser.Function_typeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LambdaCalculusParser#ground_type}.
 	 * @param ctx the parse tree

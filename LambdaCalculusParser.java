@@ -23,10 +23,10 @@ public class LambdaCalculusParser extends Parser {
 	public static final int
 		RULE_term = 0, RULE_application = 1, RULE_abstraction = 2, RULE_abstraction_term = 3, 
 		RULE_function = 4, RULE_value = 5, RULE_variable = 6, RULE_lambda_variable = 7, 
-		RULE_number = 8, RULE_term_type = 9, RULE_ground_type = 10, RULE_operation = 11;
+		RULE_number = 8, RULE_function_type = 9, RULE_ground_type = 10, RULE_operation = 11;
 	public static final String[] ruleNames = {
 		"term", "application", "abstraction", "abstraction_term", "function", 
-		"value", "variable", "lambda_variable", "number", "term_type", "ground_type", 
+		"value", "variable", "lambda_variable", "number", "function_type", "ground_type", 
 		"operation"
 	};
 
@@ -590,8 +590,8 @@ public class LambdaCalculusParser extends Parser {
 
 	public static class VariableContext extends ParserRuleContext {
 		public TerminalNode VARIABLE() { return getToken(LambdaCalculusParser.VARIABLE, 0); }
-		public Term_typeContext term_type() {
-			return getRuleContext(Term_typeContext.class,0);
+		public Function_typeContext function_type() {
+			return getRuleContext(Function_typeContext.class,0);
 		}
 		public VariableContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -629,7 +629,7 @@ public class LambdaCalculusParser extends Parser {
 				setState(100);
 				match(T__2);
 				setState(101);
-				term_type(0);
+				function_type(0);
 				}
 				break;
 			}
@@ -647,8 +647,8 @@ public class LambdaCalculusParser extends Parser {
 
 	public static class Lambda_variableContext extends ParserRuleContext {
 		public TerminalNode VARIABLE() { return getToken(LambdaCalculusParser.VARIABLE, 0); }
-		public Term_typeContext term_type() {
-			return getRuleContext(Term_typeContext.class,0);
+		public Function_typeContext function_type() {
+			return getRuleContext(Function_typeContext.class,0);
 		}
 		public Lambda_variableContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -686,7 +686,7 @@ public class LambdaCalculusParser extends Parser {
 				setState(106);
 				match(T__2);
 				setState(107);
-				term_type(0);
+				function_type(0);
 				}
 				break;
 			}
@@ -704,8 +704,8 @@ public class LambdaCalculusParser extends Parser {
 
 	public static class NumberContext extends ParserRuleContext {
 		public TerminalNode NUMBER() { return getToken(LambdaCalculusParser.NUMBER, 0); }
-		public Term_typeContext term_type() {
-			return getRuleContext(Term_typeContext.class,0);
+		public Function_typeContext function_type() {
+			return getRuleContext(Function_typeContext.class,0);
 		}
 		public NumberContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -743,7 +743,7 @@ public class LambdaCalculusParser extends Parser {
 				setState(112);
 				match(T__2);
 				setState(113);
-				term_type(0);
+				function_type(0);
 				}
 				break;
 			}
@@ -759,41 +759,41 @@ public class LambdaCalculusParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Term_typeContext extends ParserRuleContext {
+	public static class Function_typeContext extends ParserRuleContext {
 		public Ground_typeContext ground_type() {
 			return getRuleContext(Ground_typeContext.class,0);
 		}
-		public List<Term_typeContext> term_type() {
-			return getRuleContexts(Term_typeContext.class);
+		public List<Function_typeContext> function_type() {
+			return getRuleContexts(Function_typeContext.class);
 		}
-		public Term_typeContext term_type(int i) {
-			return getRuleContext(Term_typeContext.class,i);
+		public Function_typeContext function_type(int i) {
+			return getRuleContext(Function_typeContext.class,i);
 		}
-		public Term_typeContext(ParserRuleContext parent, int invokingState) {
+		public Function_typeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_term_type; }
+		@Override public int getRuleIndex() { return RULE_function_type; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).enterTerm_type(this);
+			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).enterFunction_type(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitTerm_type(this);
+			if ( listener instanceof LambdaCalculusListener ) ((LambdaCalculusListener)listener).exitFunction_type(this);
 		}
 	}
 
-	public final Term_typeContext term_type() throws RecognitionException {
-		return term_type(0);
+	public final Function_typeContext function_type() throws RecognitionException {
+		return function_type(0);
 	}
 
-	private Term_typeContext term_type(int _p) throws RecognitionException {
+	private Function_typeContext function_type(int _p) throws RecognitionException {
 		ParserRuleContext _parentctx = _ctx;
 		int _parentState = getState();
-		Term_typeContext _localctx = new Term_typeContext(_ctx, _parentState);
-		Term_typeContext _prevctx = _localctx;
+		Function_typeContext _localctx = new Function_typeContext(_ctx, _parentState);
+		Function_typeContext _prevctx = _localctx;
 		int _startState = 18;
-		enterRecursionRule(_localctx, 18, RULE_term_type, _p);
+		enterRecursionRule(_localctx, 18, RULE_function_type, _p);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
@@ -812,14 +812,14 @@ public class LambdaCalculusParser extends Parser {
 					_prevctx = _localctx;
 					{
 					{
-					_localctx = new Term_typeContext(_parentctx, _parentState);
-					pushNewRecursionContext(_localctx, _startState, RULE_term_type);
+					_localctx = new Function_typeContext(_parentctx, _parentState);
+					pushNewRecursionContext(_localctx, _startState, RULE_function_type);
 					setState(119);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
 					setState(120);
 					match(T__3);
 					setState(121);
-					term_type(2);
+					function_type(2);
 					}
 					} 
 				}
@@ -942,7 +942,7 @@ public class LambdaCalculusParser extends Parser {
 		case 4:
 			return function_sempred((FunctionContext)_localctx, predIndex);
 		case 9:
-			return term_type_sempred((Term_typeContext)_localctx, predIndex);
+			return function_type_sempred((Function_typeContext)_localctx, predIndex);
 		}
 		return true;
 	}
@@ -960,7 +960,7 @@ public class LambdaCalculusParser extends Parser {
 		}
 		return true;
 	}
-	private boolean term_type_sempred(Term_typeContext _localctx, int predIndex) {
+	private boolean function_type_sempred(Function_typeContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 2:
 			return precpred(_ctx, 1);

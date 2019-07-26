@@ -123,13 +123,13 @@ public class LambdaCalculusBaseListener implements LambdaCalculusListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTerm_type(LambdaCalculusParser.Term_typeContext ctx) { }
+	@Override public void enterFunction_type(LambdaCalculusParser.Function_typeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTerm_type(LambdaCalculusParser.Term_typeContext ctx) { }
+	@Override public void exitFunction_type(LambdaCalculusParser.Function_typeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

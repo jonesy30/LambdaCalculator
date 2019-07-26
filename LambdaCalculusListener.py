@@ -89,12 +89,12 @@ class LambdaCalculusListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by LambdaCalculusParser#term_type.
-    def enterTerm_type(self, ctx:LambdaCalculusParser.Term_typeContext):
+    # Enter a parse tree produced by LambdaCalculusParser#function_type.
+    def enterFunction_type(self, ctx:LambdaCalculusParser.Function_typeContext):
         pass
 
-    # Exit a parse tree produced by LambdaCalculusParser#term_type.
-    def exitTerm_type(self, ctx:LambdaCalculusParser.Term_typeContext):
+    # Exit a parse tree produced by LambdaCalculusParser#function_type.
+    def exitFunction_type(self, ctx:LambdaCalculusParser.Function_typeContext):
         pass
 
 
