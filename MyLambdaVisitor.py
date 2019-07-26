@@ -78,7 +78,7 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             #NOTE: do I need this in here if I'm just doing the same thing in the abstraction? Or should I just get rid of this
             #NOTE: string manipulation altogether?
             output = self.convert_back_abstraction_form(output)            
-            return output,return_type
+            return output,return_type,self.valid_typing
 
         else:
             return self.visitChildren(ctx)
@@ -150,8 +150,6 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             else:
                 new_function = calculate_alpha(to_substitute, function, incoming)
                 new_function = new_function.replace(to_substitute,incoming)
-                #NOTE: I think here I need to visit the function with my new incoming value, and have it work out what the type should be
-                #NOTE: But how do I do this now?
         else:
             #If there's nothing to substitute, just rewrite the term in form
             #[?/x] and pass back up the tree
@@ -171,12 +169,35 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             return "" + ctx.getChild(0).getText() + child_value + ctx.getChild(2).getText(),child_type
         
         #NOTE: I should be calculating the function here and returning the result
-        left,__ = self.visit(ctx.getChild(0))
+        left,left_type = self.visit(ctx.getChild(0))
         #TODO: Determine the typing rules here
-        right,return_type = self.visit(ctx.getChild(2))
+        right,right_type = self.visit(ctx.getChild(2))
         op = ctx.getChild(1).getText()
 
+        if left_type is not None:
+            left_type = left_type.lower()
+        
+        if right_type is not None:
+            right_type = right_type.lower()
+
+        bool_bool = ["AND","OR"]
+        int_int = ["+","-","*","/","^","EQ","GT","LT"]
+        return_type = None
+
+        if op in bool_bool:
+            if left_type == "int" or right_type == "int":
+                self.valid_typing = False
+            elif self.valid_typing == True:
+                return_type = "bool"
+        elif op in int_int:
+            if left_type == "bool" or right_type == "bool":
+                self.valid_typing = False
+            elif self.valid_typing == True:
+                return_type = "int"
+        
+        #TODO: Do some actual calculations here
         return_string = "" + left + op + right
+        
         return return_string,return_type
         #return "" + self.visit(ctx.getChild(0)) + ctx.getChild(1).getText() + self.visit(ctx.getChild(2))
 
@@ -238,4 +259,4 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             returned_abstraction = returned_abstraction.replace(container_to_replace,"%"+found_bound+".")
             container_match = re.search("\[(.*?)\]", returned_abstraction)
         
-        return returned_abstraction
+        return returned_abstraction    

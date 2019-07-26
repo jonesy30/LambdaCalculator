@@ -7,46 +7,66 @@ import sys
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\21")
-        buf.write("~\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
-        buf.write("\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3\2\3\2\3\2\3\2\5\2\33")
-        buf.write("\n\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3")
-        buf.write("\3\3\3\5\3+\n\3\3\3\3\3\7\3/\n\3\f\3\16\3\62\13\3\3\4")
-        buf.write("\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4<\n\4\3\5\3\5\3\5\3\6")
-        buf.write("\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\5\6N")
-        buf.write("\n\6\3\6\3\6\3\6\3\6\7\6T\n\6\f\6\16\6W\13\6\3\7\3\7\3")
-        buf.write("\7\3\7\3\7\3\7\5\7_\n\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\5")
-        buf.write("\bh\n\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\tq\n\t\3\n\3\n\3")
-        buf.write("\n\3\n\3\n\3\n\3\n\5\nz\n\n\3\13\3\13\3\13\2\4\4\n\f\2")
-        buf.write("\4\6\b\n\f\16\20\22\24\2\3\3\2\n\16\2\u0086\2\32\3\2\2")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\25")
+        buf.write("\u00a2\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3\2\3\2\3\2\3\2\5\2")
+        buf.write("\33\n\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3")
+        buf.write("\3\3\3\3\3\5\3+\n\3\3\3\3\3\7\3/\n\3\f\3\16\3\62\13\3")
+        buf.write("\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4<\n\4\3\5\3\5\3\5")
+        buf.write("\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\5")
+        buf.write("\6N\n\6\3\6\3\6\3\6\3\6\7\6T\n\6\f\6\16\6W\13\6\3\7\3")
+        buf.write("\7\3\7\3\7\3\7\3\7\5\7_\n\7\3\b\3\b\3\b\3\b\3\b\3\b\3")
+        buf.write("\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\5\b")
+        buf.write("t\n\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t")
+        buf.write("\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\t\u0089\n\t\3\n\3\n\3\n")
+        buf.write("\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3")
+        buf.write("\n\3\n\3\n\5\n\u009e\n\n\3\13\3\13\3\13\2\4\4\n\f\2\4")
+        buf.write("\6\b\n\f\16\20\22\24\2\3\3\2\16\22\2\u00b6\2\32\3\2\2")
         buf.write("\2\4*\3\2\2\2\6;\3\2\2\2\b=\3\2\2\2\nM\3\2\2\2\f^\3\2")
-        buf.write("\2\2\16g\3\2\2\2\20p\3\2\2\2\22y\3\2\2\2\24{\3\2\2\2\26")
-        buf.write("\33\5\6\4\2\27\33\5\n\6\2\30\33\5\f\7\2\31\33\5\4\3\2")
-        buf.write("\32\26\3\2\2\2\32\27\3\2\2\2\32\30\3\2\2\2\32\31\3\2\2")
-        buf.write("\2\33\3\3\2\2\2\34\35\b\3\1\2\35\36\5\6\4\2\36\37\5\2")
-        buf.write("\2\2\37+\3\2\2\2 !\5\f\7\2!\"\5\2\2\2\"+\3\2\2\2#$\5\n")
-        buf.write("\6\2$%\5\2\2\2%+\3\2\2\2&\'\7\17\2\2\'(\5\4\3\2()\7\20")
-        buf.write("\2\2)+\3\2\2\2*\34\3\2\2\2* \3\2\2\2*#\3\2\2\2*&\3\2\2")
-        buf.write("\2+\60\3\2\2\2,-\f\7\2\2-/\5\2\2\2.,\3\2\2\2/\62\3\2\2")
-        buf.write("\2\60.\3\2\2\2\60\61\3\2\2\2\61\5\3\2\2\2\62\60\3\2\2")
-        buf.write("\2\63\64\5\b\5\2\64\65\7\3\2\2\65\66\5\2\2\2\66<\3\2\2")
-        buf.write("\2\678\7\17\2\289\5\6\4\29:\7\20\2\2:<\3\2\2\2;\63\3\2")
-        buf.write("\2\2;\67\3\2\2\2<\7\3\2\2\2=>\7\4\2\2>?\5\20\t\2?\t\3")
-        buf.write("\2\2\2@A\b\6\1\2AB\5\f\7\2BC\5\24\13\2CD\5\2\2\2DN\3\2")
-        buf.write("\2\2EF\5\6\4\2FG\5\24\13\2GH\5\2\2\2HN\3\2\2\2IJ\7\17")
-        buf.write("\2\2JK\5\n\6\2KL\7\20\2\2LN\3\2\2\2M@\3\2\2\2ME\3\2\2")
-        buf.write("\2MI\3\2\2\2NU\3\2\2\2OP\f\5\2\2PQ\5\24\13\2QR\5\2\2\2")
-        buf.write("RT\3\2\2\2SO\3\2\2\2TW\3\2\2\2US\3\2\2\2UV\3\2\2\2V\13")
-        buf.write("\3\2\2\2WU\3\2\2\2X_\5\22\n\2Y_\5\16\b\2Z[\7\17\2\2[\\")
-        buf.write("\5\f\7\2\\]\7\20\2\2]_\3\2\2\2^X\3\2\2\2^Y\3\2\2\2^Z\3")
-        buf.write("\2\2\2_\r\3\2\2\2`h\7\b\2\2ab\7\b\2\2bc\7\5\2\2ch\7\6")
-        buf.write("\2\2de\7\b\2\2ef\7\5\2\2fh\7\7\2\2g`\3\2\2\2ga\3\2\2\2")
-        buf.write("gd\3\2\2\2h\17\3\2\2\2iq\7\b\2\2jk\7\b\2\2kl\7\5\2\2l")
-        buf.write("q\7\6\2\2mn\7\b\2\2no\7\5\2\2oq\7\7\2\2pi\3\2\2\2pj\3")
-        buf.write("\2\2\2pm\3\2\2\2q\21\3\2\2\2rz\7\t\2\2st\7\t\2\2tu\7\5")
-        buf.write("\2\2uz\7\6\2\2vw\7\t\2\2wx\7\5\2\2xz\7\7\2\2yr\3\2\2\2")
-        buf.write("ys\3\2\2\2yv\3\2\2\2z\23\3\2\2\2{|\t\2\2\2|\25\3\2\2\2")
-        buf.write("\f\32*\60;MU^gpy")
+        buf.write("\2\2\16s\3\2\2\2\20\u0088\3\2\2\2\22\u009d\3\2\2\2\24")
+        buf.write("\u009f\3\2\2\2\26\33\5\6\4\2\27\33\5\n\6\2\30\33\5\f\7")
+        buf.write("\2\31\33\5\4\3\2\32\26\3\2\2\2\32\27\3\2\2\2\32\30\3\2")
+        buf.write("\2\2\32\31\3\2\2\2\33\3\3\2\2\2\34\35\b\3\1\2\35\36\5")
+        buf.write("\6\4\2\36\37\5\2\2\2\37+\3\2\2\2 !\5\f\7\2!\"\5\2\2\2")
+        buf.write("\"+\3\2\2\2#$\5\n\6\2$%\5\2\2\2%+\3\2\2\2&\'\7\23\2\2")
+        buf.write("\'(\5\4\3\2()\7\24\2\2)+\3\2\2\2*\34\3\2\2\2* \3\2\2\2")
+        buf.write("*#\3\2\2\2*&\3\2\2\2+\60\3\2\2\2,-\f\7\2\2-/\5\2\2\2.")
+        buf.write(",\3\2\2\2/\62\3\2\2\2\60.\3\2\2\2\60\61\3\2\2\2\61\5\3")
+        buf.write("\2\2\2\62\60\3\2\2\2\63\64\5\b\5\2\64\65\7\3\2\2\65\66")
+        buf.write("\5\2\2\2\66<\3\2\2\2\678\7\23\2\289\5\6\4\29:\7\24\2\2")
+        buf.write(":<\3\2\2\2;\63\3\2\2\2;\67\3\2\2\2<\7\3\2\2\2=>\7\4\2")
+        buf.write("\2>?\5\20\t\2?\t\3\2\2\2@A\b\6\1\2AB\5\f\7\2BC\5\24\13")
+        buf.write("\2CD\5\2\2\2DN\3\2\2\2EF\5\6\4\2FG\5\24\13\2GH\5\2\2\2")
+        buf.write("HN\3\2\2\2IJ\7\23\2\2JK\5\n\6\2KL\7\24\2\2LN\3\2\2\2M")
+        buf.write("@\3\2\2\2ME\3\2\2\2MI\3\2\2\2NU\3\2\2\2OP\f\5\2\2PQ\5")
+        buf.write("\24\13\2QR\5\2\2\2RT\3\2\2\2SO\3\2\2\2TW\3\2\2\2US\3\2")
+        buf.write("\2\2UV\3\2\2\2V\13\3\2\2\2WU\3\2\2\2X_\5\22\n\2Y_\5\16")
+        buf.write("\b\2Z[\7\23\2\2[\\\5\f\7\2\\]\7\24\2\2]_\3\2\2\2^X\3\2")
+        buf.write("\2\2^Y\3\2\2\2^Z\3\2\2\2_\r\3\2\2\2`t\7\f\2\2ab\7\f\2")
+        buf.write("\2bc\7\5\2\2ct\7\6\2\2de\7\f\2\2ef\7\5\2\2ft\7\7\2\2g")
+        buf.write("h\7\f\2\2hi\7\5\2\2it\7\b\2\2jk\7\f\2\2kl\7\5\2\2lt\7")
+        buf.write("\t\2\2mn\7\f\2\2no\7\5\2\2ot\7\n\2\2pq\7\f\2\2qr\7\5\2")
+        buf.write("\2rt\7\13\2\2s`\3\2\2\2sa\3\2\2\2sd\3\2\2\2sg\3\2\2\2")
+        buf.write("sj\3\2\2\2sm\3\2\2\2sp\3\2\2\2t\17\3\2\2\2u\u0089\7\f")
+        buf.write("\2\2vw\7\f\2\2wx\7\5\2\2x\u0089\7\6\2\2yz\7\f\2\2z{\7")
+        buf.write("\5\2\2{\u0089\7\7\2\2|}\7\f\2\2}~\7\5\2\2~\u0089\7\b\2")
+        buf.write("\2\177\u0080\7\f\2\2\u0080\u0081\7\5\2\2\u0081\u0089\7")
+        buf.write("\t\2\2\u0082\u0083\7\f\2\2\u0083\u0084\7\5\2\2\u0084\u0089")
+        buf.write("\7\n\2\2\u0085\u0086\7\f\2\2\u0086\u0087\7\5\2\2\u0087")
+        buf.write("\u0089\7\13\2\2\u0088u\3\2\2\2\u0088v\3\2\2\2\u0088y\3")
+        buf.write("\2\2\2\u0088|\3\2\2\2\u0088\177\3\2\2\2\u0088\u0082\3")
+        buf.write("\2\2\2\u0088\u0085\3\2\2\2\u0089\21\3\2\2\2\u008a\u009e")
+        buf.write("\7\r\2\2\u008b\u008c\7\r\2\2\u008c\u008d\7\5\2\2\u008d")
+        buf.write("\u009e\7\6\2\2\u008e\u008f\7\r\2\2\u008f\u0090\7\5\2\2")
+        buf.write("\u0090\u009e\7\7\2\2\u0091\u0092\7\r\2\2\u0092\u0093\7")
+        buf.write("\5\2\2\u0093\u009e\7\b\2\2\u0094\u0095\7\r\2\2\u0095\u0096")
+        buf.write("\7\5\2\2\u0096\u009e\7\t\2\2\u0097\u0098\7\r\2\2\u0098")
+        buf.write("\u0099\7\5\2\2\u0099\u009e\7\n\2\2\u009a\u009b\7\r\2\2")
+        buf.write("\u009b\u009c\7\5\2\2\u009c\u009e\7\13\2\2\u009d\u008a")
+        buf.write("\3\2\2\2\u009d\u008b\3\2\2\2\u009d\u008e\3\2\2\2\u009d")
+        buf.write("\u0091\3\2\2\2\u009d\u0094\3\2\2\2\u009d\u0097\3\2\2\2")
+        buf.write("\u009d\u009a\3\2\2\2\u009e\23\3\2\2\2\u009f\u00a0\t\2")
+        buf.write("\2\2\u00a0\25\3\2\2\2\f\32*\60;MU^s\u0088\u009d")
         return buf.getvalue()
 
 
@@ -60,11 +80,12 @@ class LambdaCalculusParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "'.'", "'%'", "':'", "'Bool'", "'Int'", 
-                     "<INVALID>", "<INVALID>", "'+'", "'-'", "'*'", "'/'", 
-                     "'^'", "'('", "')'" ]
+    literalNames = [ "<INVALID>", "'.'", "'%'", "':'", "'Bool'", "'bool'", 
+                     "'BOOL'", "'Int'", "'int'", "'INT'", "<INVALID>", "<INVALID>", 
+                     "'+'", "'-'", "'*'", "'/'", "'^'", "'('", "')'" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "VARIABLE", "NUMBER", "ADD", 
                       "SUBTRACT", "MULTIPLY", "DIVIDE", "POWER", "LBRACKET", 
                       "RBRACKET", "WS" ]
@@ -90,16 +111,20 @@ class LambdaCalculusParser ( Parser ):
     T__2=3
     T__3=4
     T__4=5
-    VARIABLE=6
-    NUMBER=7
-    ADD=8
-    SUBTRACT=9
-    MULTIPLY=10
-    DIVIDE=11
-    POWER=12
-    LBRACKET=13
-    RBRACKET=14
-    WS=15
+    T__5=6
+    T__6=7
+    T__7=8
+    T__8=9
+    VARIABLE=10
+    NUMBER=11
+    ADD=12
+    SUBTRACT=13
+    MULTIPLY=14
+    DIVIDE=15
+    POWER=16
+    LBRACKET=17
+    RBRACKET=18
+    WS=19
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -682,7 +707,7 @@ class LambdaCalculusParser ( Parser ):
         localctx = LambdaCalculusParser.VariableContext(self, self._ctx, self.state)
         self.enterRule(localctx, 12, self.RULE_variable)
         try:
-            self.state = 101
+            self.state = 113
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,7,self._ctx)
             if la_ == 1:
@@ -709,6 +734,46 @@ class LambdaCalculusParser ( Parser ):
                 self.match(LambdaCalculusParser.T__2)
                 self.state = 100
                 self.match(LambdaCalculusParser.T__4)
+                pass
+
+            elif la_ == 4:
+                self.enterOuterAlt(localctx, 4)
+                self.state = 101
+                self.match(LambdaCalculusParser.VARIABLE)
+                self.state = 102
+                self.match(LambdaCalculusParser.T__2)
+                self.state = 103
+                self.match(LambdaCalculusParser.T__5)
+                pass
+
+            elif la_ == 5:
+                self.enterOuterAlt(localctx, 5)
+                self.state = 104
+                self.match(LambdaCalculusParser.VARIABLE)
+                self.state = 105
+                self.match(LambdaCalculusParser.T__2)
+                self.state = 106
+                self.match(LambdaCalculusParser.T__6)
+                pass
+
+            elif la_ == 6:
+                self.enterOuterAlt(localctx, 6)
+                self.state = 107
+                self.match(LambdaCalculusParser.VARIABLE)
+                self.state = 108
+                self.match(LambdaCalculusParser.T__2)
+                self.state = 109
+                self.match(LambdaCalculusParser.T__7)
+                pass
+
+            elif la_ == 7:
+                self.enterOuterAlt(localctx, 7)
+                self.state = 110
+                self.match(LambdaCalculusParser.VARIABLE)
+                self.state = 111
+                self.match(LambdaCalculusParser.T__2)
+                self.state = 112
+                self.match(LambdaCalculusParser.T__8)
                 pass
 
 
@@ -754,33 +819,73 @@ class LambdaCalculusParser ( Parser ):
         localctx = LambdaCalculusParser.Lambda_variableContext(self, self._ctx, self.state)
         self.enterRule(localctx, 14, self.RULE_lambda_variable)
         try:
-            self.state = 110
+            self.state = 134
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,8,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 103
+                self.state = 115
                 self.match(LambdaCalculusParser.VARIABLE)
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 104
+                self.state = 116
                 self.match(LambdaCalculusParser.VARIABLE)
-                self.state = 105
+                self.state = 117
                 self.match(LambdaCalculusParser.T__2)
-                self.state = 106
+                self.state = 118
                 self.match(LambdaCalculusParser.T__3)
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 107
+                self.state = 119
                 self.match(LambdaCalculusParser.VARIABLE)
-                self.state = 108
+                self.state = 120
                 self.match(LambdaCalculusParser.T__2)
-                self.state = 109
+                self.state = 121
                 self.match(LambdaCalculusParser.T__4)
+                pass
+
+            elif la_ == 4:
+                self.enterOuterAlt(localctx, 4)
+                self.state = 122
+                self.match(LambdaCalculusParser.VARIABLE)
+                self.state = 123
+                self.match(LambdaCalculusParser.T__2)
+                self.state = 124
+                self.match(LambdaCalculusParser.T__5)
+                pass
+
+            elif la_ == 5:
+                self.enterOuterAlt(localctx, 5)
+                self.state = 125
+                self.match(LambdaCalculusParser.VARIABLE)
+                self.state = 126
+                self.match(LambdaCalculusParser.T__2)
+                self.state = 127
+                self.match(LambdaCalculusParser.T__6)
+                pass
+
+            elif la_ == 6:
+                self.enterOuterAlt(localctx, 6)
+                self.state = 128
+                self.match(LambdaCalculusParser.VARIABLE)
+                self.state = 129
+                self.match(LambdaCalculusParser.T__2)
+                self.state = 130
+                self.match(LambdaCalculusParser.T__7)
+                pass
+
+            elif la_ == 7:
+                self.enterOuterAlt(localctx, 7)
+                self.state = 131
+                self.match(LambdaCalculusParser.VARIABLE)
+                self.state = 132
+                self.match(LambdaCalculusParser.T__2)
+                self.state = 133
+                self.match(LambdaCalculusParser.T__8)
                 pass
 
 
@@ -826,33 +931,73 @@ class LambdaCalculusParser ( Parser ):
         localctx = LambdaCalculusParser.NumberContext(self, self._ctx, self.state)
         self.enterRule(localctx, 16, self.RULE_number)
         try:
-            self.state = 119
+            self.state = 155
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,9,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 112
+                self.state = 136
                 self.match(LambdaCalculusParser.NUMBER)
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 113
+                self.state = 137
                 self.match(LambdaCalculusParser.NUMBER)
-                self.state = 114
+                self.state = 138
                 self.match(LambdaCalculusParser.T__2)
-                self.state = 115
+                self.state = 139
                 self.match(LambdaCalculusParser.T__3)
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 116
+                self.state = 140
                 self.match(LambdaCalculusParser.NUMBER)
-                self.state = 117
+                self.state = 141
                 self.match(LambdaCalculusParser.T__2)
-                self.state = 118
+                self.state = 142
                 self.match(LambdaCalculusParser.T__4)
+                pass
+
+            elif la_ == 4:
+                self.enterOuterAlt(localctx, 4)
+                self.state = 143
+                self.match(LambdaCalculusParser.NUMBER)
+                self.state = 144
+                self.match(LambdaCalculusParser.T__2)
+                self.state = 145
+                self.match(LambdaCalculusParser.T__5)
+                pass
+
+            elif la_ == 5:
+                self.enterOuterAlt(localctx, 5)
+                self.state = 146
+                self.match(LambdaCalculusParser.NUMBER)
+                self.state = 147
+                self.match(LambdaCalculusParser.T__2)
+                self.state = 148
+                self.match(LambdaCalculusParser.T__6)
+                pass
+
+            elif la_ == 6:
+                self.enterOuterAlt(localctx, 6)
+                self.state = 149
+                self.match(LambdaCalculusParser.NUMBER)
+                self.state = 150
+                self.match(LambdaCalculusParser.T__2)
+                self.state = 151
+                self.match(LambdaCalculusParser.T__7)
+                pass
+
+            elif la_ == 7:
+                self.enterOuterAlt(localctx, 7)
+                self.state = 152
+                self.match(LambdaCalculusParser.NUMBER)
+                self.state = 153
+                self.match(LambdaCalculusParser.T__2)
+                self.state = 154
+                self.match(LambdaCalculusParser.T__8)
                 pass
 
 
@@ -912,7 +1057,7 @@ class LambdaCalculusParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 121
+            self.state = 157
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << LambdaCalculusParser.ADD) | (1 << LambdaCalculusParser.SUBTRACT) | (1 << LambdaCalculusParser.MULTIPLY) | (1 << LambdaCalculusParser.DIVIDE) | (1 << LambdaCalculusParser.POWER))) != 0)):
                 self._errHandler.recoverInline(self)

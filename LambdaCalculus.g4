@@ -40,19 +40,31 @@ value
 variable
     : VARIABLE
     | VARIABLE':''Bool'
+    | VARIABLE':''bool'
+    | VARIABLE':''BOOL'
     | VARIABLE':''Int'
+    | VARIABLE':''int'
+    | VARIABLE':''INT'
     ;
 
 lambda_variable
     : VARIABLE
     | VARIABLE':''Bool'
+    | VARIABLE':''bool'
+    | VARIABLE':''BOOL'
     | VARIABLE':''Int'
+    | VARIABLE':''int'
+    | VARIABLE':''INT'
     ;
 
 number
     : NUMBER
     | NUMBER':''Bool'
+    | NUMBER':''bool'
+    | NUMBER':''BOOL'
     | NUMBER':''Int'
+    | NUMBER':''int'
+    | NUMBER':''INT'
     ;
 
 operation
