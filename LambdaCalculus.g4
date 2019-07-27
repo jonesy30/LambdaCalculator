@@ -11,7 +11,6 @@ application
     : application term 
     | abstraction term
     | value term
-    | function term
     | LBRACKET application RBRACKET
     ;
 
@@ -28,6 +27,7 @@ function
     : value operation term
     | function operation term
     | abstraction operation term
+    | application operation term
     | LBRACKET function RBRACKET
     ;
 
