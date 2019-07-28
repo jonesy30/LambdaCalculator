@@ -283,19 +283,6 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         return self.visit(ctx.getChild(1))
         #return self.visitChildren(ctx)
 
-    # Visit a parse tree produced by LambdaCalculusParser#lambda_variable.
-    def visitLambda_variable(self, ctx:LambdaCalculusParser.Lambda_variableContext):
-        if ctx.getChild(2) is None:
-            return ctx.getChild(0).getText(),None
-        else:
-            print("In lambda variable "+ctx.getChild(0).getText())
-            print("Type = "+ctx.getChild(2).getText())
-            #return ctx.getChild(0).getText(),ctx.getChild(2).getText()
-            return ctx.getChild(0).getText(),self.visit(ctx.getChild(2))
-        
-        #return ctx.getChild(0).getText()
-        #return ctx.getText()
-    
     # Visit a parse tree produced by LambdaCalculusParser#variable.
     def visitVariable(self, ctx:LambdaCalculusParser.VariableContext):
         if ctx.getChild(2) is None:

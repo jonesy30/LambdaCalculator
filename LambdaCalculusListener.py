@@ -71,15 +71,6 @@ class LambdaCalculusListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by LambdaCalculusParser#lambda_variable.
-    def enterLambda_variable(self, ctx:LambdaCalculusParser.Lambda_variableContext):
-        pass
-
-    # Exit a parse tree produced by LambdaCalculusParser#lambda_variable.
-    def exitLambda_variable(self, ctx:LambdaCalculusParser.Lambda_variableContext):
-        pass
-
-
     # Enter a parse tree produced by LambdaCalculusParser#number.
     def enterNumber(self, ctx:LambdaCalculusParser.NumberContext):
         pass

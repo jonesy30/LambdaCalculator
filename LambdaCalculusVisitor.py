@@ -44,11 +44,6 @@ class LambdaCalculusVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by LambdaCalculusParser#lambda_variable.
-    def visitLambda_variable(self, ctx:LambdaCalculusParser.Lambda_variableContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by LambdaCalculusParser#number.
     def visitNumber(self, ctx:LambdaCalculusParser.NumberContext):
         return self.visitChildren(ctx)

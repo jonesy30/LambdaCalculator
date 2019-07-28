@@ -20,7 +20,7 @@ abstraction
     ;
 
 abstraction_term
-    : '%' lambda_variable
+    : '%' variable
     ;
 
 function
@@ -38,11 +38,6 @@ value
     ;
 
 variable
-    : VARIABLE
-    | VARIABLE':'function_type
-    ;
-
-lambda_variable
     : VARIABLE
     | VARIABLE':'function_type
     ;

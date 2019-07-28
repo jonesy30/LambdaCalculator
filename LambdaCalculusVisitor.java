@@ -52,17 +52,23 @@ public interface LambdaCalculusVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVariable(LambdaCalculusParser.VariableContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LambdaCalculusParser#lambda_variable}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLambda_variable(LambdaCalculusParser.Lambda_variableContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link LambdaCalculusParser#number}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitNumber(LambdaCalculusParser.NumberContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LambdaCalculusParser#function_type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunction_type(LambdaCalculusParser.Function_typeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LambdaCalculusParser#ground_type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGround_type(LambdaCalculusParser.Ground_typeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LambdaCalculusParser#operation}.
 	 * @param ctx the parse tree

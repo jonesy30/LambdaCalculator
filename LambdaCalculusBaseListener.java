@@ -99,18 +99,6 @@ public class LambdaCalculusBaseListener implements LambdaCalculusListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLambda_variable(LambdaCalculusParser.Lambda_variableContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLambda_variable(LambdaCalculusParser.Lambda_variableContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterNumber(LambdaCalculusParser.NumberContext ctx) { }
 	/**
 	 * {@inheritDoc}

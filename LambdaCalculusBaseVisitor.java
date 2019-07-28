@@ -65,14 +65,21 @@ public class LambdaCalculusBaseVisitor<T> extends AbstractParseTreeVisitor<T> im
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLambda_variable(LambdaCalculusParser.Lambda_variableContext ctx) { return visitChildren(ctx); }
+	@Override public T visitNumber(LambdaCalculusParser.NumberContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNumber(LambdaCalculusParser.NumberContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFunction_type(LambdaCalculusParser.Function_typeContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitGround_type(LambdaCalculusParser.Ground_typeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
