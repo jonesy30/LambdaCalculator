@@ -12,11 +12,39 @@ import re
 
 class MyLambdaVisitor(LambdaCalculusVisitor):
 
-    #NOTE: Sort out the order of these functions so it makes more sense!
     def __init__(self):
         super()
         self.incoming_values = Stack() #NOTE: This definitely needs renamed
         self.valid_typing = True
+    
+    #NOTE: Order of functions is as follows:
+    # visitTerm
+    # visitApplication
+    # visitAbstraction
+    # visitFunction
+    # visitVariable
+    # visitAbstraction_term
+    # visitNumber
+    # visitOperation
+    # visitValue
+    # visitFunction_type
+    
+    # Visit a parse tree produced by LambdaCalculusParser#term.
+    def visitTerm(self, ctx:LambdaCalculusParser.TermContext):
+        print("T: "+ctx.getText())
+
+        depth = ctx.depth()
+        if depth == 1:
+            
+            #output,return_type = str(self.visitChildren(ctx))
+            output,return_type = self.visitChildren(ctx)
+
+            #NOTE: Format this so output returns a string and not an array            
+            output,return_type = self.post_process(output, return_type)
+            return output,return_type,self.valid_typing
+
+        else:
+            return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
@@ -52,9 +80,10 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
             application_type_journey = []
 
             if function_type is not None:
-                print("Function type not none!")
+                print("Function type not none! "+function_type)
                 function_type_journey = function_type.split("->")
                 if expression_type is not None:
+                    print("Expression type = "+expression_type)
                     expression_type_journey = expression_type.split("->")
                     application_type_journey = []
 
@@ -62,8 +91,15 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
                         type_mismatch = False
                         while len(expression_type_journey) > 0:
                             if function_type_journey[0] != expression_type_journey[0]:
-                                expression_type_journey = []
-                                type_mismatch = True
+                                function_journey_step = function_type_journey[0].lower()
+                                expression_journey_step = expression_type_journey[0].lower()
+                                if function_journey_step != "none" and expression_journey_step != "none":
+                                    expression_type_journey = []
+                                    type_mismatch = True
+                                else:
+                                    #NOTE: Repeated code
+                                    del function_type_journey[0]
+                                    del expression_type_journey[0]
                             else:
                                 del function_type_journey[0]
                                 del expression_type_journey[0]
@@ -90,23 +126,6 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
 
         print("Returned value in application = "+function)
         return function,application_type
-    
-    # Visit a parse tree produced by LambdaCalculusParser#term.
-    def visitTerm(self, ctx:LambdaCalculusParser.TermContext):
-        print("T: "+ctx.getText())
-
-        depth = ctx.depth()
-        if depth == 1:
-            
-            #output,return_type = str(self.visitChildren(ctx))
-            output,return_type = self.visitChildren(ctx)
-
-            #NOTE: Format this so output returns a string and not an array            
-            output,return_type = self.post_process(output, return_type)
-            return output,return_type,self.valid_typing
-
-        else:
-            return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
@@ -185,44 +204,73 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
                 else:
                     function = calculate_alpha(to_substitute, function, incoming)
 
+                #NOTE: I could check that types match here?
+                print("New function at checkpoint marker 1 = "+new_function[:end_value])
                 new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
-            else:
-                new_function = calculate_alpha(to_substitute, function, incoming)
-                print()
-                print("To substitute type = "+str(to_substitute_type))
-                print("To substitute = "+str(to_substitute))
-                print("Incoming type = "+str(incoming_type))
-                print()
-
-                #Check valid/invalid type
+                
+                #NOTE: REPEATED CODE 1
                 if to_substitute_type is not None:
-                    to_substitute_type_journey = to_substitute_type.split("->")
-                    if incoming_type is not None:
-                        incoming_type_journey = incoming_type.split("->")
-                        if to_substitute_type_journey[0] != incoming_type_journey[0]:
-                            print()
-                            print("Incoming type does not match specified input type")
-                            print()
-                            self.valid_typing = False
-
-                if incoming_type is not None:
                     print("To substitute type is not none")
                     print(str(to_substitute_type))
-                    incoming = incoming + ":" + incoming_type
-                new_function = new_function.replace(to_substitute,incoming)
+                    incoming = incoming + ":" + to_substitute_type
+                
+                    print("New function before checkpoint 3 = "+new_function)
+                    new_function = new_function[:end_value].replace(to_substitute,incoming) + new_function[end_value:]
 
-                print()
-                print("New function before tree creation = "+str(new_function))
-                print()
-                tree = self.create_tree(new_function)
+            else:
+                new_function = calculate_alpha(to_substitute, function, incoming)
 
-                new_function,function_type,valid_typing = self.visit(tree)
+                #NOTE: REPEATED CODE 2
+                if to_substitute_type is not None:
+                    print("To substitute type is not none")
+                    print(str(to_substitute_type))
+                    #incoming = incoming + ":" + incoming_type
+                    incoming = incoming + ":" + to_substitute_type
 
-                if valid_typing == False:
-                    self.valid_typing = False
-                print()
-                print("New function after tree creation = "+str(new_function))          
-                print()  
+                    print("New function before checkpoint 3 = "+new_function)
+                    new_function = new_function.replace(to_substitute,incoming)
+
+                #NOTE: And here?
+            print("New function at checkpoint marker 2 = "+new_function)
+            print()
+            print("To substitute type = "+str(to_substitute_type))
+            print("To substitute = "+str(to_substitute))
+            print("Incoming type = "+str(incoming_type))
+            print()
+
+            #Check valid/invalid type
+            print("To substitute type = "+to_substitute_type)
+            if to_substitute_type is not None:
+                to_substitute_type = to_substitute_type.lower()
+            if incoming_type is not None:
+                incoming_type = incoming_type.lower()
+
+            if to_substitute_type is not None and to_substitute_type!="none":
+                to_substitute_type_journey = to_substitute_type.split("->")
+                if incoming_type is not None and incoming_type!="none":
+                    incoming_type_journey = incoming_type.split("->")
+                    if to_substitute_type_journey[0] != incoming_type_journey[0]:
+                        print()
+                        print("Incoming type does not match specified input type")
+                        print()
+                        self.valid_typing = False
+
+            print("New function after checkpoint 3 = "+new_function)
+            #I need to substitute in the bound value type here
+            
+
+            print()
+            print("New function before tree creation = "+str(new_function))
+            print()
+            tree = self.create_tree(new_function)
+
+            new_function,function_type,valid_typing = self.visit(tree)
+
+            if valid_typing == False:
+                self.valid_typing = False
+            print()
+            print("New function after tree creation = "+str(new_function))          
+            print()  
         #If there is not a value to substitute into this abstraction
         else:
             #If there's nothing to substitute, just rewrite the term in form
@@ -238,7 +286,10 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         return new_function,abstraction_type
 
     # Visit a parse tree produced by LambdaCalculusParser#function.
-    def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
+    #NOTE: having function_type = None could be a way to fix my "invalid typing when bound variable does not match inner variable" issue
+    #Just call this method directly from the abstraction term if the thing below is a function
+    #NOTE: If I don't end up needing this, take it out!
+    def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext, function_type=None):
         parenthesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
         if parenthesis_check == "(":
@@ -277,22 +328,19 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
         
         return return_string,return_type
         #return "" + self.visit(ctx.getChild(0)) + ctx.getChild(1).getText() + self.visit(ctx.getChild(2))
-
-    # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
-    def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
-        return self.visit(ctx.getChild(1))
-        #return self.visitChildren(ctx)
-
+    
     # Visit a parse tree produced by LambdaCalculusParser#variable.
     def visitVariable(self, ctx:LambdaCalculusParser.VariableContext):
         if ctx.getChild(2) is None:
             return ctx.getChild(0).getText(),None
         else:
             return ctx.getChild(0).getText(),self.visit(ctx.getChild(2))
-        
-        #return ctx.getChild(0).getText()
-        #return self.visitChildren(ctx)
 
+    # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
+    def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
+        return self.visit(ctx.getChild(1))
+        #return self.visitChildren(ctx)
+        
     # Visit a parse tree produced by LambdaCalculusParser#number.
     def visitNumber(self, ctx:LambdaCalculusParser.NumberContext):
         if ctx.getChild(2) is None:
@@ -311,21 +359,10 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#expression.
     def visitValue(self, ctx:LambdaCalculusParser.ValueContext):
         return self.visitChildren(ctx)
-        #return ctx.getText()
     
     # Visit a parse tree produced by LambdaCalculusParser#term_type.
     def visitFunction_type(self, ctx:LambdaCalculusParser.Function_typeContext):
-        #child = self.visitChildren(ctx)
-        #print("In term type: "+str(child))
-        #return self.visitChildren(ctx)
-
         return ctx.getText()
-        #return self.visit(ctx.getChild(0))
-
-        # if ctx.getChildCount() > 1:
-        #     return self.visit(ctx.getChild(0)),self.visit(ctx.getChild(2))
-        # else:
-        #     return self.visit(ctx.getChild(0)),None
 
     def post_process(self, output, return_type):
 
