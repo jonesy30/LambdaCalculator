@@ -57,6 +57,9 @@ class CallByValueVisitor(LambdaCalculusVisitor):
             child_value,child_type = self.visit(ctx.getChild(1))
             return "" + ctx.getChild(0).getText() + child_value + ctx.getChild(2).getText(),child_type
 
+        #Visit the first child, then visit the second
+        #NOTE: To convert to call-by-name, I need to get the text of child 1, and then evaluate the abstraction with the unprocessed textual version of child 1
+        #Then I need to get the abstraction to create a tree of the result of itself (before or after alpha conversion?) which it will then visit and process
         function,function_type = self.visit(ctx.getChild(0))
         expression,expression_type = self.visit(ctx.getChild(1))
 
@@ -66,64 +69,18 @@ class CallByValueVisitor(LambdaCalculusVisitor):
         #Find the type of the first root node (ignoring terms)
         am_I_an_abstraction = tree
         while isinstance(am_I_an_abstraction,LambdaCalculusParser.TermContext):
-            #print("Term in tree = "+str(type(am_I_an_abstraction)))
             am_I_an_abstraction = am_I_an_abstraction.getChild(0)
 
         application_type = None
+
         #If the left hand tree is an abstraction - you're not done! Keep processing using the right hand side of the tree
         if isinstance(am_I_an_abstraction,LambdaCalculusParser.AbstractionContext):
             #Visit the left hand tree with the term created from the right hand side
             self.incoming_values.push(tuple([expression,expression_type]))
             function,function_type = self.visit(am_I_an_abstraction)
 
-            #Type check the application
-            application_type_journey = []
-
-            if function_type is not None:
-                #Split the type of the function term into their journeys (1 -> 2 -> 3 -> ...n)
-                print("Function type not none! "+function_type)
-                function_type_journey = function_type.split("->")
-                if expression_type is not None:
-                    #Do the same splitting with the type of the expression
-                    print("Expression type = "+expression_type)
-                    expression_type_journey = expression_type.split("->")
-                    application_type_journey = []
-
-                    #Check whether the typing is valid or not
-                    if len(function_type_journey) > len(expression_type_journey):
-                        type_mismatch = False
-                        while len(expression_type_journey) > 0:
-                            if function_type_journey[0] != expression_type_journey[0]:
-                                function_journey_step = function_type_journey[0].lower()
-                                expression_journey_step = expression_type_journey[0].lower()
-                                if function_journey_step != "none" and expression_journey_step != "none":
-                                    expression_type_journey = []
-                                    type_mismatch = True
-                                else:
-                                    #NOTE: Repeated code
-                                    del function_type_journey[0]
-                                    del expression_type_journey[0]
-                            else:
-                                del function_type_journey[0]
-                                del expression_type_journey[0]
-                        if type_mismatch == False:
-                            application_type_journey = function_type_journey
-                else:
-                    print("In else")
-                    print("Function type journey = "+str(function_type_journey))
-                    del function_type_journey[0]
-                    application_type_journey = function_type_journey
-        
-            if application_type_journey == [] or application_type_journey == None:
-                application_type = "None"
-            else:
-                #Create the abstraction type string based on what's left of the function type term
-                print("Application_type_journey = "+str(application_type_journey))
-                application_type = ""
-                for i,journey_step in enumerate(application_type_journey):
-                    application_type = application_type + "->" + application_type_journey[i]
-                application_type=application_type[2:]
-
+            #Get the type of the application based on the two incoming values
+            application_type = self.type_check_application(function_type,expression_type)
             print("Application_type = "+str(application_type))
         #The left hand side isn't an abstraction, keep the left hand side as it is, and add the right
         else:
@@ -375,6 +332,56 @@ class CallByValueVisitor(LambdaCalculusVisitor):
             function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
 
         return function
+
+    def type_check_application(self, function_type, expression_type):
+        #Type check the application
+        application_type_journey = []
+
+        if function_type is not None:
+            #Split the type of the function term into their journeys (1 -> 2 -> 3 -> ...n)
+            print("Function type not none! "+function_type)
+            function_type_journey = function_type.split("->")
+            if expression_type is not None:
+                #Do the same splitting with the type of the expression
+                print("Expression type = "+expression_type)
+                expression_type_journey = expression_type.split("->")
+                application_type_journey = []
+
+                #Check whether the typing is valid or not
+                if len(function_type_journey) > len(expression_type_journey):
+                    type_mismatch = False
+                    while len(expression_type_journey) > 0:
+                        if function_type_journey[0] != expression_type_journey[0]:
+                            function_journey_step = function_type_journey[0].lower()
+                            expression_journey_step = expression_type_journey[0].lower()
+                            if function_journey_step == "none" or expression_journey_step == "none":
+                                expression_type_journey = []
+                                type_mismatch = True
+                            else:
+                                #NOTE: Repeated code
+                                del function_type_journey[0]
+                                del expression_type_journey[0]
+                        else:
+                            del function_type_journey[0]
+                            del expression_type_journey[0]
+                    if type_mismatch == False:
+                        application_type_journey = function_type_journey
+            else:
+                print("Function type journey = "+str(function_type_journey))
+                del function_type_journey[0]
+                application_type_journey = function_type_journey
+    
+        if application_type_journey == [] or application_type_journey == None:
+            application_type = "None"
+        else:
+            #Create the abstraction type string based on what's left of the function type term
+            print("Application_type_journey = "+str(application_type_journey))
+            application_type = ""
+            for i,journey_step in enumerate(application_type_journey):
+                application_type = application_type + "->" + application_type_journey[i]
+            application_type=application_type[2:]
+    
+        return application_type
 
     def convert_type_if_none(self, term_type):
         
