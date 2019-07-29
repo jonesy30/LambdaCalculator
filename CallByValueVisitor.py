@@ -70,9 +70,9 @@ class CallByValueVisitor(LambdaCalculusVisitor):
             am_I_an_abstraction = am_I_an_abstraction.getChild(0)
 
         application_type = None
-        #print("Term in tree = "+str(type(am_I_an_abstraction)))
         #If the left hand tree is an abstraction - you're not done! Keep processing using the right hand side of the tree
         if isinstance(am_I_an_abstraction,LambdaCalculusParser.AbstractionContext):
+            #Visit the left hand tree with the term created from the right hand side
             self.incoming_values.push(tuple([expression,expression_type]))
             function,function_type = self.visit(am_I_an_abstraction)
 
@@ -80,13 +80,16 @@ class CallByValueVisitor(LambdaCalculusVisitor):
             application_type_journey = []
 
             if function_type is not None:
+                #Split the type of the function term into their journeys (1 -> 2 -> 3 -> ...n)
                 print("Function type not none! "+function_type)
                 function_type_journey = function_type.split("->")
                 if expression_type is not None:
+                    #Do the same splitting with the type of the expression
                     print("Expression type = "+expression_type)
                     expression_type_journey = expression_type.split("->")
                     application_type_journey = []
 
+                    #Check whether the typing is valid or not
                     if len(function_type_journey) > len(expression_type_journey):
                         type_mismatch = False
                         while len(expression_type_journey) > 0:
@@ -114,6 +117,7 @@ class CallByValueVisitor(LambdaCalculusVisitor):
             if application_type_journey == [] or application_type_journey == None:
                 application_type = "None"
             else:
+                #Create the abstraction type string based on what's left of the function type term
                 print("Application_type_journey = "+str(application_type_journey))
                 application_type = ""
                 for i,journey_step in enumerate(application_type_journey):
@@ -121,9 +125,11 @@ class CallByValueVisitor(LambdaCalculusVisitor):
                 application_type=application_type[2:]
 
             print("Application_type = "+str(application_type))
+        #The left hand side isn't an abstraction, keep the left hand side as it is, and add the right
         else:
             function = function + expression
 
+        #Return the application value and type
         print("Returned value in application = "+function)
         return function,application_type
 
@@ -137,16 +143,16 @@ class CallByValueVisitor(LambdaCalculusVisitor):
             child_value,child_type = self.visit(ctx.getChild(1))
             return "" + ctx.getChild(0).getText() + child_value + ctx.getChild(2).getText(),child_type
         
+        #NOTE: These all definitely need renamed
+        #Visit the left hand child, to get the bound variable type and value
+        to_substitute,to_substitute_type = self.visit(ctx.getChild(0))
+
         #Pop the value as soon as you get the abstraction term, before you
         #visit the rest of the children, so the correct term gets associated
         #with the correct input
-        
-        #NOTE: These all definitely need renamed
-        to_substitute,to_substitute_type = self.visit(ctx.getChild(0))
-        print("To substitute type on incoming = "+str(to_substitute_type))
         incoming_tuple = self.incoming_values.pop()
-        print("Incoming tuple = "+str(incoming_tuple))
 
+        #Split the incoming tuple into its value and type terms
         incoming = None
         incoming_type = None
         
@@ -156,9 +162,12 @@ class CallByValueVisitor(LambdaCalculusVisitor):
             incoming = incoming_tuple[0]
             incoming_type = incoming_tuple[1]
         
-        print("Incoming = "+str(incoming))
+        #If the types of the substituted or incoming values are the string "none" (or any capitalised version of none)
+        #set it to standard value None (makes type checking and setting easier later)
+        incoming_type = self.convert_type_if_none(incoming_type)
+        to_substitute_type = self.convert_type_if_none(to_substitute_type)
 
-        print("Popped type = "+str(incoming_type))
+        #Visit and evaluate the right hand side child (the function)
         function,function_type = self.visit(ctx.getChild(2))
 
         print("To substitute = "+to_substitute)
@@ -179,73 +188,48 @@ class CallByValueVisitor(LambdaCalculusVisitor):
                 #If there is more than zero bound variables found in the string
                 if len(bound_variables_left) > 0:
                     for i,bound_variable in enumerate(bound_variables_left):
-                        #NOTE: REPEATED CODE 1
                         type_match = re.search(":(.*)", bound_variable)
                         bound_variables_left[i] = bound_variable.replace(type_match.group(0),"")
 
-                    #More than one bound variable -- do something here
+                    #More than one bound variable - check whether they match the current bound variable
                     if to_substitute in bound_variables_left:
                         #Bound variable repeated, need to check for the next instance of it and stop evaluating there
                         for i,letter in enumerate(function):
                             if letter == '%':
                                 subst_container_match = re.search("%(.*?)\.", function[i:])
                                 bound_value = subst_container_match.group(1)
-                                #NOTE: REPEATED CODE 1
                                 type_match = re.search(":(.*)", bound_variable)
                                 bound_value = bound_value.replace(type_match.group(0),"")
                                 if to_substitute == bound_value:
                                     break
                         end_value = i
                         function = calculate_alpha(to_substitute, function, incoming, 0, end_value)
+                    
                     #If there is not more than one of the same bound variable detected, just alpha convert as normal
                     else:
                         function = calculate_alpha(to_substitute, function, incoming)
-                #If there are no bound variables inside the string found
+                
+                #If there are no bound variables inside the string found, alpha convert as normal
                 else:
                     function = calculate_alpha(to_substitute, function, incoming)
 
                 #NOTE: I could check that types match here?
+                #Replace the bound variables with the incoming value, up until the end point (the point where there's bound variable crossover)
                 print("New function at checkpoint marker 1 = "+new_function[:end_value])
+                #Replace the bound variable with the new incoming value
                 new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
-                
-                #NOTE: REPEATED CODE 1
-                if to_substitute_type is not None:
-                    to_substitute_type = to_substitute_type.lower()
+                #Convert the new function to include the types from either the bound value or the incoming value (depending on which has a type)
+                new_function = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, new_function, end_value)
 
-                if to_substitute_type is not None and to_substitute_type != "none":
-                    print("To substitute type is not none")
-                    print(str(to_substitute_type))
-                    incoming = incoming + ":" + to_substitute_type
-                
-                    print("New function before checkpoint 3 = "+new_function)
-                    new_function = new_function[:end_value].replace(to_substitute,incoming) + new_function[end_value:]
-                elif incoming_type is not None:
-                    print("To substitute type is none, but incoming isn't!")
-                    incoming = incoming + ":" + incoming_type
-                    new_function = new_function[:end_value].replace(to_substitute,incoming) + new_function[end_value:]
-
+            #If there are no other lambda terms found within the current lambda term
             else:
+                #Calculate the alpha reduction as normal
                 new_function = calculate_alpha(to_substitute, function, incoming)
+                #Replace the bound variable with the new incoming value
+                new_function = new_function.replace(to_substitute,incoming)
+                #Convert the new function to include the types from either the bound value or the incoming value (depending on which has a type)
+                new_function = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, new_function)
 
-                #NOTE: REPEATED CODE 2
-                
-                if to_substitute_type is not None:
-                    to_substitute_type = to_substitute_type.lower()
-
-                if to_substitute_type is not None and to_substitute_type != "none":
-                    print("To substitute type is not none")
-                    print(str(to_substitute_type))
-                    #incoming = incoming + ":" + incoming_type
-                    incoming = incoming + ":" + to_substitute_type
-
-                    print("New function before checkpoint 3 = "+new_function)
-                    new_function = new_function.replace(to_substitute,incoming)
-                elif incoming_type is not None:
-                    print("To substitute type is none, but incoming isn't!")
-                    incoming = incoming + ":" + incoming_type
-                    new_function = new_function.replace(to_substitute,incoming)
-
-                #NOTE: And here?
             print("New function at checkpoint marker 2 = "+new_function)
             print()
             print("To substitute type = "+str(to_substitute_type))
@@ -253,47 +237,37 @@ class CallByValueVisitor(LambdaCalculusVisitor):
             print("Incoming type = "+str(incoming_type))
             print()
 
-            #Check valid/invalid type
-            print("To substitute type = "+to_substitute_type)
+            #Check valid/invalid type by comparing the incoming type to the bound variable type
             if to_substitute_type is not None:
-                to_substitute_type = to_substitute_type.lower()
-            if incoming_type is not None:
-                incoming_type = incoming_type.lower()
-
-            if to_substitute_type is not None and to_substitute_type!="none":
                 to_substitute_type_journey = to_substitute_type.split("->")
-                if incoming_type is not None and incoming_type!="none":
+                if incoming_type is not None:
                     incoming_type_journey = incoming_type.split("->")
                     if to_substitute_type_journey[0] != incoming_type_journey[0]:
-                        print()
-                        print("Incoming type does not match specified input type")
-                        print()
                         self.valid_typing = False
-
-            print("New function after checkpoint 3 = "+new_function)
-            #I need to substitute in the bound value type here
-            
 
             print()
             print("New function before tree creation = "+str(new_function))
             print()
-            tree = self.create_tree(new_function)
 
+            #Create a tree of the result of the inner function, and evaluate it
+            tree = self.create_tree(new_function)
             new_function,function_type,valid_typing = self.visit(tree)
 
             if valid_typing == False:
                 self.valid_typing = False
+
             print()
             print("New function after tree creation = "+str(new_function))          
             print()  
+        
         #If there is not a value to substitute into this abstraction
         else:
-            #If there's nothing to substitute, just rewrite the term in form
-            #[?/x] and pass back up the tree
-            print("To substitute = "+to_substitute)
+            #If there's nothing to do here, just convert back to %x.M form
+            #and pass the value back up the tree, adding the types back in
             substitution_form = "%"+str(to_substitute)+":"+str(to_substitute_type)+"."
             new_function = substitution_form + function
         
+        #Create the new abstraction type, which is the bound variable type -> the type it gets converted to
         abstraction_type = str(to_substitute_type) + "->" + str(function_type)
         print("Function after replacement in abstraction = "+new_function)
         print("Abstraction type = "+str(abstraction_type))
@@ -323,8 +297,12 @@ class CallByValueVisitor(LambdaCalculusVisitor):
         if right_type is not None:
             right_type = right_type.lower()
 
+        #Functions that take two booleans and return a boolean
         bool_bool = ["AND","OR"]
-        int_int = ["+","-","*","/","^","EQ","GT","LT"]
+        #Take two ints and return an int
+        int_int = ["+","-","*","/","^"]
+        #Takes two ints and returns a boolean
+        int_bool = ["EQ","GT","LT"]
         return_type = None
 
         if op in bool_bool:
@@ -332,7 +310,7 @@ class CallByValueVisitor(LambdaCalculusVisitor):
                 self.valid_typing = False
             elif self.valid_typing == True:
                 return_type = "bool"
-        elif op in int_int:
+        elif op in int_int or op in int_bool:
             if left_type == "bool" or right_type == "bool":
                 self.valid_typing = False
             elif self.valid_typing == True:
@@ -378,6 +356,34 @@ class CallByValueVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#term_type.
     def visitFunction_type(self, ctx:LambdaCalculusParser.Function_typeContext):
         return ctx.getText()
+
+    #NOTE: Please rename this future Yola...
+    def convert_function_with_type(self, to_substitute, to_substitute_type, incoming, incoming_type, function, end_value=None):
+
+        #If there is a bound variable type to be substituted, add it to the rest of the bound variables in the term
+        if to_substitute_type is not None:
+            print(str(to_substitute_type))
+            #incoming = incoming + ":" + incoming_type
+            incoming = incoming + ":" + to_substitute_type
+
+            function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+        
+        #If the substituted type is none but the incoming type is not, we still know what the bound variable type should now be, so replace it
+        elif incoming_type is not None:
+            print("To substitute type is none, but incoming isn't!")
+            incoming = incoming + ":" + incoming_type
+            function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+
+        return function
+
+    def convert_type_if_none(self, term_type):
+        
+        if term_type is not None:
+            term_type = term_type.lower()
+            if term_type == "none":
+                term_type = None
+            
+        return term_type
 
     def post_process(self, output, return_type):
 
