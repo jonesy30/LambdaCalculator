@@ -10,7 +10,7 @@ else:
     from LambdaCalculusLexer import LambdaCalculusLexer
 import re
 
-class MyLambdaVisitor(LambdaCalculusVisitor):
+class CallByValueVisitor(LambdaCalculusVisitor):
 
     def __init__(self):
         super()
@@ -210,24 +210,39 @@ class MyLambdaVisitor(LambdaCalculusVisitor):
                 
                 #NOTE: REPEATED CODE 1
                 if to_substitute_type is not None:
+                    to_substitute_type = to_substitute_type.lower()
+
+                if to_substitute_type is not None and to_substitute_type != "none":
                     print("To substitute type is not none")
                     print(str(to_substitute_type))
                     incoming = incoming + ":" + to_substitute_type
                 
                     print("New function before checkpoint 3 = "+new_function)
                     new_function = new_function[:end_value].replace(to_substitute,incoming) + new_function[end_value:]
+                elif incoming_type is not None:
+                    print("To substitute type is none, but incoming isn't!")
+                    incoming = incoming + ":" + incoming_type
+                    new_function = new_function[:end_value].replace(to_substitute,incoming) + new_function[end_value:]
 
             else:
                 new_function = calculate_alpha(to_substitute, function, incoming)
 
                 #NOTE: REPEATED CODE 2
+                
                 if to_substitute_type is not None:
+                    to_substitute_type = to_substitute_type.lower()
+
+                if to_substitute_type is not None and to_substitute_type != "none":
                     print("To substitute type is not none")
                     print(str(to_substitute_type))
                     #incoming = incoming + ":" + incoming_type
                     incoming = incoming + ":" + to_substitute_type
 
                     print("New function before checkpoint 3 = "+new_function)
+                    new_function = new_function.replace(to_substitute,incoming)
+                elif incoming_type is not None:
+                    print("To substitute type is none, but incoming isn't!")
+                    incoming = incoming + ":" + incoming_type
                     new_function = new_function.replace(to_substitute,incoming)
 
                 #NOTE: And here?
