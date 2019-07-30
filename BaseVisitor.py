@@ -40,7 +40,9 @@ class BaseVisitor(LambdaCalculusVisitor):
     #NOTE: having function_type = None could be a way to fix my "invalid typing when bound variable does not match inner variable" issue
     #Just call this method directly from the abstraction term if the thing below is a function
     #NOTE: If I don't end up needing this, take it out!
-    def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext, function_type=None):
+    def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
+
+        #NOTE: I still need to set numbers to ints and TRUE/FALSE to bools here
         parenthesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
         if parenthesis_check == "(":
@@ -123,9 +125,11 @@ class BaseVisitor(LambdaCalculusVisitor):
 
         #If there is a bound variable type to be substituted, add it to the rest of the bound variables in the term
         if to_substitute_type is not None:
-            print(str(to_substitute_type))
             incoming = incoming + ":" + to_substitute_type
 
+            print("To substitute = "+to_substitute)
+            print("To substitute type = "+to_substitute_type)
+            print("Function = "+function)
             if end_value is not None:
                 function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
             else:
@@ -134,6 +138,11 @@ class BaseVisitor(LambdaCalculusVisitor):
         #If the substituted type is none but the incoming type is not, we still know what the bound variable type should now be, so replace it
         elif incoming_type is not None:
             incoming = incoming + ":" + incoming_type
+
+            print("Incoming = "+incoming)
+            print("Incoming type = "+incoming_type)
+            print("Function = "+function)
+
             if end_value is not None:
                 function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
             else:
@@ -145,6 +154,9 @@ class BaseVisitor(LambdaCalculusVisitor):
         #Type check the application
         application_type_journey = []
 
+        print("I am in type check application")
+        print("Function type = "+str(function_type))
+        print("Expression type = "+str(expression_type))
         if function_type is not None:
             #Split the type of the function term into their journeys (1 -> 2 -> 3 -> ...n)
             print("Function type not none! "+function_type)
@@ -163,17 +175,19 @@ class BaseVisitor(LambdaCalculusVisitor):
                             function_journey_step = function_type_journey[0].lower()
                             expression_journey_step = expression_type_journey[0].lower()
                             if function_journey_step == "none" or expression_journey_step == "none":
-                                expression_type_journey = []
-                                type_mismatch = True
-                            else:
                                 #NOTE: Repeated code
                                 del function_type_journey[0]
                                 del expression_type_journey[0]
+                            else:
+                                expression_type_journey = []
+                                type_mismatch = True
                         else:
                             del function_type_journey[0]
                             del expression_type_journey[0]
                     if type_mismatch == False:
                         application_type_journey = function_type_journey
+                    else:
+                        self.valid_typing = False
             else:
                 print("Function type journey = "+str(function_type_journey))
                 del function_type_journey[0]
@@ -190,6 +204,18 @@ class BaseVisitor(LambdaCalculusVisitor):
             application_type=application_type[2:]
     
         return application_type
+
+    def add_bound_variable_types_to_function(self, bound_variable, function, type):
+        if type is None:
+            type = "none"
+        
+        function_list = list(function)
+        for i,character in enumerate(function_list):
+            if character == bound_variable:
+                function_list[i] = character + ":" + type
+
+        processed_function = "".join(function_list)
+        return processed_function
 
     def convert_type_if_none(self, term_type):
         

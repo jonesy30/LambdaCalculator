@@ -49,12 +49,13 @@ class CallByValueVisitor(BaseVisitor):
             self.incoming_values.push(tuple([expression,expression_type]))
             function,function_type = self.visit(am_I_an_abstraction)
 
-            #Get the type of the application based on the two incoming values
-            application_type = self.type_check_application(function_type,expression_type)
-            print("Application_type = "+str(application_type))
         #The left hand side isn't an abstraction, keep the left hand side as it is, and add the right
         else:
             function = function + expression
+
+        #Get the type of the application based on the two incoming values
+        application_type = self.type_check_application(function_type,expression_type)
+        print("Application_type = "+str(application_type))
 
         #Return the application value and type
         print("Returned value in application = "+function)
@@ -101,7 +102,8 @@ class CallByValueVisitor(BaseVisitor):
         print("Function before abstraction = "+function)
         print("Incoming before abstraction = "+str(incoming))
 
-        new_function = function
+        new_function = self.add_bound_variable_types_to_function(to_substitute,function,to_substitute_type)
+        #new_function = function
 
         #If there is a value to subsitute into this abstraction
         if incoming != -1:
@@ -189,6 +191,13 @@ class CallByValueVisitor(BaseVisitor):
         
         #If there is not a value to substitute into this abstraction
         else:
+            #Create a tree of the result of the inner function, and evaluate it
+            tree = self.create_tree(new_function)
+            new_function,function_type,valid_typing = self.visit(tree)
+
+            if valid_typing == False:
+                self.valid_typing = False
+
             #If there's nothing to do here, just convert back to %x.M form
             #and pass the value back up the tree, adding the types back in
             substitution_form = "%"+str(to_substitute)+":"+str(to_substitute_type)+"."
