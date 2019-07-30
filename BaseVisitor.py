@@ -22,7 +22,13 @@ class BaseVisitor(LambdaCalculusVisitor):
         depth = ctx.depth()
         if depth == 1:
             
-            output,return_type = self.visitChildren(ctx)
+            output = None
+            return_type = None
+
+            output_tuple = self.visitChildren(ctx)
+            if output_tuple is not None:
+                output = output_tuple[0]
+                return_type = output_tuple[1]
 
             output,return_type = self.post_process(output, return_type)
             return output,return_type,self.valid_typing
@@ -118,16 +124,20 @@ class BaseVisitor(LambdaCalculusVisitor):
         #If there is a bound variable type to be substituted, add it to the rest of the bound variables in the term
         if to_substitute_type is not None:
             print(str(to_substitute_type))
-            #incoming = incoming + ":" + incoming_type
             incoming = incoming + ":" + to_substitute_type
 
-            function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+            if end_value is not None:
+                function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+            else:
+                function = function.replace(to_substitute,incoming)
         
         #If the substituted type is none but the incoming type is not, we still know what the bound variable type should now be, so replace it
         elif incoming_type is not None:
-            print("To substitute type is none, but incoming isn't!")
             incoming = incoming + ":" + incoming_type
-            function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+            if end_value is not None:
+                function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+            else:
+                function = function.replace(to_substitute,incoming)
 
         return function
 

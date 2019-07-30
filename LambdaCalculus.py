@@ -7,6 +7,7 @@ from LambdaCalculusVisitor import LambdaCalculusVisitor
 from BracketCheck import BracketCheck
 from CaseCheck import CaseCheck
 from CallByValueVisitor import CallByValueVisitor
+from CallByNameVisitor import CallByNameVisitor
 from Stack import Stack
 
 from sympy.solvers import solve
@@ -35,8 +36,8 @@ def main():
     tokens = CommonTokenStream(lexer)
     parser = LambdaCalculusParser(tokens)
     tree = parser.term()
-    visitor = CallByValueVisitor()
-    #visitor = LambdaCalculusVisitor()
+    #visitor = CallByValueVisitor()
+    visitor = CallByNameVisitor()
     result,return_type,valid_type = visitor.visit(tree)
     print("Result = "+str(result))
     print("Return type = "+str(return_type))
