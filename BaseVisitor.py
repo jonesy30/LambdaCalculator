@@ -43,11 +43,9 @@ class BaseVisitor(LambdaCalculusVisitor):
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
 
         #NOTE: I still need to set numbers to ints and TRUE/FALSE to bools here
-        parenthesis_check = ctx.getChild(0).getText()
-        #if I am a parenthesis of myself, just return as I am
-        if parenthesis_check == "(":
-            child_value,child_type = self.visit(ctx.getChild(1))
-            return "" + ctx.getChild(0).getText() + child_value + ctx.getChild(2).getText(),child_type
+        parenthesis_check = self.check_for_parenthesis(ctx)
+        if parenthesis_check != -1:
+            return parenthesis_check
         
         #NOTE: I should be calculating the function here and returning the result
         left,left_type = self.visit(ctx.getChild(0))
@@ -245,6 +243,15 @@ class BaseVisitor(LambdaCalculusVisitor):
         tree = parser.term()
 
         return tree
+
+    def check_for_parenthesis(self, ctx):
+        parenthesis_check = ctx.getChild(0).getText()
+        #if I am a parenthesis of myself, just return as I am
+        if parenthesis_check == "(":
+            child_value,child_type = self.visit(ctx.getChild(1))
+            return "" + ctx.getChild(0).getText() + child_value + ctx.getChild(2).getText(),child_type
+        else:
+            return -1
     
     def perform_abstraction(self, ctx, incoming, incoming_type, to_substitute, to_substitute_type):
         
