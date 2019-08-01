@@ -42,10 +42,11 @@ class BaseVisitor(LambdaCalculusVisitor):
     #NOTE: If I don't end up needing this, take it out!
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
 
-        #NOTE: I still need to set numbers to ints and TRUE/FALSE to bools here
-        parenthesis_check = self.check_for_parenthesis(ctx)
-        if parenthesis_check != -1:
-            return parenthesis_check
+        parenthesis_check = ctx.getChild(0).getText()
+        #if I am a parenthesis of myself, just return as I am
+        if parenthesis_check == "(":
+            child_value,child_type,input_type = self.visit(ctx.getChild(1))
+            return "" + ctx.getChild(0).getText() + child_value + ctx.getChild(2).getText(),child_type,input_type
         
         #NOTE: I should be calculating the function here and returning the result
         left,left_type = self.visit(ctx.getChild(0))
