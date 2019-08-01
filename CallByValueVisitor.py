@@ -50,7 +50,7 @@ class CallByValueVisitor(BaseVisitor):
 
         #The left hand side isn't an abstraction, keep the left hand side as it is, and add the right
         else:
-            function = function + expression
+            function = str(function) + str(expression)
 
         print("Function type = "+str(function_type))
         print("Expression type = "+str(expression_type))

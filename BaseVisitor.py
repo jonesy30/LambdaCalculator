@@ -120,6 +120,9 @@ class BaseVisitor(LambdaCalculusVisitor):
     
     # Visit a parse tree produced by LambdaCalculusParser#expression.
     def visitValue(self, ctx:LambdaCalculusParser.ValueContext):
+        parenthesis_check = self.check_for_parenthesis(ctx)
+        if parenthesis_check != -1:
+            return parenthesis_check
         return self.visitChildren(ctx)
     
     # Visit a parse tree produced by LambdaCalculusParser#term_type.
@@ -235,13 +238,14 @@ class BaseVisitor(LambdaCalculusVisitor):
         return output,return_type
 
     def create_tree(self, function):
-        stream = InputStream(function)
-        lexer = LambdaCalculusLexer(stream)
-        tokens = CommonTokenStream(lexer)
-        parser = LambdaCalculusParser(tokens)
-        tree = parser.term()
+        if function is not None:
+            stream = InputStream(function)
+            lexer = LambdaCalculusLexer(stream)
+            tokens = CommonTokenStream(lexer)
+            parser = LambdaCalculusParser(tokens)
+            tree = parser.term()
 
-        return tree
+            return tree
 
     def check_for_parenthesis(self, ctx):
         parenthesis_check = ctx.getChild(0).getText()
@@ -260,7 +264,14 @@ class BaseVisitor(LambdaCalculusVisitor):
         to_substitute_type = self.convert_type_if_none(to_substitute_type)
 
         #Visit and evaluate the right hand side child (the function)
-        function,function_type,input_type = self.visit(ctx.getChild(2))
+        returned_child = self.visit(ctx.getChild(2))
+        function = returned_child[0]
+        function_type = returned_child[1]
+
+        input_type = None
+        if len(returned_child) == 3:
+            input_type = returned_child[2]
+        
         if to_substitute_type == None:
             to_substitute_type = input_type
 

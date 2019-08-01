@@ -28,6 +28,7 @@ class CallByNameVisitor(BaseVisitor):
         #Visit the first child, then visit the second
         #NOTE: To convert to call-by-name, I need to get the text of child 1, and then evaluate the abstraction with the unprocessed textual version of child 1
         #Then I need to get the abstraction to create a tree of the result of itself (before or after alpha conversion?) which it will then visit and process
+        #function,function_type = self.visit(ctx.getChild(0))
         function,function_type = self.visit(ctx.getChild(0))
         expression = ctx.getChild(1).getText()
         expression_type = None
@@ -53,7 +54,7 @@ class CallByNameVisitor(BaseVisitor):
         #The left hand side isn't an abstraction, keep the left hand side as it is, and add the right
         else:
             expression, expression_type = self.visit(ctx.getChild(1))
-            function = function + expression
+            function = str(function) + str(expression)
             #Get the type of the application based on the two incoming values
             application_type = self.type_check_application(function_type,expression_type)
 
