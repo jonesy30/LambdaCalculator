@@ -49,14 +49,13 @@ class CallByNameVisitor(BaseVisitor):
             self.incoming_values.push(expression)
             function,function_type = self.visit(am_I_an_abstraction)
             application_type = function_type
-            
+
         #The left hand side isn't an abstraction, keep the left hand side as it is, and add the right
         else:
             expression, expression_type = self.visit(ctx.getChild(1))
             function = function + expression
             #Get the type of the application based on the two incoming values
             application_type = self.type_check_application(function_type,expression_type)
-        
 
         print("Application_type = "+str(application_type))
 
@@ -83,5 +82,8 @@ class CallByNameVisitor(BaseVisitor):
         incoming_type = None
 
         abstraction_result, abstraction_type = self.perform_abstraction(ctx, incoming, incoming_type, to_substitute, to_substitute_type)
+        if incoming != -1:
+            abstraction_type = self.type_check_application(abstraction_type,incoming_type)
 
+        print("Abstraction type = "+abstraction_type)
         return abstraction_result,abstraction_type
