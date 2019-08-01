@@ -66,22 +66,31 @@ class BaseVisitor(LambdaCalculusVisitor):
         #Takes two ints and returns a boolean
         int_bool = ["==",">","<"]
         return_type = None
+        input_type = None
 
         if op in bool_bool:
             if left_type == "int" or right_type == "int":
                 self.set_valid_typing(False)
             elif self.valid_typing == True:
                 return_type = "bool"
-        elif op in int_int or op in int_bool:
+                input_type = "bool"
+        elif op in int_int:
             if left_type == "bool" or right_type == "bool":
                 self.set_valid_typing(False)
             elif self.valid_typing == True:
                 return_type = "int"
+                input_type="int"
+        elif op in int_bool:
+            if left_type == "bool" or right_type == "bool":
+                self.set_valid_typing(False)
+            elif self.valid_typing == True:
+                return_type = "bool"
+                input_type = "int"
         
         #TODO: Do some actual calculations here
         return_string = "" + left + op + right
         
-        return return_string,return_type
+        return return_string,return_type,input_type
     
     # Visit a parse tree produced by LambdaCalculusParser#variable.
     def visitVariable(self, ctx:LambdaCalculusParser.VariableContext):
@@ -250,7 +259,9 @@ class BaseVisitor(LambdaCalculusVisitor):
         to_substitute_type = self.convert_type_if_none(to_substitute_type)
 
         #Visit and evaluate the right hand side child (the function)
-        function,function_type = self.visit(ctx.getChild(2))
+        function,function_type,input_type = self.visit(ctx.getChild(2))
+        if to_substitute_type == None:
+            to_substitute_type = input_type
 
         print("To substitute = "+to_substitute)
         print("Function before abstraction = "+function)
