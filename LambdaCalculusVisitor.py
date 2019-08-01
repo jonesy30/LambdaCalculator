@@ -49,6 +49,11 @@ class LambdaCalculusVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by LambdaCalculusParser#boolean_value.
+    def visitBoolean_value(self, ctx:LambdaCalculusParser.Boolean_valueContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by LambdaCalculusParser#function_type.
     def visitFunction_type(self, ctx:LambdaCalculusParser.Function_typeContext):
         return self.visitChildren(ctx)

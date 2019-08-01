@@ -33,6 +33,7 @@ function
 
 value
     : number
+    | boolean_value
     | variable
     | LBRACKET value RBRACKET
     ;
@@ -45,6 +46,11 @@ variable
 number
     : NUMBER
     | NUMBER':'function_type
+    ;
+
+boolean_value
+    : BOOL
+    | BOOL':'function_type
     ;
 
 function_type
@@ -70,10 +76,16 @@ operation
     | MULTIPLY
     | DIVIDE
     | POWER
+    | AND
+    | OR
+    | GT
+    | LT
+    | EQ
     ;
 
-VARIABLE : [a-zA-Z] ;
 NUMBER : [0-9]+ ;
+BOOL : 'TRUE'|'true'|'True'|'FALSE'|'false'|'False' ;
+VARIABLE : [a-zA-Z] ;
 ADD : '+' ;
 SUBTRACT : '-' ;
 MULTIPLY : '*' ;
@@ -81,5 +93,10 @@ DIVIDE : '/' ;
 POWER : '^' ;
 LBRACKET : '(' ;
 RBRACKET : ')' ;
+AND : '&' ;
+OR : '|' ;
+GT : '>' ;
+LT : '<' ;
+EQ : '==' ;
 
 WS : [ \t\r\n]+ -> skip ;

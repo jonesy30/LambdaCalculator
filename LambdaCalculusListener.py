@@ -80,6 +80,15 @@ class LambdaCalculusListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by LambdaCalculusParser#boolean_value.
+    def enterBoolean_value(self, ctx:LambdaCalculusParser.Boolean_valueContext):
+        pass
+
+    # Exit a parse tree produced by LambdaCalculusParser#boolean_value.
+    def exitBoolean_value(self, ctx:LambdaCalculusParser.Boolean_valueContext):
+        pass
+
+
     # Enter a parse tree produced by LambdaCalculusParser#function_type.
     def enterFunction_type(self, ctx:LambdaCalculusParser.Function_typeContext):
         pass

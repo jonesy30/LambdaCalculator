@@ -49,7 +49,7 @@ class BaseVisitor(LambdaCalculusVisitor):
         
         #NOTE: I should be calculating the function here and returning the result
         left,left_type = self.visit(ctx.getChild(0))
-        #TODO: Determine the typing rules here
+
         right,right_type = self.visit(ctx.getChild(2))
         op = ctx.getChild(1).getText()
 
@@ -60,21 +60,21 @@ class BaseVisitor(LambdaCalculusVisitor):
             right_type = right_type.lower()
 
         #Functions that take two booleans and return a boolean
-        bool_bool = ["AND","OR"]
+        bool_bool = ["&","|"]
         #Take two ints and return an int
         int_int = ["+","-","*","/","^"]
         #Takes two ints and returns a boolean
-        int_bool = ["EQ","GT","LT"]
+        int_bool = ["==",">","<"]
         return_type = None
 
         if op in bool_bool:
             if left_type == "int" or right_type == "int":
-                self.valid_typing = False
+                self.set_valid_typing(False)
             elif self.valid_typing == True:
                 return_type = "bool"
         elif op in int_int or op in int_bool:
             if left_type == "bool" or right_type == "bool":
-                self.valid_typing = False
+                self.set_valid_typing(False)
             elif self.valid_typing == True:
                 return_type = "int"
         
@@ -97,13 +97,11 @@ class BaseVisitor(LambdaCalculusVisitor):
         
     # Visit a parse tree produced by LambdaCalculusParser#number.
     def visitNumber(self, ctx:LambdaCalculusParser.NumberContext):
-        if ctx.getChild(2) is None:
-            return ctx.getChild(0).getText(),None
-        else:
-            return ctx.getChild(0).getText(),self.visit(ctx.getChild(2))
+        return ctx.getChild(0).getText(),"int"
 
-        #return ctx.getChild(0).getText()
-        #return self.visitChildren(ctx)
+    # Visit a parse tree produced by LambdaCalculusParser#boolean_value.
+    def visitBoolean_value(self, ctx:LambdaCalculusParser.Boolean_valueContext):
+        return ctx.getChild(0).getText(),"bool"
     
     # Visit a parse tree produced by LambdaCalculusParser#operation.
     def visitOperation(self, ctx:LambdaCalculusParser.OperationContext):
@@ -125,9 +123,6 @@ class BaseVisitor(LambdaCalculusVisitor):
         if to_substitute_type is not None:
             incoming = incoming + ":" + to_substitute_type
 
-            print("To substitute = "+to_substitute)
-            print("To substitute type = "+to_substitute_type)
-            print("Function = "+function)
             if end_value is not None:
                 function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
             else:
@@ -137,15 +132,11 @@ class BaseVisitor(LambdaCalculusVisitor):
         elif incoming_type is not None:
             incoming = incoming + ":" + incoming_type
 
-            print("Incoming = "+incoming)
-            print("Incoming type = "+incoming_type)
-            print("Function = "+function)
-
             if end_value is not None:
                 function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
             else:
                 function = function.replace(to_substitute,incoming)
-
+            
         return function
 
     def type_check_application(self, function_type, expression_type):
@@ -157,11 +148,9 @@ class BaseVisitor(LambdaCalculusVisitor):
         print("Expression type = "+str(expression_type))
         if function_type is not None:
             #Split the type of the function term into their journeys (1 -> 2 -> 3 -> ...n)
-            print("Function type not none! "+function_type)
             function_type_journey = function_type.split("->")
             if expression_type is not None:
                 #Do the same splitting with the type of the expression
-                print("Expression type = "+expression_type)
                 expression_type_journey = expression_type.split("->")
                 application_type_journey = []
 
@@ -185,7 +174,7 @@ class BaseVisitor(LambdaCalculusVisitor):
                     if type_mismatch == False:
                         application_type_journey = function_type_journey
                     else:
-                        self.valid_typing = False
+                        self.set_valid_typing(False)
             else:
                 print("Function type journey = "+str(function_type_journey))
                 del function_type_journey[0]
@@ -309,19 +298,20 @@ class BaseVisitor(LambdaCalculusVisitor):
 
                 #Replace the bound variables with the incoming value, up until the end point (the point where there's bound variable crossover)
                 print("New function at checkpoint marker 1 = "+new_function[:end_value])
-                #Replace the bound variable with the new incoming value
-                new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+
                 #Convert the new function to include the types from either the bound value or the incoming value (depending on which has a type)
                 new_function = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, new_function, end_value)
+                #Replace the bound variable with the new incoming value
+                new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
 
             #If there are no other lambda terms found within the current lambda term
             else:
                 #Calculate the alpha reduction as normal
                 new_function = calculate_alpha(to_substitute, function, incoming)
-                #Replace the bound variable with the new incoming value
-                new_function = new_function.replace(to_substitute,incoming)
                 #Convert the new function to include the types from either the bound value or the incoming value (depending on which has a type)
                 new_function = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, new_function)
+                #Replace the bound variable with the new incoming value
+                new_function = new_function.replace(to_substitute,incoming)
 
             print("New function at checkpoint marker 2 = "+new_function)
             print()
@@ -336,7 +326,8 @@ class BaseVisitor(LambdaCalculusVisitor):
                 if incoming_type is not None:
                     incoming_type_journey = incoming_type.split("->")
                     if to_substitute_type_journey[0] != incoming_type_journey[0]:
-                        self.valid_typing = False
+                        #self.valid_typing = False
+                        self.set_valid_typing(False)
 
             print()
             print("New function before tree creation = "+str(new_function))
@@ -347,11 +338,12 @@ class BaseVisitor(LambdaCalculusVisitor):
             new_function,function_type,valid_typing = self.visit(tree)
 
             if valid_typing == False:
-                self.valid_typing = False
+                self.set_valid_typing(False)
 
             print()
             print("New function after tree creation = "+str(new_function))          
             print()  
+            print("Incoming, incoming type = "+str(incoming_type))
         
         #If there is not a value to substitute into this abstraction
         else:
@@ -360,11 +352,14 @@ class BaseVisitor(LambdaCalculusVisitor):
             new_function,function_type,valid_typing = self.visit(tree)
 
             if valid_typing == False:
-                self.valid_typing = False
+                self.set_valid_typing(False)
 
             #If there's nothing to do here, just convert back to %x.M form
             #and pass the value back up the tree, adding the types back in
-            substitution_form = "%"+str(to_substitute)+":"+str(to_substitute_type)+"."
+            if to_substitute_type is not None:
+                substitution_form = "%"+str(to_substitute)+":"+str(to_substitute_type)+"."
+            else:
+                substitution_form = "%"+str(to_substitute)+"."
             new_function = substitution_form + function
         
         #Create the new abstraction type, which is the bound variable type -> the type it gets converted to
@@ -373,3 +368,7 @@ class BaseVisitor(LambdaCalculusVisitor):
         print("Abstraction type = "+str(abstraction_type))
 
         return new_function, abstraction_type
+
+    def set_valid_typing(self,result):
+        if self.valid_typing == True:
+            self.valid_typing = result

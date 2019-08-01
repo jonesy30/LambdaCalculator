@@ -57,6 +57,8 @@ class CallByNameVisitor(BaseVisitor):
             #Get the type of the application based on the two incoming values
             application_type = self.type_check_application(function_type,expression_type)
 
+        print("Function type = "+str(function_type))
+        print("Expression type = "+str(expression_type))
         print("Application_type = "+str(application_type))
 
         #Return the application value and type

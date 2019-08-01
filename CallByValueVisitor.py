@@ -41,6 +41,7 @@ class CallByValueVisitor(BaseVisitor):
 
         application_type = None
 
+        print("In application, expression type = "+str(expression_type))
         #If the left hand tree is an abstraction - you're not done! Keep processing using the right hand side of the tree
         if isinstance(am_I_an_abstraction,LambdaCalculusParser.AbstractionContext):
             #Visit the left hand tree with the term created from the right hand side
@@ -51,6 +52,8 @@ class CallByValueVisitor(BaseVisitor):
         else:
             function = function + expression
 
+        print("Function type = "+str(function_type))
+        print("Expression type = "+str(expression_type))
         #Get the type of the application based on the two incoming values
         application_type = self.type_check_application(function_type,expression_type)
         print("Application_type = "+str(application_type))
@@ -85,7 +88,7 @@ class CallByValueVisitor(BaseVisitor):
         else:
             incoming = incoming_tuple[0]
             incoming_type = incoming_tuple[1]
-        
+
         abstraction_result, abstraction_type = self.perform_abstraction(ctx, incoming, incoming_type, to_substitute, to_substitute_type)
         
         return abstraction_result,abstraction_type

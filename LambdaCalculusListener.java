@@ -87,6 +87,16 @@ public interface LambdaCalculusListener extends ParseTreeListener {
 	 */
 	void exitNumber(LambdaCalculusParser.NumberContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link LambdaCalculusParser#boolean_value}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolean_value(LambdaCalculusParser.Boolean_valueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LambdaCalculusParser#boolean_value}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolean_value(LambdaCalculusParser.Boolean_valueContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LambdaCalculusParser#function_type}.
 	 * @param ctx the parse tree
 	 */
