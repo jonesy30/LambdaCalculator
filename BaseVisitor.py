@@ -49,9 +49,16 @@ class BaseVisitor(LambdaCalculusVisitor):
             return "" + ctx.getChild(0).getText() + child_value + ctx.getChild(2).getText(),child_type,input_type
         
         #NOTE: I should be calculating the function here and returning the result
-        left,left_type = self.visit(ctx.getChild(0))
+        returned_left = self.visit(ctx.getChild(0))
 
-        right,right_type = self.visit(ctx.getChild(2))
+        left = returned_left[0]
+        left_type = returned_left[1]
+
+        returned_right = self.visit(ctx.getChild(2))
+        
+        right = returned_right[0]
+        right_type = returned_right[1]
+
         op = ctx.getChild(1).getText()
 
         if left_type is not None:
@@ -59,6 +66,10 @@ class BaseVisitor(LambdaCalculusVisitor):
         
         if right_type is not None:
             right_type = right_type.lower()
+
+        print("Left = "+left)
+        print("Right = "+right)
+
 
         #Functions that take two booleans and return a boolean
         bool_bool = ["&","|"]
@@ -87,10 +98,17 @@ class BaseVisitor(LambdaCalculusVisitor):
             elif self.valid_typing == True:
                 return_type = "bool"
                 input_type = "int"
+
+        #If the input type is a function we can't work out what the input type is
+        #NOTE: THIS IS A LIMITATION
+        if isinstance(ctx.getChild(0),LambdaCalculusParser.FunctionContext) or isinstance(ctx.getChild(2),LambdaCalculusParser.FunctionContext):
+            input_type = None
         
         #TODO: Do some actual calculations here
         return_string = "" + left + op + right
         
+        print("Me = "+ctx.getText())
+        print("Returning input type = "+str(input_type))
         return return_string,return_type,input_type
     
     # Visit a parse tree produced by LambdaCalculusParser#variable.
