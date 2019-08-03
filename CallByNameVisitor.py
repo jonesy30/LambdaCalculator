@@ -29,7 +29,14 @@ class CallByNameVisitor(BaseVisitor):
         #NOTE: To convert to call-by-name, I need to get the text of child 1, and then evaluate the abstraction with the unprocessed textual version of child 1
         #Then I need to get the abstraction to create a tree of the result of itself (before or after alpha conversion?) which it will then visit and process
         #function,function_type = self.visit(ctx.getChild(0))
-        function,function_type = self.visit(ctx.getChild(0))
+        returned_child = self.visit(ctx.getChild(0))
+        function = returned_child[0]
+        function_type = returned_child[1]
+
+        input_type = None
+        if len(returned_child) == 3:
+            input_type = returned_child[2]
+            
         expression = ctx.getChild(1).getText()
         expression_type = None
         #expression,expression_type = self.visit(ctx.getChild(1))

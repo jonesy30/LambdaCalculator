@@ -17,6 +17,8 @@ def main():
     bracket_checker = BracketCheck()
     case_checker = CaseCheck()
 
+    visitor_selection = input("Call by value or call by name? ")
+
     expression = input("Enter test expression: ")
     matched_brackets = bracket_checker.check_brackets(expression)
 
@@ -36,12 +38,21 @@ def main():
     tokens = CommonTokenStream(lexer)
     parser = LambdaCalculusParser(tokens)
     tree = parser.term()
-    visitor = CallByValueVisitor()
-    #visitor = CallByNameVisitor()
-    result,return_type,valid_type = visitor.visit(tree)
-    print("Result = "+str(result))
-    print("Return type = "+str(return_type))
-    print("Valid type = "+str(valid_type))
+
+    visitor = None
+    if visitor_selection == "v":
+        visitor = CallByValueVisitor()
+    elif visitor_selection == "n":
+        visitor = CallByNameVisitor()
+    else:
+        print("No visitor")
+
+    if visitor != None:
+        result,return_type,valid_type = visitor.visit(tree)
+        result,return_type = visitor.post_process(result, return_type)
+        print("Result = "+str(result))
+        print("Return type = "+str(return_type))
+        print("Valid type = "+str(valid_type))
     #printer = Listener()
     #walker = ParseTreeWalker()
     #walker.walk(printer, tree)

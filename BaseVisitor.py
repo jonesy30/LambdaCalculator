@@ -30,7 +30,7 @@ class BaseVisitor(LambdaCalculusVisitor):
                 output = output_tuple[0]
                 return_type = output_tuple[1]
 
-            output,return_type = self.post_process(output, return_type)
+            print("Output in term = "+str(output))
             return output,return_type,self.valid_typing
 
         else:
@@ -113,10 +113,15 @@ class BaseVisitor(LambdaCalculusVisitor):
     
     # Visit a parse tree produced by LambdaCalculusParser#variable.
     def visitVariable(self, ctx:LambdaCalculusParser.VariableContext):
+        print("Variable = "+ctx.getText())
         if ctx.getChild(2) is None:
-            return ctx.getChild(0).getText(),None
+            #return ctx.getChild(0).getText(),None
+            return ctx.getText(),None
+            #return ctx.getText()
         else:
-            return ctx.getChild(0).getText(),self.visit(ctx.getChild(2))
+            print("Returning right child in variable = "+self.visit(ctx.getChild(2)))
+            #return ctx.getChild(0).getText(),self.visit(ctx.getChild(2))
+            return ctx.getText(),self.visit(ctx.getChild(2))
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
     def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
@@ -150,25 +155,51 @@ class BaseVisitor(LambdaCalculusVisitor):
     #NOTE: Please rename this future Yola...
     def convert_function_with_type(self, to_substitute, to_substitute_type, incoming, incoming_type, function, end_value=None):
 
+        print("In convert function, end_value = "+str(end_value))
+        new_end_value = end_value
         #If there is a bound variable type to be substituted, add it to the rest of the bound variables in the term
         if to_substitute_type is not None:
-            incoming = incoming + ":" + to_substitute_type
+            print("To substitute = "+to_substitute)
+            if ":" not in incoming:
+                print("To substitute type in convert = "+to_substitute_type)
+                
+                incoming = incoming + ":" + to_substitute_type
 
+            print("End value in function = "+str(end_value))
             if end_value is not None:
-                function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+                print("I am here")
+                new_function = function[:end_value].replace(to_substitute,incoming)
+                new_end_value = len(new_function)
+                print("New end value = "+str(new_end_value))
+                function = new_function + function[end_value:]
             else:
                 function = function.replace(to_substitute,incoming)
+                
+                print("After convert function with type, function = "+str(function))
         
         #If the substituted type is none but the incoming type is not, we still know what the bound variable type should now be, so replace it
         elif incoming_type is not None:
-            incoming = incoming + ":" + incoming_type
+            print("Incoming before convert = "+incoming)
+            if ":" not in incoming:
+                incoming = incoming + ":" + incoming_type
+                print("Incoming in convert = "+incoming)
+                print("To substitute = "+to_substitute)
+                print("Incoming type in convert = "+incoming_type)
+                print("Function = "+function)
 
             if end_value is not None:
-                function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+                print("Bit being replaced = "+function[:end_value])
+                new_function = function[:end_value].replace(to_substitute,incoming)
+                new_end_value = len(new_function)
+                print("New end value = "+str(new_end_value))
+                function = new_function + function[end_value:]
+                print("New_function = "+function)
             else:
                 function = function.replace(to_substitute,incoming)
+
+            print("After convert function with type, function = "+str(function))
             
-        return function
+        return function,new_end_value
 
     def type_check_application(self, function_type, expression_type):
         #Type check the application
@@ -224,16 +255,17 @@ class BaseVisitor(LambdaCalculusVisitor):
         return application_type
 
     def add_bound_variable_types_to_function(self, bound_variable, function, type):
-        if type is None:
-            type = "none"
         
-        function_list = list(function)
-        for i,character in enumerate(function_list):
-            if character == bound_variable:
-                function_list[i] = character + ":" + type
+        if type is not None:
+            function_list = list(function)
+            for i,character in enumerate(function_list):
+                if character == bound_variable:
+                    function_list[i] = character + ":" + type
 
-        processed_function = "".join(function_list)
-        return processed_function
+            processed_function = "".join(function_list)
+            return processed_function
+        else:
+            return function
 
     def convert_type_if_none(self, term_type):
         
@@ -284,7 +316,11 @@ class BaseVisitor(LambdaCalculusVisitor):
         #Visit and evaluate the right hand side child (the function)
         returned_child = self.visit(ctx.getChild(2))
         function = returned_child[0]
+
+
         function_type = returned_child[1]
+        print("Function = "+function)
+        print("Function type at start of abstraction = "+str(function_type))
 
         input_type = None
         if len(returned_child) == 3:
@@ -297,8 +333,9 @@ class BaseVisitor(LambdaCalculusVisitor):
         print("Function before abstraction = "+function)
         print("Incoming before abstraction = "+str(incoming))
 
-        new_function = self.add_bound_variable_types_to_function(to_substitute,function,to_substitute_type)
-        #new_function = function
+        function = self.add_bound_variable_types_to_function(to_substitute,function,to_substitute_type)
+        new_function = function
+        print("Function before doing all the processing: "+str(function))
 
         #If there is a value to subsitute into this abstraction
         if incoming != -1:
@@ -308,12 +345,15 @@ class BaseVisitor(LambdaCalculusVisitor):
             if subst_container_match is not None:
                 container = subst_container_match.group(0)
 
+                print("Function before checking end value = "+function)
                 end_value = len(function)
+                print("End value at start = "+str(end_value))
                 #If there is more than zero bound variables found in the string
                 if len(bound_variables_left) > 0:
                     for i,bound_variable in enumerate(bound_variables_left):
                         type_match = re.search(":(.*)", bound_variable)
-                        bound_variables_left[i] = bound_variable.replace(type_match.group(0),"")
+                        if type_match != None:
+                            bound_variables_left[i] = bound_variable.replace(type_match.group(0),"")
 
                     #More than one bound variable - check whether they match the current bound variable
                     if to_substitute in bound_variables_left:
@@ -323,7 +363,8 @@ class BaseVisitor(LambdaCalculusVisitor):
                                 subst_container_match = re.search("%(.*?)\.", function[i:])
                                 bound_value = subst_container_match.group(1)
                                 type_match = re.search(":(.*)", bound_variable)
-                                bound_value = bound_value.replace(type_match.group(0),"")
+                                if type_match is not None:
+                                    bound_value = bound_value.replace(type_match.group(0),"")
                                 if to_substitute == bound_value:
                                     break
                         end_value = i
@@ -338,19 +379,29 @@ class BaseVisitor(LambdaCalculusVisitor):
                     function = calculate_alpha(to_substitute, function, incoming)
 
                 #Replace the bound variables with the incoming value, up until the end point (the point where there's bound variable crossover)
-                print("New function at checkpoint marker 1 = "+new_function[:end_value])
+                print("New function at checkpoint marker 1 = "+function)
 
                 #Convert the new function to include the types from either the bound value or the incoming value (depending on which has a type)
-                new_function = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, new_function, end_value)
+                print("New function after convert_with_type = "+function)
+                print("End value now = "+str(end_value))
                 #Replace the bound variable with the new incoming value
-                new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+                new_function,end_value = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, function, end_value)
+                print("End value = "+str(end_value))
+                print("To substitute = "+to_substitute)
+                print("Incoming = "+incoming)
+                print("Replacement bit = "+new_function[:end_value])
+                print("Added on bit = "+new_function[end_value:])
+                new_function = new_function[:end_value].replace(to_substitute,incoming) + new_function[end_value:]
+                print("New function after replacement = "+new_function)
 
             #If there are no other lambda terms found within the current lambda term
             else:
                 #Calculate the alpha reduction as normal
                 new_function = calculate_alpha(to_substitute, function, incoming)
                 #Convert the new function to include the types from either the bound value or the incoming value (depending on which has a type)
-                new_function = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, new_function)
+                print("New function before convert_with_type = "+new_function)
+                new_function,_ = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, new_function)
+                print("New function after convert_with_type = "+new_function)
                 #Replace the bound variable with the new incoming value
                 new_function = new_function.replace(to_substitute,incoming)
 
@@ -389,8 +440,19 @@ class BaseVisitor(LambdaCalculusVisitor):
         #If there is not a value to substitute into this abstraction
         else:
             #Create a tree of the result of the inner function, and evaluate it
+            #If nothing is incoming, keep the function as is (function + function_type)
+            print("Before concatenation:")
+            print("Function = "+function)
+            print("Function type = "+str(function_type))
+            # if function_type is not None:
+            #     new_function = function + ":" + str(function_type)
+            # else:
+            #     new_function = function
+            print("New function before tree creation = "+str(new_function))
+
             tree = self.create_tree(new_function)
             new_function,function_type,valid_typing = self.visit(tree)
+            print("New function after tree creation = "+str(new_function))
 
             if valid_typing == False:
                 self.set_valid_typing(False)
@@ -401,12 +463,14 @@ class BaseVisitor(LambdaCalculusVisitor):
                 substitution_form = "%"+str(to_substitute)+":"+str(to_substitute_type)+"."
             else:
                 substitution_form = "%"+str(to_substitute)+"."
-            new_function = substitution_form + function
+            new_function = substitution_form + new_function
         
         #Create the new abstraction type, which is the bound variable type -> the type it gets converted to
+        print("Function = "+str(new_function))
+        print("Function type = "+str(function_type))
         abstraction_type = str(to_substitute_type) + "->" + str(function_type)
-        print("Function after replacement in abstraction = "+new_function)
-        print("Abstraction type = "+str(abstraction_type))
+        print("Function after replacement in abstraction = "+str(new_function))
+        print("Returning abstraction type = "+str(abstraction_type))
 
         return new_function, abstraction_type
 
