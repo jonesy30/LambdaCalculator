@@ -113,14 +113,9 @@ class BaseVisitor(LambdaCalculusVisitor):
     
     # Visit a parse tree produced by LambdaCalculusParser#variable.
     def visitVariable(self, ctx:LambdaCalculusParser.VariableContext):
-        print("Variable = "+ctx.getText())
         if ctx.getChild(2) is None:
-            #return ctx.getChild(0).getText(),None
             return ctx.getText(),None
-            #return ctx.getText()
         else:
-            print("Returning right child in variable = "+self.visit(ctx.getChild(2)))
-            #return ctx.getChild(0).getText(),self.visit(ctx.getChild(2))
             return ctx.getText(),self.visit(ctx.getChild(2))
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
@@ -302,7 +297,7 @@ class BaseVisitor(LambdaCalculusVisitor):
         #if I am a parenthesis of myself, just return as I am
         if parenthesis_check == "(":
             child_value,child_type = self.visit(ctx.getChild(1))
-            return "" + ctx.getChild(0).getText() + child_value + ctx.getChild(2).getText(),child_type
+            return "" + ctx.getChild(0).getText() + str(child_value) + ctx.getChild(2).getText(),child_type
         else:
             return -1
     
@@ -316,9 +311,8 @@ class BaseVisitor(LambdaCalculusVisitor):
         #Visit and evaluate the right hand side child (the function)
         returned_child = self.visit(ctx.getChild(2))
         function = returned_child[0]
-
-
         function_type = returned_child[1]
+
         print("Function = "+function)
         print("Function type at start of abstraction = "+str(function_type))
 
@@ -330,24 +324,21 @@ class BaseVisitor(LambdaCalculusVisitor):
             to_substitute_type = input_type
 
         print("To substitute = "+to_substitute)
-        print("Function before abstraction = "+function)
         print("Incoming before abstraction = "+str(incoming))
 
         function = self.add_bound_variable_types_to_function(to_substitute,function,to_substitute_type)
         new_function = function
-        print("Function before doing all the processing: "+str(function))
 
         #If there is a value to subsitute into this abstraction
         if incoming != -1:
             bound_variables_left = re.findall("%(.*?)\.", function)
             subst_container_match = re.search("%(.*?)\.", function)
             
+            #If there is bound variables left inside the function
             if subst_container_match is not None:
                 container = subst_container_match.group(0)
 
-                print("Function before checking end value = "+function)
                 end_value = len(function)
-                print("End value at start = "+str(end_value))
                 #If there is more than zero bound variables found in the string
                 if len(bound_variables_left) > 0:
                     for i,bound_variable in enumerate(bound_variables_left):
@@ -385,7 +376,8 @@ class BaseVisitor(LambdaCalculusVisitor):
                 print("New function after convert_with_type = "+function)
                 print("End value now = "+str(end_value))
                 #Replace the bound variable with the new incoming value
-                new_function,end_value = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, function, end_value)
+                #new_function,end_value = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, function, end_value)
+                new_function = function
                 print("End value = "+str(end_value))
                 print("To substitute = "+to_substitute)
                 print("Incoming = "+incoming)
@@ -400,7 +392,7 @@ class BaseVisitor(LambdaCalculusVisitor):
                 new_function = calculate_alpha(to_substitute, function, incoming)
                 #Convert the new function to include the types from either the bound value or the incoming value (depending on which has a type)
                 print("New function before convert_with_type = "+new_function)
-                new_function,_ = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, new_function)
+                #new_function,_ = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, new_function)
                 print("New function after convert_with_type = "+new_function)
                 #Replace the bound variable with the new incoming value
                 new_function = new_function.replace(to_substitute,incoming)
@@ -460,9 +452,16 @@ class BaseVisitor(LambdaCalculusVisitor):
             #If there's nothing to do here, just convert back to %x.M form
             #and pass the value back up the tree, adding the types back in
             if to_substitute_type is not None:
-                substitution_form = "%"+str(to_substitute)+":"+str(to_substitute_type)+"."
+                #if to_substitute doesn't already have a type
+                if ":" not in to_substitute:
+                    substitution_form = "%"+str(to_substitute)+":"+str(to_substitute_type)+"."
+                else:
+                    substitution_form = "%"+str(to_substitute) + "."
             else:
                 substitution_form = "%"+str(to_substitute)+"."
+
+            print(str(to_substitute))
+            print("New function = "+str(new_function))
             new_function = substitution_form + new_function
         
         #Create the new abstraction type, which is the bound variable type -> the type it gets converted to

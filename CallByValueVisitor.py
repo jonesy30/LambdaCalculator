@@ -36,7 +36,7 @@ class CallByValueVisitor(BaseVisitor):
         if len(returned_child) == 3:
             input_type = returned_child[2]
 
-        print("Function type in application = "+function_type)
+        print("Function type in application = "+str(function_type))
 
         expression,expression_type = self.visit(ctx.getChild(1))
 
