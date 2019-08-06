@@ -15,7 +15,7 @@ from sympy import Symbol
 
 def main():
     bracket_checker = BracketCheck()
-    case_checker = CaseCheck()
+    #case_checker = CaseCheck()
 
     visitor_selection = input("Call by value or call by name? ")
 
@@ -32,13 +32,6 @@ def main():
     #     expression = input("Sorry, no uppercase values allowed, please rewrite and try again?\n")
     #     all_lowercase = case_checker.check_case(expression)
 
-    stream = InputStream(expression)
-    lexer = LambdaCalculusLexer(stream)
-    #lexer = LambdaCalculusLexer(StdinStream())
-    tokens = CommonTokenStream(lexer)
-    parser = LambdaCalculusParser(tokens)
-    tree = parser.term()
-
     visitor = None
     if visitor_selection == "v":
         visitor = CallByValueVisitor()
@@ -46,16 +39,49 @@ def main():
         visitor = CallByNameVisitor()
     else:
         print("No visitor")
+    
+    result, return_type, valid_type = run(expression, visitor)
+    print("Result = "+result)
+    print("Return type = "+return_type)
+    print("Valid type = "+valid_type)
 
+def web_interface(expression, evaluate_selection):
+
+    result = None
+    return_type = None
+    valid_type = None
+
+    if evaluate_selection == "v":
+        visitor = CallByValueVisitor()
+        result, return_type, valid_type = run(expression, visitor)
+    elif evaluate_selection == "n":
+        visitor = CallByNameVisitor()
+        result, return_type, valid_type = run(expression, visitor)
+    elif evaluate_selection == "a":
+        #I should be running the alpha conversion code here
+        return -1
+    else:
+        return -1
+    
+    return str(result), str(return_type), str(valid_type)
+
+def run(expression, visitor):
+    stream = InputStream(expression)
+    lexer = LambdaCalculusLexer(stream)
+    #lexer = LambdaCalculusLexer(StdinStream())
+    tokens = CommonTokenStream(lexer)
+    parser = LambdaCalculusParser(tokens)
+    tree = parser.term()
     if visitor != None:
         result,return_type,valid_type = visitor.visit(tree)
         result,return_type = visitor.post_process(result, return_type)
-        print("Result = "+str(result))
-        print("Return type = "+str(return_type))
-        print("Valid type = "+str(valid_type))
-    #printer = Listener()
-    #walker = ParseTreeWalker()
-    #walker.walk(printer, tree)
+        
+        return str(result),str(return_type),str(valid_type)
+    else:
+        return -1
+
 
 if __name__ == '__main__':
     main()
+else:
+    web_interface(expression, evaluate_selection)

@@ -2,27 +2,42 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <title> {{title}} </title>
+        <title> Lambda Calculator </title>
     </head>
     <div id="main-container" class="percentage_width"> 
-        <h1>Hello {{user}} </h1>
+        <h1>Lambda Calculus Expression Evaluator test:{{user}}</h1>
         <div id="instructions">
-            <h2>Lambda expressions yo</h2>
-            <p>Please enter in the box below following rules x, y and z</p>
+            <p>Enter the term in the box below, the result will tell you the output, whether it is typable and what type it should be</p>
+            <p>Enter abstractions in the form %x.M (substitute &lambda; for %) </p>
+            <p>Types can also be entered for any variable, in the form x:type <i>(bool, int and none types allowed)</i></p>
         </div>
         <form action="/" method="post" id="expression-form">
-            <input name="dabox"  placeholder="enter expression here" class="form-control"></input>
-            <div >
-                <input type="radio" name="Evaluation Type" value="v"> Call By Value (applicative order) <br>
-                <input type="radio" name="Evaluation Type" checked value="n"> Call By Name (normal order) <br>
-                <input type="radio" name="Evaluation Type" value="a"> Alpha Conversion Only <br>
+            <input name="input-box"  placeholder="enter expression here" class="form-control"></input>
+            <div>
+                <b>Evaluation Method:</b>
+                <div class="custom-control custom-radio custom-control-inline" data-toggle="buttons">
+                    <input type="radio" class="custom-control-input" id="v" name="Evaluation Type">
+                    <label class="custom-control-label" for="v">Call By Value (applicative order)</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline" data-toggle="buttons"  >
+                    <input type="radio" class="custom-control-input" id="n" name="Evaluation Type" checked>
+                    <label class="custom-control-label" for="n">Call By Name (normal order)</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline" data-toggle="buttons">
+                    <input type="radio" class="custom-control-input" id="a" name="Evaluation Type">
+                    <label class="custom-control-label" for="a">Alpha Conversion Only</label>
+                </div>
             </div>
-            <button id="my-button" class="btn btn-primary">Check Expression</button>      
+            <button id="confirm-button" class="btn btn-primary">Check Expression</button>      
+            <div class=output-box>
+                Result = {{result}}<br>
+                Returned type = {{returned_type}}<br>
+                Valid typing = {{valid_typing}}<br>
+            </div>
         </form>
-        <div class="output-box">
-            {{result}}
-        </div>
-
+        <p></p>
+        <p></p>
+        <p><font color="#a6acaf">Spot an issue? Code can be found <a href="https://github.com/jonesy30/LambdaCalculator.git">here</a></font></p>
     </div>
 </html>
 
@@ -30,18 +45,18 @@
 
 <style>
     .output-box{
-        width:75%;
-        height:20%;
+        width:100%;
+        height:80%;
         border: solid lightgray 1px;
         border-radius: 10px;
         text-align: center;
     }
-    #dabox{
+    #input-box{
         width: 100%;
-        height: 15%;
+        height: 30%;
     } 
     #main-container {
-        height:60%;
+        height:80%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -55,10 +70,13 @@
         justify-content: center;
         flex-direction: column;
     }
-    #my-button{
+    #confirm-button{
         width:100%;
     }
     #instructions {
+        text-align:center;
+    }
+    #evaluation-method {
         text-align:center;
     }
 
