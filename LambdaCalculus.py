@@ -83,5 +83,3 @@ def run(expression, visitor):
 
 if __name__ == '__main__':
     main()
-else:
-    web_interface(expression, evaluate_selection)

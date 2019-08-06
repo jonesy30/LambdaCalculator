@@ -5,14 +5,14 @@
         <title> Lambda Calculator </title>
     </head>
     <div id="main-container" class="percentage_width"> 
-        <h1>Lambda Calculus Expression Evaluator test:{{user}}</h1>
+        <h1>Lambda Calculus Expression Evaluator</h1>
         <div id="instructions">
             <p>Enter the term in the box below, the result will tell you the output, whether it is typable and what type it should be</p>
             <p>Enter abstractions in the form %x.M (substitute &lambda; for %) </p>
             <p>Types can also be entered for any variable, in the form x:type <i>(bool, int and none types allowed)</i></p>
         </div>
         <form action="/" method="post" id="expression-form">
-            <input name="input-box"  placeholder="enter expression here" class="form-control"></input>
+            <input name="input-box"  placeholder={{input}} class="form-control"></input>
             <div>
                 <b>Evaluation Method:</b>
                 <div class="custom-control custom-radio custom-control-inline" data-toggle="buttons">
@@ -30,9 +30,10 @@
             </div>
             <button id="confirm-button" class="btn btn-primary">Check Expression</button>      
             <div class=output-box>
-                Result = {{result}}<br>
+                <!-- Result = {{result}}<br>
                 Returned type = {{returned_type}}<br>
-                Valid typing = {{valid_typing}}<br>
+                Valid typing = {{valid_typing}}<br> -->
+                {{result|safe}}
             </div>
         </form>
         <p></p>
