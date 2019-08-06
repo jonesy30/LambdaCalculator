@@ -1,10 +1,96 @@
 \documentclass[a4paper,12pt]{report}
 \usepackage{graphicx}
 \usepackage[backend=bibtex]{biblatex}
+\usepackage[strings]{underscore}
+\usepackage[T1]{fontenc}
 \bibliography{dissertation}
 \begin{document}
+\title{Writing a Program to Evaluate Lamdba Expressions}
+\author{Yola Jones}
+\date{\today}
+\maketitle
 
+\chapter{Design and Implementation}
+\section{Design}
+
+The overall program is split into four distinct elements:
+\begin{itemize}
+\item A grammar definition which is used to define the syntax of a lambda calculus term
+\item A piece of code which will be used to create the abstract syntax tree of a given term (using antlr)
+\item An expression evaluator which will be used to traverse the tree in order to find the result of the term
+\item A web interface
+\end{itemize}
+
+\section{Grammar}
+
+The grammar of lambda calculus is already clearly defined, with a lambda term being either a variable, an abstraction or an application \cite{Hankin2004}. Applied lambda calculus adds functions and constants to this definition \cite{Slonneger1995}. Therefore the grammar of a lambda calculus term becomes:
+
+\begin{itemize}
+\item[|] Application (of form \texttt{[term] [term]}
+\item[|] Abstraction (of form \texttt{[abstraction_term].[term]} where \texttt{[abstraction_term]} is of the form \texttt{$\lambda$[variable]})
+\item[|] Function (of form \texttt{[term] [operation] [term]})
+\item[|] Value (of form \texttt{[variable]} (the letters a-z) or \texttt{[number]} (constant))
+\end{itemize}
+
+With the addition of types, the grammar adds the option of a \texttt{:[type]} term to each variable, with each type being either a ground type (bool, int or none), or in the form \texttt{[type]->[type]}. This follows the standard syntax for typing used in the lecture material \cite{Hankin2004} \cite{Gay2019}, and will allow each student to input a lambda term directly from the lecture slides with minimal adjustment.
+
+\section{Abstract Syntax Tree}
+
+Having defined a grammar, antlr can then be used to create an abstract syntax tree. This is very simple to do, and involves passing the input term through an Input Stream class which converts this to a string of characters, then feeding this into a lexer (which outputs a set of tokens), a class which converts the tokens into an indexable list, and finally passing this through a parser which turns the tokens into an abstract syntax tree which can be explored \cite{Tomassetti2007}. This process is well documented and therefore will not be deviated from.
+
+\section{Expression Evaluator}
+
+The fundamental idea behind this evaluator is tree traversal, which navigates through the token nodes and performs different operations depending on the type of token encountered. For example, application tokens in the form MN will pass the right-hand term N to the left-hand term M. Abstractions will take the incoming value and substitute it into its own function. This will allow an evaluated expression to be built up, and a result evaluated.
+
+Antlr provides two mechanisms for traversing an abstract syntax tree: listeners and visitors.
+
+A listener is a passive way of evaluating a syntax tree, an antlr Walker object is declared alongside the desired listener class, the walker traverses the tree using a depth-first approach, triggering methods from the listener as it enters and exits each token \cite{Parr2012}. These listener methods can’t return values, so expressions and evaluations are to be handled using separate objects within the listener class. As the walker traverses the tree, the listener builds up a running evaluation of the term, returning the result when it exits the topmost node \cite{Srivastav2017}.
+
+The key difference between a listener and a visitor is that a visitor controls its own traversal of the tree. By visiting the children of the current node explicitly, the path they take around the tree can be controlled \cite{Parr2012}, for example some children not being visited until their parents are evaluated, or a right-hand child being visited and evaluated before the left.
+
+Visitors also allow custom return types, meaning rather than having to rely on separate objects for expression value return, nodes can return their resultant expressions directly to their parent node \cite{Srivastav2017}.
+
+With beta reduction, different methods evaluate terms in different ways. In an application MN using a call-by-value approach, N is evaluated before M. In a call-by-need approach, N is passed into M before being evaluated.
+
+This means that depending on the type of reduction selected, the evaluator will have to traverse the tree in a different order, suggesting visitor being more appropriate for this task than a listener. This is supported by the fact that when evaluating expressions, the evaluation will be happening as the tree is visited, and therefore there will be a great deal of return values needed. Having a separate object for storing these values could get complex, and so the visitor methods being able to return values directly to their parents will be more convenient for this task.
+
+The visitor therefore will be the main code written in this project. A parser will be passed to a custom visitor interface, with different visitors being defined for each of the beta-reduction methods being implemented, since these methods will each traverse the tree in a different way.
+
+The visitor should return tree things upon returning to the topmost node: the value of the expression, whether or not the term is typable, and what type the expression will be. It will also return details of any errors, for example syntax or “normal form does not exist” errors where applicable.
+
+\section{Web Interface}
+
+The web interface will allow the user to input a lambda term, along with the types of any terms. It will also allow the user to select which reduction strategy they would like to have the term evaluated by, with call-by-need (or normal order reduction) being selected as the default.
+
+After the user has entered the data, a HTTP POST request will be used to send the data through the back-end code, which will process the term and return the result, typeability and the type of the result from the visitor. This will then get displayed back to the user.
+
+The layout should be simple and uncluttered, and should be suitable for those with a visual impairment.
+
+
+
+\newpage
 Hello! \cite{CourseSpecification}
+\cite{Tarau2017}
+\cite{Acar2008}
+\cite{Barendregt2000}
+\cite{Bird2009}
+\cite{Alonzo1936}
+\cite{Gay2019}
+\cite{Everett2019}
+\cite{Hankin2004}
+\cite{Horowitz2013}
+\cite{Kamareddine2000}
+\cite{Loader1998}
+\cite{Parr2012}
+\cite{Pierce2002}
+\cite{Rojas1998}
+\cite{Scott2016}
+\cite{Selinger2013}
+\cite{Slonneger1995}
+\cite{Sookocheff2018Eta}
+\cite{Sookocheff2018Evaluation}
+\cite{Tomassetti2007}
+\cite{Srivastav2017}
 
 \printbibliography
 
