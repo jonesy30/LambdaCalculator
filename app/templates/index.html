@@ -12,8 +12,8 @@
             <p>Types can also be entered for any variable, in the form x:type <i>(bool, int and none types allowed)</i></p>
         </div>
         <form action="/" method="post" id="expression-form">
-            <input name="input-box"  placeholder={{input}} class="form-control"></input>
-            <div>
+            <input name="input-box" id="input-box" placeholder={{input}} class="form-control"></input>
+            <div id="evaluation-method-control">
                 <b>Evaluation Method:</b>
                 <div class="custom-control custom-radio custom-control-inline" data-toggle="buttons">
                     <input type="radio" class="custom-control-input" id="v" name="Evaluation Type">
@@ -45,16 +45,25 @@
 
 
 <style>
+    body{
+        background-image: url("/static/background_filled.png");
+        background-size: 800px 600px;
+    }
     .output-box{
         width:100%;
-        height:80%;
-        border: solid lightgray 1px;
-        border-radius: 10px;
+        height:40%;
+        /* border: solid lightgray 1px;
+        border-radius: 10px; */
         text-align: center;
+    }
+    #evaluation-method-control{
+        height:20%;
     }
     #input-box{
         width: 100%;
-        height: 30%;
+        height: 20%;
+        text-align: center;
+        background-color: rgba(255,255,255,0.7);
     } 
     #main-container {
         height:80%;
@@ -65,11 +74,14 @@
     }
     #expression-form {
         width:75%;
-        height:30%;
+        height:40%;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
+        border: solid 1px lightgray;
+        border-radius: 5px;
+        background-color: rgba(255,255,255,0.2);
     }
     #confirm-button{
         width:100%;

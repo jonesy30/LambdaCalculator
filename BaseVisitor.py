@@ -251,6 +251,15 @@ class BaseVisitor(LambdaCalculusVisitor):
 
     def add_bound_variable_types_to_function(self, bound_variable, function, type):
         
+        print("In add bound variables to function!!")
+        print("Function = "+function)
+        print("Type = "+type)
+        print("Bound variable = "+bound_variable)
+
+        if ":" in bound_variable:
+            head, sep, tail = bound_variable.partition(':')
+            bound_variable = head
+
         if type is not None:
             function_list = list(function)
             for i,character in enumerate(function_list):
@@ -308,6 +317,9 @@ class BaseVisitor(LambdaCalculusVisitor):
         incoming_type = self.convert_type_if_none(incoming_type)
         to_substitute_type = self.convert_type_if_none(to_substitute_type)
 
+        print("Incoming type = "+str(incoming_type))
+        print("To substitute type = "+str(to_substitute_type))
+
         #Visit and evaluate the right hand side child (the function)
         returned_child = self.visit(ctx.getChild(2))
         function = returned_child[0]
@@ -325,8 +337,10 @@ class BaseVisitor(LambdaCalculusVisitor):
 
         print("To substitute = "+to_substitute)
         print("Incoming before abstraction = "+str(incoming))
+        print("To substitute type = "+to_substitute_type)
 
         function = self.add_bound_variable_types_to_function(to_substitute,function,to_substitute_type)
+        print("Function after processing = "+function)
         new_function = function
 
         #If there is a value to subsitute into this abstraction
