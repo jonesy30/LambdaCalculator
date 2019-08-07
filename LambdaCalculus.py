@@ -4,6 +4,7 @@ from LambdaCalculusLexer import LambdaCalculusLexer
 from LambdaCalculusParser import LambdaCalculusParser
 from LambdaCalculusListener import LambdaCalculusListener
 from LambdaCalculusVisitor import LambdaCalculusVisitor
+from LambdaErrorListener import LambdaErrorListener, SyntaxTokenError
 from BracketCheck import BracketCheck
 from CaseCheck import CaseCheck
 from CallByValueVisitor import CallByValueVisitor
@@ -40,12 +41,31 @@ def main():
     else:
         print("No visitor")
     
-    result, return_type, valid_type = run(expression, visitor)
-    print("Result = "+result)
-    print("Return type = "+return_type)
-    print("Valid type = "+valid_type)
+    #result, return_type, valid_type = run(expression, visitor)
+    return_value = run(expression, visitor)
+    if isinstance(return_value,int):
+        if return_value == -1:
+            print("Syntax error - check the term and try again?")
+        elif return_value == -2:
+            print("Normal form cannot be found - does this term have a normal form?")
+        elif return_value == -5:
+            print("Invalid visitor selected - try refreshing the page and try again")
+    else:
+        result = return_value[0]
+        return_type = return_value[1]
+        valid_type = return_value[2]
+        result,return_type = visitor.post_process(result, return_type)
+    
+        print("Result = "+result)
+        print("Return type = "+return_type)
+        print("Valid type = "+valid_type)
 
 def web_interface(expression, evaluate_selection):
+
+    bracket_checker = BracketCheck()
+    matched_brackets = bracket_checker.check_brackets(expression)
+    if matched_brackets == False:
+        return "Mismatched brackets - check the term and try again?"
 
     result = None
     return_type = None
@@ -53,33 +73,67 @@ def web_interface(expression, evaluate_selection):
 
     if evaluate_selection == "v":
         visitor = CallByValueVisitor()
-        result, return_type, valid_type = run(expression, visitor)
     elif evaluate_selection == "n":
         visitor = CallByNameVisitor()
-        result, return_type, valid_type = run(expression, visitor)
     elif evaluate_selection == "a":
         #I should be running the alpha conversion code here
-        return -1
+        return -5
     else:
-        return -1
+        return -5
+    
+    return_value = run(expression, visitor)
+    print("Return value = "+str(return_value))
+    if isinstance(return_value,int):
+        if return_value == -1:
+            return "Syntax error - check the term and try again?"
+        elif return_value == -2:
+            return "Normal form cannot be found - does this term have a normal form?"
+        elif return_value == -5:
+            return "Invalid visitor selected - try refreshing the page and try again"
+    else:
+        result = return_value[0]
+        return_type = return_value[1]
+        valid_type = return_value[2]
+        result,return_type = visitor.post_process(result, return_type)
     
     return str(result), str(return_type), str(valid_type)
 
 def run(expression, visitor):
+    sys.setrecursionlimit(200)
+
     stream = InputStream(expression)
     lexer = LambdaCalculusLexer(stream)
-    #lexer = LambdaCalculusLexer(StdinStream())
-    tokens = CommonTokenStream(lexer)
-    parser = LambdaCalculusParser(tokens)
-    tree = parser.term()
-    if visitor != None:
-        result,return_type,valid_type = visitor.visit(tree)
-        result,return_type = visitor.post_process(result, return_type)
-        
-        return str(result),str(return_type),str(valid_type)
-    else:
+    lexer.removeErrorListeners()
+    lexer.addErrorListener(LambdaErrorListener())
+    try:
+        tokens = CommonTokenStream(lexer)
+        parser = LambdaCalculusParser(tokens)
+        parser.addErrorListener(LambdaErrorListener())
+        try:
+            tree = parser.term()
+            if tree == -2 or tree == -1:
+                return tree
+            if visitor != None:
+                return_value = visitor.visit(tree)
+                if return_value == -1:
+                    return -1
+                else:
+                    result = return_value[0]
+                    return_type = return_value[1]
+                    valid_type = return_value[2]
+                    result,return_type = visitor.post_process(result, return_type)
+                
+                return str(result),str(return_type),str(valid_type)
+            else:
+                return -5
+        except RecursionError:
+            return -2
+        except Exception:
+            return -1
+    except RecursionError:
+        return -2
+    except Exception:
         return -1
-
 
 if __name__ == '__main__':
     main()

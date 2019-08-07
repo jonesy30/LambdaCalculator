@@ -1,4 +1,6 @@
 from LambdaCalculusVisitor import LambdaCalculusVisitor
+from LambdaErrorListener import LambdaErrorListener, SyntaxTokenError
+from antlr4.error.Errors import NoViableAltException
 from AlphaCalculatorPartial import calculate_alpha
 from Stack import Stack
 from antlr4 import *
@@ -26,7 +28,9 @@ class BaseVisitor(LambdaCalculusVisitor):
             return_type = None
 
             output_tuple = self.visitChildren(ctx)
-            if output_tuple is not None:
+            if output_tuple == -1:
+                return -1
+            elif output_tuple is not None:
                 output = output_tuple[0]
                 return_type = output_tuple[1]
 
@@ -251,11 +255,6 @@ class BaseVisitor(LambdaCalculusVisitor):
 
     def add_bound_variable_types_to_function(self, bound_variable, function, type):
         
-        print("In add bound variables to function!!")
-        print("Function = "+function)
-        print("Type = "+type)
-        print("Bound variable = "+bound_variable)
-
         if ":" in bound_variable:
             head, sep, tail = bound_variable.partition(':')
             bound_variable = head
@@ -295,11 +294,26 @@ class BaseVisitor(LambdaCalculusVisitor):
         if function is not None:
             stream = InputStream(function)
             lexer = LambdaCalculusLexer(stream)
+            lexer.removeErrorListeners()
+            lexer.addErrorListener(LambdaErrorListener())
+            #try:
             tokens = CommonTokenStream(lexer)
             parser = LambdaCalculusParser(tokens)
+            #    parser.addErrorListener(LambdaErrorListener())
+            #    try:
             tree = parser.term()
 
             return tree
+                #except (SyntaxTokenError, NoViableAltException):
+            #     except RecursionError:
+            #         return -2
+            #     except Exception:
+            #         return -1
+            # #except (SyntaxTokenError, NoViableAltException):
+            # except RecursionError:
+            #     return -2
+            # except Exception:
+            #     return -1
 
     def check_for_parenthesis(self, ctx):
         parenthesis_check = ctx.getChild(0).getText()
@@ -335,12 +349,7 @@ class BaseVisitor(LambdaCalculusVisitor):
         if to_substitute_type == None:
             to_substitute_type = input_type
 
-        print("To substitute = "+to_substitute)
-        print("Incoming before abstraction = "+str(incoming))
-        print("To substitute type = "+to_substitute_type)
-
         function = self.add_bound_variable_types_to_function(to_substitute,function,to_substitute_type)
-        print("Function after processing = "+function)
         new_function = function
 
         #If there is a value to subsitute into this abstraction
@@ -433,6 +442,8 @@ class BaseVisitor(LambdaCalculusVisitor):
 
             #Create a tree of the result of the inner function, and evaluate it
             tree = self.create_tree(new_function)
+            if tree == -2 or tree == -1:
+                return tree
             new_function,function_type,valid_typing = self.visit(tree)
 
             if valid_typing == False:
@@ -457,6 +468,8 @@ class BaseVisitor(LambdaCalculusVisitor):
             print("New function before tree creation = "+str(new_function))
 
             tree = self.create_tree(new_function)
+            #if tree == -2 or tree == -1:
+            #    return tree
             new_function,function_type,valid_typing = self.visit(tree)
             print("New function after tree creation = "+str(new_function))
 
