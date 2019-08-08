@@ -1,5 +1,6 @@
 grammar LambdaCalculus;
 
+/* Parser Rules */
 term 
     : abstraction
     | function
@@ -83,6 +84,7 @@ operation
     | EQ
     ;
 
+/* Lexer rules */
 NUMBER : [0-9]+ ;
 BOOL : 'TRUE'|'true'|'True'|'FALSE'|'false'|'False' ;
 VARIABLE : [a-zA-Z] ;

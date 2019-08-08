@@ -3,9 +3,10 @@
 \usepackage[backend=bibtex]{biblatex}
 \usepackage[strings]{underscore}
 \usepackage[T1]{fontenc}
+\usepackage{amsmath}
 \bibliography{dissertation}
 \begin{document}
-\title{Writing a Program to Evaluate Lamdba Expressions}
+\title{Writing a Program to Evaluate Lambda Expressions}
 \author{Yola Jones}
 \date{\today}
 \maketitle
@@ -13,17 +14,15 @@
 \chapter{Design and Implementation}
 \section{Design}
 
-The overall program is split into four distinct elements:
-\begin{itemize}
-\item A grammar definition which is used to define the syntax of a lambda calculus term
-\item A piece of code which will be used to create the abstract syntax tree of a given term (using antlr)
-\item An expression evaluator which will be used to traverse the tree in order to find the result of the term
-\item A web interface
-\end{itemize}
+The overall program is split into a number of distinct elements. A grammar is used to define the syntax of a lambda term. Antlr is used to turn this grammar into an abstract syntax tree, which is used by an expression evaluator to traverse the tree and determine the result of the input lambda term.
 
-\section{Grammar}
+A web interface is used to house this program, providing the user with a convenient and simple way to interact with the program.
 
-The grammar of lambda calculus is already clearly defined, with a lambda term being either a variable, an abstraction or an application \cite{Hankin2004}. Applied lambda calculus adds functions and constants to this definition \cite{Slonneger1995}. Therefore the grammar of a lambda calculus term becomes:
+Since Antlr is used to turn the grammar into an abstract syntax tree, this will not be documented in the design section, as this process has already been well-defined and will not be deviated from \cite{Parr2012}. However, the grammar, expression evaluator and the web interface are key blocks which need to be implemented with key factors in mind, and so have been discussed below. 
+
+\subsection{Grammar}
+
+The key aim in creating this grammar is creating a syntax which sticks as closely as possible to the rules of lambda calculus. Lambda Calculus grammar is already clearly defined, with a lambda term being either a variable, an abstraction or an application \cite{Hankin2004}. Applied lambda calculus adds functions and constants to this definition \cite{Slonneger1995}. Therefore the grammar of a lambda calculus term becomes:
 
 \begin{itemize}
 \item[|] Application (of form \texttt{[term] [term]}
@@ -34,11 +33,7 @@ The grammar of lambda calculus is already clearly defined, with a lambda term be
 
 With the addition of types, the grammar adds the option of a \texttt{:[type]} term to each variable, with each type being either a ground type (bool, int or none), or in the form \texttt{[type]->[type]}. This follows the standard syntax for typing used in the lecture material \cite{Hankin2004} \cite{Gay2019}, and will allow each student to input a lambda term directly from the lecture slides with minimal adjustment.
 
-\section{Abstract Syntax Tree}
-
-Having defined a grammar, antlr can then be used to create an abstract syntax tree. This is very simple to do, and involves passing the input term through an Input Stream class which converts this to a string of characters, then feeding this into a lexer (which outputs a set of tokens), a class which converts the tokens into an indexable list, and finally passing this through a parser which turns the tokens into an abstract syntax tree which can be explored \cite{Tomassetti2007}. This process is well documented and therefore will not be deviated from.
-
-\section{Expression Evaluator}
+\subsection{Expression Evaluator}
 
 The fundamental idea behind this evaluator is tree traversal, which navigates through the token nodes and performs different operations depending on the type of token encountered. For example, application tokens in the form MN will pass the right-hand term N to the left-hand term M. Abstractions will take the incoming value and substitute it into its own function. This will allow an evaluated expression to be built up, and a result evaluated.
 
@@ -58,13 +53,73 @@ The visitor therefore will be the main code written in this project. A parser wi
 
 The visitor should return tree things upon returning to the topmost node: the value of the expression, whether or not the term is typable, and what type the expression will be. It will also return details of any errors, for example syntax or “normal form does not exist” errors where applicable.
 
-\section{Web Interface}
+\subsection{Web Interface}
 
 The web interface will allow the user to input a lambda term, along with the types of any terms. It will also allow the user to select which reduction strategy they would like to have the term evaluated by, with call-by-need (or normal order reduction) being selected as the default.
 
-After the user has entered the data, a HTTP POST request will be used to send the data through the back-end code, which will process the term and return the result, typeability and the type of the result from the visitor. This will then get displayed back to the user.
+After the user has entered the data, a HTTP POST request will be used to send the data through the back-end code, which will process the term and return the result, type validity and the type of the final term from the visitor. This will then get displayed back to the user.
 
 The layout should be simple and uncluttered, and should be suitable for those with a visual impairment.
+
+\section{Implementation}
+
+\subsection{Grammar}
+
+The lambda grammar is contained in a .g4 file which defines the parser and lexer rules for lambda calculus, as required by Antlr. A section of the grammar is shown in \ref{parser_rules}, and indicates the parser rules for the term, application and abstraction token nodes, alongside the lexer rules in \ref{lexer_rules}.
+
+\begin{figure}[p]
+\centering
+\includegraphics{images/parser_rules}
+\caption{Parser Rules}
+\label{parser_rules}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics{images/lexer_rules}
+\caption{Lexer Rules}
+\label{lexer_rules}
+\end{figure}
+
+\subsection{Abstract Syntax Tree}
+
+Having defined a grammar, antlr can then be used to create an abstract syntax tree. This is very simple to do, and involves passing the input term through an Input Stream class which converts this to a string of characters, then feeding this into a lexer (which outputs a set of tokens), a class which converts the tokens into an indexable list, and finally passing this through a parser which turns the tokens into an abstract syntax tree which can be explored \cite{Tomassetti2007}. This process is well documented and therefore will not be deviated from.
+%screenshots needed here
+
+\subsection{Expression Evaluator}
+This is the largest block of code in the program, and defines how the incoming lambda term should be evaluated depending on the input given by the user. This code can be split into three distinct sections as discussed in the Background chapter of this report: alpha conversion, beta reduction and typing rules.
+
+\subsubsection{Alpha Conversion}
+The alpha conversion is based on the rules for explicit alpha conversion with substitution, as defined by \cite{Acar2008}, and as discussed in detail previously. These rules are as follows:
+
+\begin{equation}
+[t/x]y=\begin{cases}
+t & \text{if $y=x$}\\
+y & \text{if $y\ne x$}
+\end{cases}
+\end{equation}
+
+\begin{equation}
+[t/x](t_1t_2)=[t/x]t_1[t/x]t_2
+\end{equation}
+
+\begin{equation}
+[t'/x](\lambda y.t)=\begin{cases}
+\lambda y.t & \text{if $x=y$}\\
+\lambda z.[t'/x][z/y]t & \text{if $x\ne y \land z\notin FV(t) \cup FV(t')$}
+\end{cases}
+\end{equation}
+
+The final rule is the rule to be focused on, and contains the process of finding a variable z that does not appear in the free variables of the incoming term or the existing term, replacing all bound variables y with this new term z, and then substituting in t’ as normal.
+The alpha conversion code follows this process. First, the set of free variables in the term are determined, by taking the set of all alphabetic characters in the term and eliminating the bound variables. These variables are then replaced with letters that are not in the list of free variables, in the situation where a clash in free variables between the two expressions are found. This produces an alpha-converted term, and regular substitution happens using a string.replace() python method, as abiding by the Barendregt Convention.
+
+\subsubsection{Beta Reduction}
+
+Two beta reduction strategies are taught on the Theory of Computation course, call-by-value and call-by-name. The differences between these two strategies have been discussed, but the key difference is in when terms are evaluated in an application MN, whether N is evaluated before being passed into M, or whether it is substituted first and then evaluated inside M.
+
+Because of these differences in evaluation strategy, two separate visitors are used. However, since they share a lot of the same common functionality (when alpha conversion happens, typing rules, what happens inside functions), a BaseVisitor was defined which contains all common code between these two strategies. The two call-by-value and call-by-need visitors are subclassed from this base visitor, and define their unique behaviour for the application and abstraction terms.
+
+The abstraction term differs between the two methods due to nothing other than typing, since the type of a term happens during the evaluation of that term as will be discussed in more detail below. In call-by-value, the type of N is known before substitution, so can be carried throughout the function. In call-by-need, the whole term needs to be type checked after substitution has happened to determine the type of M with N incorporated. 
 
 
 
