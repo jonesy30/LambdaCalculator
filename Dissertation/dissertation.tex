@@ -1,15 +1,19 @@
 \documentclass[a4paper,12pt]{report}
 \usepackage{graphicx}
-\usepackage[backend=bibtex]{biblatex}
 \usepackage[strings]{underscore}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
+\usepackage[backend=bibtex]{biblatex}
 \bibliography{dissertation}
 \begin{document}
 \title{Writing a Program to Evaluate Lambda Expressions}
 \author{Yola Jones}
 \date{\today}
 \maketitle
+
+%
+% 	WHAT TENSE IS THIS
+%
 
 \chapter{Design and Implementation}
 \section{Design}
@@ -62,6 +66,8 @@ After the user has entered the data, a HTTP POST request will be used to send th
 The layout should be simple and uncluttered, and should be suitable for those with a visual impairment.
 
 \section{Implementation}
+
+The majority of the code has been written in Python, specifically Python3, as there is plenty of support for Antlr being used with Python3. While Java is more extensively supported in Antlr, the MSc Software Development course which this dissertation is being written for teaches Java and not Python, so Python was chosen as a way of expanding the number of programming languages encountered throughout the course.
 
 \subsection{Grammar}
 
@@ -119,9 +125,79 @@ Two beta reduction strategies are taught on the Theory of Computation course, ca
 
 Because of these differences in evaluation strategy, two separate visitors are used. However, since they share a lot of the same common functionality (when alpha conversion happens, typing rules, what happens inside functions), a BaseVisitor was defined which contains all common code between these two strategies. The two call-by-value and call-by-need visitors are subclassed from this base visitor, and define their unique behaviour for the application and abstraction terms.
 
-The abstraction term differs between the two methods due to nothing other than typing, since the type of a term happens during the evaluation of that term as will be discussed in more detail below. In call-by-value, the type of N is known before substitution, so can be carried throughout the function. In call-by-need, the whole term needs to be type checked after substitution has happened to determine the type of M with N incorporated. 
+The abstraction term differs between the two methods due to nothing other than typing, since the type of a term happens during the evaluation of that term as will be discussed in more detail below. In call-by-value, the type of N is known before substitution, so can be carried throughout the function. In call-by-need, the whole term needs to be type checked after substitution has happened to determine the type of M with N incorporated.
 
+\subsubsection{Typing}
 
+Lambda Calculus has clearly defined typing rules which are taught in the Theory of Computation course. These rules have been discussed in more detail previously, and are as follows:
+
+\begin{equation}
+\frac{x:T\in \Gamma}{\Gamma \vdash x:T}TVar
+\label{variable_type}
+\end{equation}
+
+\begin{equation}
+\frac{\Gamma ,x:T\vdash M:U}{\Gamma \vdash \lambda x:T.M:T \to U}TAbs
+\end{equation}
+
+\begin{equation}
+\frac{\Gamma \vdash M:T \to U \qquad \Gamma \vdash N:T}{\Gamma \vdash MN:U}TApp
+\label{application_types}
+\end{equation}
+
+There are two minimal types (\texttt{int} and \texttt{bool}) and one supertype (\texttt{none}) as defined in the Theory of Computation lecture slides \cite{Gay2019}. These will be the only types allowed by the program.
+
+Since the visitNode methods already evaluate their children nodes, these typing rules can be integrated directly into these nodes, with each visitNode method returning a value and a type. Type checking happens throughout the code, in each method which could contain conflicting types. This is implemented as follows:\\
+
+\textit{Abstraction}\\
+Users enter types in the form \texttt{x:type}, which can be applied to any variable included in the term. This means that the term \texttt{$\lambda$ x:int.x:bool} is valid, but type invalid (since the type of x is different for each x term). This is checked inside the visitAbstraction method.
+
+The abstraction method takes the input type T (as determined either from input by the user or through type inference from a function, discussed below), and joins it with the output type (again, either from user input or determined from the function) with \texttt{->}, to become of type \texttt{input->output}.\\
+
+\textit{Application}\\
+Application typing is far simpler than abstraction, for an application MN the code simply takes the type of M (in the form \texttt{T} or \texttt{T->U}) and iteratively removes the first type from both M and N until the type of N is None, at which point it returns type M. If at any point the first type in M does not match the first types in N, or the number of types in N is larger than the type of M, the type checking is declared invalid. This is as per rule \ref{application_types}.\\
+
+\textit{Variable}\\
+The variable terms return the type given to them by the user, as defined by Rule \ref{variable_type}. Any number is given type \texttt{int}, and any boolean values TRUE or FALSE are given type \texttt{bool}.\\
+
+In the visitFunction node, the input and output types of terms can be inferred by examining the operation term. The following is stated in code:
+
+\begin{itemize}
+	\item The operations \{\&,|\} take two boolean values and return a boolean. Therefore the type of the incoming term can be inferred to be a bool, likewise with the output term
+	\item The operations \{+,-,*\} take two integer values and return an integer. As above, the input term can be inferred to be an integer, matching the output term
+	\item The operations \{==,>,<\} take two integer values and return a boolean, so it can be inferred that the input term is an integer, and the output is a boolean. 
+\end{itemize}
+
+This is used to determine the output type of a function which is used to determine the type output by its parent term. In an abstraction, this type inference can be used to determine the type of its input term, for example the lambda term $\lambda x.x+1$ can be inferred to have type \texttt{int->int} despite no input type given by the user.
+
+There is a limit to this type inference, the function will infer the input type when there is only one operation term. For example, the term $\lambda x.(x==1)\&b$ contains two operations, == and \&. In this case, working out the input type is more complicated, since the typing has to be broken down in to sub-functions, which need to determine what they think the input type should be, which then needs to be examined collectively as a complete term. The type of this output is returned by the program therefore as \texttt{None->bool}, which is correct, it's just not as refined as \texttt{int->bool}.
+
+While this is definitely possible, it is not the key goal in the project, and is a small edge-case when it comes to improving students understanding. The result is correct, just not completely minimal. Because of this, and due to the finite nature of this project, this has been deemed an acceptable limitation of the code, with other tasks which more greatly contribute to students understanding of lambda calculus being prioritised.
+
+\subsubsection{Overall Lambda Code}
+Each visit method in the visitor returns an evaluated result and a type, which is used to build the evaluated term and determine the final result, type and type validity of the input expression.
+
+However, during this process, there are a number of occurrences which could stop the program from being able to return a final result. These are broken down into two key issues: syntax errors and occurrences where a term doesn't have a normal form and therefore cannot be evaluated to termination. These have been discussed below.\\
+
+\textit{Syntax Errors}\\
+Lambda terms often include nested parentheses. It is easy for a user to mismatch brackets, for example for a term to include three open brackets but only two close brackets. Because of this, before the term is passed to antlr, the code checks to ensure brackets are matched correctly, and if not, returns an error to the user informing them of the issue and asking them to re-enter.
+
+Apart from this, general syntax errors are likely to occur, for example a user forgetting to put a . in an abstraction term. To handle this, antlr's ErrorListener class is overridden, instead throwing a custom SyntaxTokenError exception, which can be caught by the program and passed back to the user.\\
+
+\textit{Recursion Errors}\\
+Recursion errors are thrown in Python when a maximum stack depth is reached in order to protect Python from crashing \cite{PythonStack2019}. This is the exception which is thrown when a lambda term has no normal form, as the code keeps trying to evaluate it before eventually throwing a RecursionError.
+
+To handle this, the recursion limit for the code is set to 200, smaller than the python default to prevent excessive time waiting for the program to fail, but large enough to ensure that any reasonable lambda term a student could want to input can be processed. A recursion limit for the code equates to a lambda term with approximately 50 nested abstractions (since each abstraction could potentially be comprised of the following nodes: its parent term, the abstraction contained within parentheses, the actual abstraction and its inner terms). While this is a limitation, it's is deemed to be a reasonable one.
+
+If a recursion error is thrown, it is caught by the code in a \texttt{try/except} block, and an error message informing the user that a normal form cannot be found for this term is given to the user.
+
+\subsubsection{Web Interface}
+
+Flask is a web framework designed for use with Python, and allows python scripts to be controlled and run from a web interface which is served by Flask\cite{FullStack2019}. The front-end of the web interface is written in HTML, and is connected to the python file using Flask's render_template() function.
+
+Clicking the \textit{Check Expression} button on the web interface sends a HTTP post request to the Flask server, which takes the value held in the user input box along with the selection of reduction strategy, and sends this to the main antlr Lambda program. The result outputted is then given to the HTML code, and the webpage is re-rendered to display the results, be that an error message indicating a syntax or normal form not found error, or the result, type and type validity of the lambda term input by the user.
+
+%SCREENSHOTS
 
 \newpage
 Hello! \cite{CourseSpecification}

@@ -205,6 +205,33 @@
     \field{urlyear}{2019}
   \endentry
 
+  \entry{PythonStack2019}{online}{}
+    \name{author}{1}{}{%
+      {{hash=FPS}{%
+         family={Foundation},
+         familyi={F\bibinitperiod},
+         given={Python\bibnamedelima Software},
+         giveni={P\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FPS1}
+    \strng{fullhash}{FPS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{title}{Built-in Exceptions}
+    \verb{url}
+    \verb https://docs.python.org/3/library/exceptions.html
+    \endverb
+    \field{day}{08}
+    \field{month}{08}
+    \field{year}{2019}
+    \field{urlday}{08}
+    \field{urlmonth}{08}
+    \field{urlyear}{2019}
+  \endentry
+
   \entry{CourseSpecification}{online}{}
     \name{author}{1}{}{%
       {{hash=oGU}{%
@@ -335,6 +362,31 @@
     \field{year}{1998}
     \field{urlday}{28}
     \field{urlmonth}{07}
+    \field{urlyear}{2019}
+  \endentry
+
+  \entry{FullStack2019}{online}{}
+    \name{author}{1}{}{%
+      {{hash=MM}{%
+         family={Makai},
+         familyi={M\bibinitperiod},
+         given={Matt},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{MM1}
+    \strng{fullhash}{MM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{Flask}
+    \verb{url}
+    \verb https://www.fullstackpython.com/flask.html
+    \endverb
+    \field{day}{08}
+    \field{month}{08}
+    \field{year}{2019}
     \field{urlyear}{2019}
   \endentry
 
