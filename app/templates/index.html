@@ -6,18 +6,18 @@
     </head>
     <div id="main-container" class="percentage_width"> 
         <h1>
-            <a href="/static/easter_egg/lambda.jpg"><font color="#d3d3d3">Lambda</font></a>
-            <a href="/static/easter_egg/calculus.jpg"><font color="#d3d3d3">Calculus</font></a>
-            <a href="/static/easter_egg/expression.jpg"><font color="#d3d3d3">Expression</font></a>
-            <a href="/static/easter_egg/evaluator.jpg"><font color="#d3d3d3">Evaluator</font></a>
+            <a href="/static/easter_egg/lambda.jpg" target="_blank"><font color="#d3d3d3">Lambda</font></a>
+            <a href="/static/easter_egg/calculus.jpg" target="_blank"><font color="#d3d3d3">Calculus</font></a>
+            <a href="/static/easter_egg/expression.jpg" target="_blank"><font color="#d3d3d3">Expression</font></a>
+            <a href="/static/easter_egg/evaluator.jpg" target="_blank"><font color="#d3d3d3">Evaluator</font></a>
         </h1>
         <div id="instructions">
             <p>Enter the term in the box below, the result will tell you the output, whether it is typable and what type it should be</p>
-            <p>Enter abstractions in the form %x.M (substitute &lambda; for %) </p>
+            <p>To enter &lambda;, type % </p>
             <p>Types can also be entered for any variable, in the form x:type <i>(bool, int and none types allowed)</i></p>
         </div>
         <form action="/" method="post" id="expression-form">
-            <input name="input-box" id="input-box" placeholder={{input}} class="form-control"></input>
+            <input name="input-box" id="input-box" onkeydown="replaceLambda(event)" placeholder="Enter expression here" class="form-control"></input>
             <div id="evaluation-method-control">
                 <b>Evaluation Method:</b>
                 <div class="custom-control custom-radio custom-control-inline" data-toggle="buttons">
@@ -41,13 +41,21 @@
                 {{result|safe}}
             </div>
         </form>
-        <p></p>
+        <p><font size="-1">Note: this program only allows single input abstractions. To enter a multi-input abstractions, nest them. So λxy.xy becomes λx.λy.xy</font></p>
         <p></p>
         <p><font color="#a6acaf">Spot an issue? Code can be found <a href="https://github.com/jonesy30/LambdaCalculator.git">here</a></font></p>
     </div>
 </html>
 
-
+<script>
+    function replaceLambda(e){
+        if( e.key === '%' ){
+            e.preventDefault();
+            var input = document.querySelector('#input-box');
+            input.value = input.value + 'λ';            
+        }
+    }
+</script>
 
 <style>
     body{
@@ -57,7 +65,7 @@
     }
     .output-box{
         width:100%;
-        height:40%;
+        height:60%;
         /* border: solid lightgray 1px;
         border-radius: 10px; */
         text-align: center;
@@ -74,7 +82,7 @@
         /*color: lightgray;*/
     } 
     #main-container {
-        height:80%;
+        height:85%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -82,7 +90,7 @@
     }
     #expression-form {
         width:75%;
-        height:40%;
+        height:60%;
         display: flex;
         align-items: center;
         justify-content: center;

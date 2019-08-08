@@ -288,7 +288,14 @@ class BaseVisitor(LambdaCalculusVisitor):
         for string in bad_strings:
             output = output.replace(string,"")
 
-        return output,return_type
+        output_list = list(output)
+        for i,character in enumerate(output_list):
+            if character == '%':
+                output_list[i] = 'λ'
+            
+        output_processed = "".join(output_list)
+
+        return output_processed,return_type
 
     def create_tree(self, function):
         if function is not None:

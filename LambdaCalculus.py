@@ -98,8 +98,21 @@ def web_interface(expression, evaluate_selection):
     
     return str(result), str(return_type), str(valid_type)
 
+def pre_process(expression):
+
+    expression_list = list(expression)
+    for i,char in enumerate(expression_list):
+        if char == 'λ':
+            expression_list[i] = '%'
+    
+    processed_expression = "".join(expression_list)
+    
+    return processed_expression
+
 def run(expression, visitor):
     sys.setrecursionlimit(200)
+
+    expression = pre_process(expression)
 
     stream = InputStream(expression)
     lexer = LambdaCalculusLexer(stream)
