@@ -108,7 +108,6 @@ class BaseVisitor(LambdaCalculusVisitor):
         if isinstance(ctx.getChild(0),LambdaCalculusParser.FunctionContext) or isinstance(ctx.getChild(2),LambdaCalculusParser.FunctionContext):
             input_type = None
         
-        #TODO: Do some actual calculations here
         return_string = "" + left + op + right
         
         print("Me = "+ctx.getText())
@@ -255,6 +254,8 @@ class BaseVisitor(LambdaCalculusVisitor):
 
     def add_bound_variable_types_to_function(self, bound_variable, function, type):
         
+        print("Type = "+str(type))
+
         if ":" in bound_variable:
             head, sep, tail = bound_variable.partition(':')
             bound_variable = head
@@ -266,6 +267,7 @@ class BaseVisitor(LambdaCalculusVisitor):
                     function_list[i] = character + ":" + type
 
             processed_function = "".join(function_list)
+            
             return processed_function
         else:
             return function
