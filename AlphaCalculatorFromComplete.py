@@ -108,7 +108,7 @@ class AlphaCalculatorFromComplete():
     def rename_values(self, expression,scope_objects):
         
         for scope in scope_objects:
-            print("Scope = "+str(scope))
+            #print("Scope = "+str(scope))
             term = ""
             i = scope.start_index
             while i < scope.end_index:
@@ -117,16 +117,16 @@ class AlphaCalculatorFromComplete():
         
             expression_list = list(expression)
             bound_values = self.get_bound_values(expression)
-            print("Bound values = "+str(bound_values))
+            #print("Bound values = "+str(bound_values))
 
             replace_with = [""] * len(bound_values)
             for i,bound_value in enumerate(bound_values):
                 other_bound_values = bound_values
                 other_bound_values.remove(bound_value)
                 if bound_value in other_bound_values:
-                    print("Other bound values")
+                    #print("Other bound values")
                     replace_with[i] = self.available_letters[0]
-                    print("Replacing "+str(i)+" with "+replace_with[i])
+                    #print("Replacing "+str(i)+" with "+replace_with[i])
                     self.available_letters.remove(replace_with[i])
 
                 else:
@@ -146,7 +146,7 @@ class AlphaCalculatorFromComplete():
     def rename_values_with_incoming(self, expression,scope_objects):
         
         for scope in scope_objects:
-            print("Scope = "+str(scope))
+            #print("Scope = "+str(scope))
             term = ""
             i = scope.start_index
             while i < scope.end_index:
@@ -155,7 +155,7 @@ class AlphaCalculatorFromComplete():
         
             expression_list = list(expression)
             free_variables = self.get_free_variables(scope_objects,expression)
-            print("Free values = "+str(free_variables))
+            #print("Free values = "+str(free_variables))
 
             to_replace = [""] * len(free_variables)
             replace_with = [""] * len(free_variables)
@@ -163,7 +163,7 @@ class AlphaCalculatorFromComplete():
             #Remove duplicates in free variables, just incase there are any still left
             free_variables = list(dict.fromkeys(free_variables))
             for i,free_value in enumerate(free_variables):
-                print("Processing free value "+str(free_value))
+                #print("Processing free value "+str(free_value))
                 to_replace[i] = free_value
                 replace_with[i] = self.available_letters[0]
                 self.available_letters.remove(replace_with[i])
@@ -218,7 +218,7 @@ class AlphaCalculatorFromComplete():
         term_list = list(term)
         
         for scope in scope_objects[::-1]:
-            print("Scope = "+str(scope))
+            #print("Scope = "+str(scope))
 
             scope_string = ""
             i = scope.start_index
@@ -234,15 +234,15 @@ class AlphaCalculatorFromComplete():
             bound_variable_container = re.search("%(.*?)\.", term)
             if bound_variable_container is not None:
                 bound_variable = bound_variable_container.group(1)
-                print("Bound variable "+bound_variable+" found")
+                #print("Bound variable "+bound_variable+" found")
                 #print("Bound variable = "+str(bound_variable))
 
-                print("Free variables before = "+str(free_variables_found))
+                #print("Free variables before = "+str(free_variables_found))
                 free_variables_found.remove(bound_variable)
-                print("Free variables after = "+str(free_variables_found))
+                #print("Free variables after = "+str(free_variables_found))
             #print("New free variables = "+str(free_variables_found))
 
-            print("Free variables found = "+str(free_variables_found))
+            #print("Free variables found = "+str(free_variables_found))
             for variable in free_variables_found:
                 free_variables.append(variable)
 
@@ -250,12 +250,7 @@ class AlphaCalculatorFromComplete():
         print("Free variables = "+str(free_variables))
         return free_variables
 
-
-    def calculate_alpha(self):
-        expression = input("Enter test expression: ")
-        expression = self.check_brackets(expression)
-        incoming = input("Enter incoming expression: ")
-        incoming = self.check_brackets(incoming)
+    def calculate_alpha(self, expression, incoming):
 
         if incoming is None or incoming == "None":
             #If there's nothing incoming, just alpha convert as normal
@@ -267,20 +262,27 @@ class AlphaCalculatorFromComplete():
             scope_map_expression, scope_objects_expression = self.get_scopes(expression)
             scope_map_incoming, scope_objects_incoming = self.get_scopes(incoming)
 
-            print("Expression scopes = ")
-            self.test_print(scope_objects_expression, expression)
-            print("Incoming scope = ")
-            self.test_print(scope_objects_incoming, incoming)
+            #print("Expression scopes = ")
+            #self.test_print(scope_objects_expression, expression)
+            #print("Incoming scope = ")
+            #self.test_print(scope_objects_incoming, incoming)
             self.get_free_variables_with_incoming(scope_objects_expression,scope_objects_incoming, expression, incoming)
             self.get_available_letters(expression, incoming)
             expression = self.rename_values_with_incoming(expression, scope_objects_expression)
             expression = self.rename_values(expression, scope_objects_expression)
 
+        print("Returning expression in calculate alpha "+expression)
         return expression
 
-if __name__ == "__main__":
+if __name__ == "__main__":   
     alpha_calculator = AlphaCalculatorFromComplete()
-    expression = alpha_calculator.calculate_alpha()
+
+    expression = input("Enter test expression: ")
+    expression = alpha_calculator.check_brackets(expression)
+    incoming = input("Enter incoming expression: ")
+    incoming = alpha_calculator.check_brackets(incoming)
+
+    expression = alpha_calculator.calculate_alpha(expression, incoming)
     print(expression)
 
 #this continually overrides replaced variables in smaller scopes, which means some letters aren't used when they should be

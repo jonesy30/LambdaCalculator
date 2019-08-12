@@ -12,7 +12,7 @@ def index():
             returned_result = web_interface(lambda_term,request.form["evaluation-selection"])
             
             if isinstance(returned_result,str):
-                return render_template('index.html',title='Home',result="Error in <b>"+lambda_term+"</b>: <br>"+returned_result)
+                return render_template('index.html',title='Home',result="Input = "+lambda_term+"<br>"+returned_result)
             else:
                 result = returned_result[0]
                 type_value = returned_result[1]

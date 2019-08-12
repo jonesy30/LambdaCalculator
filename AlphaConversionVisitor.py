@@ -1,6 +1,8 @@
 
 from LambdaCalculusVisitor import LambdaCalculusVisitor
+from AlphaCalculatorFromComplete import AlphaCalculatorFromComplete
 from antlr4 import *
+from Stack import Stack
 if __name__ is not None and "." in __name__:
     from .LambdaCalculusParser import LambdaCalculusParser
     from .LambdaCalculusLexer import LambdaCalculusLexer
@@ -11,28 +13,66 @@ import re
 
 class AlphaConversionVisitor(LambdaCalculusVisitor):
 
+    def __init__(self):
+        super()
+        self.incoming_values = Stack() #NOTE: This definitely needs renamed
+        self.alpha_calculator = AlphaCalculatorFromComplete()
+
+    # Visit a parse tree produced by LambdaCalculusParser#term.
+    def visitTerm(self, ctx:LambdaCalculusParser.TermContext):
+        parenthesis_check = self.check_for_parenthesis(ctx)
+        if parenthesis_check != -1:
+            return parenthesis_check
+
+        print("In term "+ctx.getText())
+        return self.visitChildren(ctx)
+
     # Application needs to change to:
     # visit(0), visit(1), return the string of them both
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
+        print("In applicaiton "+ctx.getText())
+
         #Check for parentheses
         parenthesis_check = self.check_for_parenthesis(ctx)
         if parenthesis_check != -1:
             return parenthesis_check
 
-        return self.visitChildren(ctx)
+        right_child = self.visit(ctx.getChild(1))
+        print("Right child = "+str(right_child))
+        if right_child != None:
+            self.incoming_values.push(right_child)
+        
+        left_child = self.visit(ctx.getChild(0))
+
+        returned_result = "" + left_child + right_child
+
+        return returned_result
 
     # Abstraction needs to become an alpha-converter (after having visited children)
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
+        print("In abstraction "+ctx.getText())
         #Check for parentheses
         parenthesis_check = self.check_for_parenthesis(ctx)
         if parenthesis_check != -1:
             return parenthesis_check
 
-        return self.visitChildren(ctx)
+        #inner_expression = self.visit(ctx.getChild(2))
+        inner_expression = ctx.getChild(2).getText()
+        complete_expression = "" + ctx.getChild(0).getText() + ctx.getChild(1).getText() + inner_expression
+        print("Complete expression = "+str(complete_expression))
+
+        incoming = self.incoming_values.pop()
+        print("In abstraction, incoming = "+str(incoming))
+
+        if incoming != -1:
+            returned_abstraction = self.alpha_calculator.calculate_alpha(complete_expression, incoming)
+        else:
+            returned_abstraction = self.alpha_calculator.calculate_alpha(complete_expression, None)
+
+        return returned_abstraction
 
     def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
-        #We are only interested in the variable associated with this term, not the % part
-        return self.visit(ctx.getChild(1))
+        return ctx.getText()
 
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
         #Check for parentheses

@@ -9,6 +9,7 @@ from BracketCheck import BracketCheck
 from CaseCheck import CaseCheck
 from CallByValueVisitor import CallByValueVisitor
 from CallByNameVisitor import CallByNameVisitor
+from AlphaConversionVisitor import AlphaConversionVisitor
 from Stack import Stack
 
 from sympy.solvers import solve
@@ -18,7 +19,7 @@ def main():
     bracket_checker = BracketCheck()
     #case_checker = CaseCheck()
 
-    visitor_selection = input("Call by value or call by name? ")
+    visitor_selection = input("Call by value, name or alpha reduce? ")
 
     expression = input("Enter test expression: ")
     matched_brackets = bracket_checker.check_brackets(expression)
@@ -38,27 +39,36 @@ def main():
         visitor = CallByValueVisitor()
     elif visitor_selection == "n":
         visitor = CallByNameVisitor()
+    elif visitor_selection == "a":
+        visitor = AlphaConversionVisitor()
     else:
         print("No visitor")
     
-    #result, return_type, valid_type = run(expression, visitor)
-    return_value = run(expression, visitor)
-    if isinstance(return_value,int):
+    if visitor_selection == "v" or visitor_selection == "n":
+        #result, return_type, valid_type = run(expression, visitor)
+        return_value = run(expression, visitor)
+        if isinstance(return_value,int):
+            if return_value == -1:
+                print("Syntax error - check the term and try again?")
+            elif return_value == -2:
+                print("Normal form cannot be found - does this term have a normal form?")
+            elif return_value == -5:
+                print("Invalid visitor selected - try refreshing the page and try again")
+        else:
+            result = return_value[0]
+            return_type = return_value[1]
+            valid_type = return_value[2]
+            result,return_type = visitor.post_process(result, return_type)
+        
+            print("Result = "+result)
+            print("Return type = "+return_type)
+            print("Valid type = "+valid_type)
+    elif visitor_selection == "a":
+        return_value = run(expression, visitor)
         if return_value == -1:
             print("Syntax error - check the term and try again?")
-        elif return_value == -2:
-            print("Normal form cannot be found - does this term have a normal form?")
-        elif return_value == -5:
-            print("Invalid visitor selected - try refreshing the page and try again")
-    else:
-        result = return_value[0]
-        return_type = return_value[1]
-        valid_type = return_value[2]
-        result,return_type = visitor.post_process(result, return_type)
-    
-        print("Result = "+result)
-        print("Return type = "+return_type)
-        print("Valid type = "+valid_type)
+        else:
+            print("Returned alpha = "+return_value)
 
 def web_interface(expression, evaluate_selection):
 
@@ -76,8 +86,7 @@ def web_interface(expression, evaluate_selection):
     elif evaluate_selection == "n":
         visitor = CallByNameVisitor()
     elif evaluate_selection == "a":
-        #I should be running the alpha conversion code here
-        return -5
+        visitor = AlphaConversionVisitor()
     else:
         return -5
     
@@ -90,6 +99,10 @@ def web_interface(expression, evaluate_selection):
             return "Normal form cannot be found - does this term have a normal form?"
         elif return_value == -5:
             return "Invalid visitor selected - try refreshing the page and try again"
+        else:
+            return str(return_value)
+    elif isinstance(return_value,str):
+        return "Result = "+return_value
     else:
         result = return_value[0]
         return_type = return_value[1]
@@ -128,8 +141,11 @@ def run(expression, visitor):
                 return tree
             if visitor != None:
                 return_value = visitor.visit(tree)
+                print("Return value = "+str(return_value))
                 if return_value == -1:
                     return -1
+                elif isinstance(return_value, str):
+                    return return_value
                 else:
                     result = return_value[0]
                     return_type = return_value[1]
