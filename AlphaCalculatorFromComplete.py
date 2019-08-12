@@ -34,10 +34,9 @@ def get_bound_values(data):
     return bound_values
 
 #Method to make sure the brackets are all matched up in the string the user has entered
-def check_brackets():
+def check_brackets(expression):
     bracket_checker = BracketCheck()
 
-    expression = input("Enter test expression: ")
     matched_brackets = bracket_checker.check_brackets(expression)
 
     while matched_brackets == False:
@@ -89,6 +88,7 @@ def rename_values(expression,scope_map,scope_objects):
     available_letters = list(alphabet)
 
     for scope in scope_objects:
+        print("Scope = "+str(scope))
         term = ""
         i = scope.start_index
         while i < scope.end_index:
@@ -140,7 +140,8 @@ def test_print(scope_objects,expression):
         print(scope_string)
 
 def calculate_alpha():
-    expression = check_brackets()
+    expression = input("Enter test expression: ")
+    expression = check_brackets(expression)
 
     scope_map, scope_objects = get_scopes(expression)
     test_print(scope_objects,expression)

@@ -121,6 +121,35 @@
     \field{year}{2009}
   \endentry
 
+  \entry{ProgLang3}{online}{}
+    \name{author}{1}{}{%
+      {{hash=CR}{%
+         family={Chan},
+         familyi={C\bibinitperiod},
+         given={Rosalie},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CR1}
+    \strng{fullhash}{CR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{title}{The 10 most popular programming languages, according to the
+  'Facebook for programmers'}
+    \verb{url}
+    \verb https://www.businessinsider.com/the-10-most-popular-programming-langu
+    \verb ages-according-to-github-2018-10?r=US&IR=T
+    \endverb
+    \field{day}{10}
+    \field{month}{08}
+    \field{year}{2019}
+    \field{urlday}{22}
+    \field{urlmonth}{01}
+    \field{urlyear}{2019}
+  \endentry
+
   \entry{Alonzo1936}{article}{}
     \name{author}{2}{}{%
       {{hash=CA}{%
@@ -283,6 +312,33 @@
     \field{year}{2004}
   \endentry
 
+  \entry{ProgLang1}{online}{}
+    \name{author}{1}{}{%
+      {{hash=HM}{%
+         family={Hasan},
+         familyi={H\bibinitperiod},
+         given={Mehedia},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{HM1}
+    \strng{fullhash}{HM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{title}{The 20 Most Popular Programming Languages To Learn For Your
+  Open Source Project}
+    \verb{url}
+    \verb https://www.ubuntupit.com/top-20-most-popular-programming-languages-t
+    \verb o-learn-for-your-open-source-project/
+    \endverb
+    \field{day}{10}
+    \field{month}{08}
+    \field{year}{2019}
+    \field{urlyear}{2019}
+  \endentry
+
   \entry{Horowitz2013}{online}{}
     \name{author}{1}{}{%
       {{hash=HSB}{%
@@ -336,6 +392,37 @@
     \field{urlday}{02}
     \field{urlmonth}{08}
     \field{urlyear}{2019}
+  \endentry
+
+  \entry{Lethbridge2004}{book}{}
+    \name{author}{2}{}{%
+      {{hash=LTC}{%
+         family={Lethbridge},
+         familyi={L\bibinitperiod},
+         given={Timothy\bibnamedelima C.},
+         giveni={T\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+      {{hash=LR}{%
+         family={Laganière.},
+         familyi={L\bibinitperiod},
+         given={Robert},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {McGraw Hill Book Company}%
+    }
+    \strng{namehash}{LTCLR1}
+    \strng{fullhash}{LTCLR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{pages}{323}
+    \field{title}{Object-Oriented Software Engineering}
+    \field{day}{01}
+    \field{month}{12}
+    \field{year}{2004}
   \endentry
 
   \entry{Loader1998}{online}{}
@@ -411,6 +498,35 @@
     \field{edition}{1}
     \field{title}{The Definitive Antlr4 Reference}
     \field{year}{2012}
+  \endentry
+
+  \entry{ProgLang2}{online}{}
+    \name{author}{1}{}{%
+      {{hash=PAD}{%
+         family={Payome},
+         familyi={P\bibinitperiod},
+         given={Alison\bibnamedelima DeNisco},
+         giveni={A\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{PAD1}
+    \strng{fullhash}{PAD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \field{title}{Forget the most popular programming languages, here's what
+  developers actually use}
+    \verb{url}
+    \verb https://www.techrepublic.com/article/forget-the-most-popular-programm
+    \verb ing-languages-heres-what-developers-actually-use/
+    \endverb
+    \field{day}{10}
+    \field{month}{08}
+    \field{year}{2019}
+    \field{urlday}{22}
+    \field{urlmonth}{10}
+    \field{urlyear}{2018}
   \endentry
 
   \entry{Pierce2002}{book}{}

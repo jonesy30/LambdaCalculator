@@ -1,10 +1,10 @@
 \documentclass[a4paper,12pt]{report}
 \usepackage{graphicx}
+\usepackage[backend=bibtex]{biblatex}
 \usepackage{pgfplots}
 \usepackage[strings]{underscore}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
-\usepackage[backend=bibtex]{biblatex}
 \bibliography{dissertation}
 
 \addtolength{\oddsidemargin}{-.5in}
@@ -13,6 +13,7 @@
 
 \addtolength{\topmargin}{-.5in}
 \addtolength{\textheight}{1in}
+
 \begin{document}
 \title{Writing a Program to Evaluate Lambda Expressions}
 \author{Yola Jones}
@@ -23,84 +24,42 @@
 % 	WHAT TENSE IS THIS
 %
 
-\chapter{Design and Implementation}
-\section{Design}
+\chapter{Background}
+\section{Lambda Calculus}
 
-The overall program is split into a number of distinct elements, all of which are based on the fundamental rules of Lambda Calculus (such as syntax and evaluation rules) as defined previously.\\
-
-Firstly, a grammar is written which defines the syntax of lambda terms and allows a term to be broken down into individual tokens. Antlr uses this grammar to process lambda terms, creating an Abstract Syntax Tree for each incoming expression\cite{Parr2012}, a process which has been well documented and therefore will not need to be rewritten. A tree traversal mechanism is the main section of code which navigates the abstract syntax tree and performs operations to determine the resultant expression. This is the section of code which will perform the evaluation, and therefore needs to be designed effectively, with the rules of beta reduction and lambda calculus in mind. A web interface is used to house this program, giving the user a simple and convenient way to interact with the underlying system.\\
-
-The relevant sections have been discussed below, detailing design and key decisions which needed to be made before implementation began. %WHAT TENSE IS THIS
-
-\subsection{Grammar}
-
-The key aim in creating this grammar was creating a syntax which sticks as closely as possible to the rules of lambda calculus. Lambda Calculus grammar is already clearly defined, with a lambda term being either a variable, an abstraction or an application \cite{Hankin2004}. Applied lambda calculus adds functions and constants to this definition \cite{Slonneger1995}, resulting in the following lambda grammar. A lambda term is one of the following:
+Lambda calculus is a way of expressing computation statements as mathematical expressions \cite{Selinger2013} created by Alonzo Church in 1936 \cite{Barendregt2000}. It is an extremely simple model of computation, while still being Turing complete \cite{Rojas1998} and forms the basis for functional programming languages like Haskell \cite{Barendregt2000}. Pure lambda calculus uses a notation with three categories of term \cite{Hankin2004}:
 
 \begin{itemize}
-\item[|] An application (of form \texttt{[term] [term]})
-\item[|] An abstraction (of form \texttt{[abstraction_term].[term]} where \texttt{[abstraction_term]} is defined by \texttt{$\lambda$[variable]})
-\item[|] A function (of form \texttt{[term] [operation] [term]})
-\item[|] A value (of form \texttt{[variable]} (the letters a-z) or \texttt{[number]} (constant))
+	\item Variables (such as x or y)
+	\item Abstractions (with one input and one output, in the form $\lambda$x.M)
+	\item Applications (in the form MN)
 \end{itemize}
 
-With the addition of types, the grammar adds the option of a \texttt{:[type]} term to each variable, with each type being either a ground type (bool, int or none), or in the form \texttt{[type]->[type]}. This follows the standard syntax for typing used in the lecture material \cite{Hankin2004} \cite{Gay2019}, and will allow students on the Theory of Computation course to input a lambda term directly from the lecture slides with minimal adjustment.
+Applied lambda calculus allows this notation to be expanded, adding constants to this definition, which act as values and operations \cite{Slonneger1995}. Typed lambda calculus extends this further, adding types to each term, allowing us to restrict the operations available to different types of objects and ensuring that our expression is runnable \cite{Loader1998}. The combination of applied and typed lambda calculus gives us a grammar which can be used for type checking and arithmetically evaluating lambda calculus terms.\\
 
-\subsection{Expression Evaluator}
+The Theory of Computation course teaches simply typed lambda calculus (applied lambda calculus with types), and includes lectures on alpha conversion and beta reduction, alongside the definition of normal form and typing rules. As a result, these will be covered in the following sections in an attempt to use lecture material to define requirements of the system which is to be built.
 
-The fundamental component of this evaluator is a tree traversal, which navigates through the token nodes and performs different operations depending on the type of node encountered. For example, application tokens in the form MN will pass the right-hand term N to the left-hand term M. Abstractions will take an incoming value if one exists, and substitute it into the body of the abstraction. This will allow an evaluated expression to be built up, and a result determined.\\
+\subsection{Basic Principles}
 
-Antlr provides two mechanisms for traversing an abstract syntax tree: listeners and visitors. A listener is a passive way of evaluating a syntax tree, used with an antlr Walker which traverses the tree using a depth-first approach, triggering methods from the listener as it enters and exits each token \cite{Parr2012}. These listener methods are unable to return values, so expressions and evaluations have to be handled using separate objects within the listener class. As the walker traverses the tree, the listener builds up a running evaluation of the term, returning the result when it exits the topmost node \cite{Srivastav2017}.\\
+As discussed above, the lambda grammar is made up of three types of terms: variables, abstractions, and applications. The lambda calculus is Turing complete, meaning any computable function can be expressed in this grammar \cite{Rojas1998}.\\
 
-Unlike listeners, visitors control their own traversal of the tree. By visiting the children of each node encountered explicitly, the path they take around the tree can be controlled \cite{Parr2012}, allowing some children to not being visited until their parents are evaluated, or a right-hand child of a node being visited and evaluated before its left.\\
+Abstractions are representations of single input functions, which take one input, and use this input to compute an output. An example lambda abstraction is $(\lambda x.x+1)$, which is a representation of the function $f(x) = x+1$, taking one input x, and returning the value of x incremented by 1. In a term $(\lambda x.M)$, substitution takes all the instances of the bound variable x and replacing them with the incoming variable N, or expressed mathematically as $(\lambda x.M)N=[N / x]M$. Multi-input functions can be expressed in nested abstraction terms, for example $f(x,y)=x+y$ in strict lambda notation becomes $\lambda x.\lambda y.x+y$.\\
 
-Visitors also allow custom return types, meaning nodes can return their resultant expressions directly to their parent node and do not have to rely on separate objects \cite{Srivastav2017}.\\
+Applications take abstractions and apply other lambda terms to them using substitution. For example, the application $(\lambda x.x+1)3$ takes a function $\lambda x.x+1$, (or $f(x)=x+1$) and applies the number 3 to it, to become $\lambda3.3+1$.\\
 
-With beta reduction, different methods take different approaches to evaluating terms. In an application MN using a call-by-value approach, N is evaluated before M. In a call-by-need approach, N is passed into M before being evaluated. This means that depending on the type of reduction selected, the evaluator will have to traverse the tree in a different order, suggesting visitor is more appropriate for this task than a listener. The fact that evaluation happens as the tree is being visited supports this further, since there will be a large amount of data being passed around the tree. Having a separate object for storing these values could get complex, and so the visitor methods being able to return values directly to their parents will be more convenient for this task.\\
+With these two terms and variables, any computable function can be expressed. Functions and constants in applied lambda calculus simplify this slightly, allowing the number one to be expressed as the integer 1 rather than the Church encoding $\lambda f.\lambda x.fx$ in lambda calculus \cite{Tarau2017}.
 
-The visitor therefore will be the main code written in this project. An Antlr generated parser will be passed to a custom visitor interface. Different visitors will be defined for each of the beta-reduction strategies being implemented, since each method takes a different approach to evaluating expressions.\\
+\subsection{Alpha Conversion}
 
-The visitor should return three separate items upon returning to the topmost node: the evaluated value of the input lambda term, whether or not the term is typable, and what type the expression will be. It will also return details of any errors where applicable, for example syntax errors which Antlr can't parses, or cases where the normal form of a lambda term does not exist.
+Things get slightly more tricky when having applications of variables to abstractions. The lambda term $\lambda x.\lambda y.yx$ translates to “take the first input to the function, and multiply it by the second input to the function”. The point here is that x and y are distinct, different terms.\\
 
-\subsection{Web Interface}
+Applying y to this function would result in the application $(\lambda x.\lambda y.yx)y$ which would reduce to $\lambda y.yy$, the mathematical representation of taking the value of y and multiplying it by itself. This is incorrect, the meaning of the function has been changed because of the letter chosen to act as the input, and is an example of variable capture.\\
 
-The web interface will allow the user to input a lambda term along with the types of any variable. It will also allow the user to select which reduction strategy they would like to have the term evaluated by, with call-by-need (or normal order reduction) being selected as the default.\\
+Alpha equivalence is the notion in lambda calculus that the choice of variable names does not matter, $\lambda y.y$ is equivalent to $\lambda a.a$. This notion is used to prevent variable capture through a process called alpha conversion, the process of comparing the incoming variable to the terms inside the abstraction and changing variable names to eliminate capture.\\
 
-The code running the interface and the underlying evaluation code will be kept as separate entities, communicating through input parameters and return statements. This is to ensure the code is kept as modular as possible, allowing the evaluator code to be run using multiple different mechanisms, for example through a web interface and a command line for testing purposes. Any data the user enters will be passed to the underlying code, which will process the term and return any output via a return statement, which will be read and displayed to the user.\\
+De Bruijn notation is another way of dealing with this issue, eliminating the need for variables altogether and instead expressing abstraction terms as an index representing which abstraction scope they refer to \cite{Kamareddine2000}.\\
 
-The layout of the interface should be simple and uncluttered, and should be suitable for those with a visual impairment.
-
-\section{Implementation}
-
-The majority of the code has been written in Python, specifically Python3, as there is plenty of support for Antlr being used with Python3. While Java is more extensively supported in Antlr, the MSc Software Development course which this dissertation is being written for teaches Java and not Python, so Python was chosen as a way of expanding the number of programming languages encountered throughout the course.
-
-\subsection{Grammar}
-
-The lambda grammar is contained in a .g4 file which defines the parser and lexer rules for lambda calculus, as required by Antlr. A section of the grammar is shown in \ref{parser_rules}, and indicates the parser rules for the term, application and abstraction token nodes, alongside the lexer rules in \ref{lexer_rules}.
-
-\begin{figure}[p]
-\centering
-\includegraphics[scale=0.75]{images/parser_rules}
-\caption{Parser Rules}
-\label{parser_rules}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\includegraphics[scale=0.75]{images/lexer_rules}
-\caption{Lexer Rules}
-\label{lexer_rules}
-\end{figure}
-
-\subsection{Abstract Syntax Tree}
-
-Having defined a grammar, antlr can then be used to create an abstract syntax tree. This is very simple to do, and involves passing the input term through an Input Stream class which converts this to a string of characters, then feeding this into a lexer (which outputs a set of tokens), a class which converts the tokens into an indexable list, and finally passing this through a parser which turns the tokens into an abstract syntax tree which can be explored \cite{Tomassetti2007}. This process is well documented and therefore will not be deviated from.\\
-%screenshots needed here
-
-\subsection{Expression Evaluator}
-This is the largest block of code in the program, and defines how the incoming lambda term should be evaluated depending on the input given by the user. This code can be split into three distinct sections as discussed in the Background chapter of this report: alpha conversion, beta reduction and typing rules.
-
-\subsubsection{Alpha Conversion}
-The alpha conversion is based on the rules for explicit alpha conversion with substitution, as defined by \cite{Acar2008}, and as discussed in detail previously. These rules are as follows:
+A further way of dealing with this issue is using the Barendregt Convention, which assumes bound variables are suitably chosen to avoid capture, a convention which is taught in the Theory of Computation course. Combining this convention with the idea behind alpha conversion, a set of rules for substitution can be created which rename terms to avoid variable capture as substitution is taking place. These rules can be defined as follows \cite{Acar2008}:
 
 \begin{equation}
 [t/x]y=\begin{cases}
@@ -120,91 +79,450 @@ y & \text{if $y\ne x$}
 \end{cases}
 \end{equation}
 
-The final rule is the rule to be focused on, and contains the process of finding a variable z that does not appear in the free variables of the incoming term or the existing term, replacing all bound variables y with this new term z, and then substituting in t’ as normal.
-The alpha conversion code follows this process. First, the set of free variables in the term are determined, by taking the set of all alphabetic characters in the term and eliminating the bound variables. These variables are then replaced with letters that are not in the list of free variables, in the situation where a clash in free variables between the two expressions are found. This produces an alpha-converted term, and regular substitution happens using a string.replace() python method, as abiding by the Barendregt Convention.
+The last rule changes the bound variable y to a variable z that doesn’t belong to the set of free variables in the incoming term or the existing function t, simultaneously to the substitution $[t' / x]$ being performed.
+
+\subsection{Reduction}
+
+A formal method for evaluating lambda terms is known as a reduction, of which there are different kinds. These different types of reduction all perform different operations, with different outcomes:
+
+\begin{itemize}
+	\item Alpha conversion as previously discussed is occasionally referred to as alpha reduction \cite{Horowitz2013}, and is the process of renaming variables to avoid variable capture
+	\item Beta reduction focuses on finding the result of applications, as discussed below
+	\item Delta reduction is the process of applying functions to constants arithmetically
+	\item Eta reduction takes the output of delta- or beta-reduction and removes any leftover abstraction term in an attempt to simplify the final result \cite{Sookocheff2018Eta}	
+\end{itemize}
+
+Not all of these reduction steps are necessary, but each simplifies the term in one way or another, terminating with a final result.
+
+\subsubsection{Normal Form}
+
+After alpha conversion is performed, beta reduction is the next reduction step performed. To aid this, another rule is needed which defines when a lambda term has reached its simplest form and can be evaluated no further. This is known as the Normal Form of a lambda term \cite{Barendregt2000}, and is defined as the following:
+
+\begin{quote}
+	\centering
+	\textit{A term is in normal form if it has no subterms of the form $(\lambda x.M)N$\cite{Hankin2004}}
+\end{quote}
+
+To account for applied lambda calculus, one more formalism is needed, $\delta$ reduction. Delta reduction is simply the evaluation of operations applied to constants, for example 4+2 delta reduces to 6 \cite{Slonneger1995} \cite{Scott2016}. The definition of normal form for applied lambda calculus then becomes:
+
+\begin{quote}
+	\centering
+	\textit{A term is in normal form if it has no subterms of the form $(\lambda x.M)N$\cite{Hankin2004} and there are no delta rules which can be applied \cite{Slonneger1995}}
+\end{quote}
 
 \subsubsection{Beta Reduction}
 
-Two beta reduction strategies are taught on the Theory of Computation course, call-by-value and call-by-name. The differences between these two strategies have been discussed, but the key difference is in when terms are evaluated in an application MN, whether N is evaluated before being passed into M, or whether it is substituted first and then evaluated inside M.\\
+Now the stopping point for the evaluation has been clarified, beta reduction can now be discussed. As previously stated, beta reduction is the process of finding the result from the application of a function, and can be performed by following a number of rules \cite{Gay2019}.
 
-Because of these differences in evaluation strategy, two separate visitors are used. However, since they share a lot of the same common functionality (when alpha conversion happens, typing rules, what happens inside functions), a BaseVisitor was defined which contains all common code between these two strategies. The two call-by-value and call-by-need visitors are subclassed from this base visitor, and define their unique behaviour for the application and abstraction terms.\\
+\begin{enumerate}
+	\item $(\lambda x.M)N = [N / x]M$
+	\subitem $(\lambda x.M)N$ is equal to M with all instances of x replaced by N
+	\item $M = M$
+	\subitem A term is equal to itself
+	\item $\frac{M=N}{N=M}$
+	\subitem If $M=N$ then $N=M$
+	\item $\frac{M=N \quad N=L}{M=L}$
+	\subitem If $M=N$ and $N=L$ then $M=L$
+	\item $\frac{M=N}{MZ=NZ}$ and $\frac{M=N}{ZM=ZN}$
+	\subitem If $M=N$, then Z applied to M is the same as Z applied to N
+	\subitem Similarly if $M=N$ then M applied to Z is the same as N applied to Z
+	\item $\frac{M=N}{\lambda x.M = \lambda x.N}$
+	\subitem If $M=N$, then $(\lambda x.M)$ = $(\lambda x.N)$
+\end{enumerate}
 
-The abstraction term differs between the two methods due to nothing other than typing, since the type of a term happens during the evaluation of that term as will be discussed in more detail below. In call-by-value, the type of N is known before substitution, so can be carried throughout the function. In call-by-need, the whole term needs to be type checked after substitution has happened to determine the type of M with N incorporated.
+Different choices made in the application of these rules can generate different results. A fundamental theorem in the world of lambda calculus is the Church-Rosser theorem, and leads to a useful consequence: a term in the lambda calculus has at most one normal form \cite{Alonzo1936}, meaning different choices of application (different methods of reduction) cannot produce different normal forms. However, if a lambda term does have a normal form, not all methods of reduction reach it \cite{Horowitz2013}.\\
+
+The two types of beta reduction students are taught on the Theory of Computation course are call-by-value and call-by-need. Call-by-value is a leftmost innermost strategy, which is explained by the following \cite{Gay2019}:
+
+\begin{itemize}
+	\item In a term N, M gets reduced to its normal form before N (the left term is reduced first)
+	\item In a term $(\lambda x.M)N$, N is evaluated before it gets substituted into $(\lambda x.M)$
+\end{itemize}
+
+So, for example, in an applied lambda calculus term $(\lambda x.\lambda y.x*y)3(3+1)$, the following steps are performed:
+
+\begin{enumerate}
+	\item First, $(\lambda x.\lambda y.x*y)3$ is reduced to $\lambda y.3*y$, which is in normal form as there are no terms of the form $(\lambda x.M)N$ left in this result
+	\subitem The complete term becomes $(\lambda y.3*y)(3+1)$
+	\item Then the right hand side $(3+1)$ is evaluated using delta-reduction to the value 4
+	\subitem •	The complete term then becomes $(\lambda y.3*y)(4)$, which beta-reduces to $(3*4)$, which delta-reduces to 12
+\end{enumerate}
+
+For this reason, call-by-value is sometimes referred to as applicative order reduction, as the arguments are reduced before they are applied \cite{Sookocheff2018Evaluation}.\\
+
+Call-by-need is similar but with one key difference, rather than reducing N and then substituting the result into M, the original N is substituted into M before $[N / x]M$ is reduced together as a whole. In the previous example, step 2 now becomes:
+
+\begin{itemize}
+	\item The right hand side $(3+1)$ is substituted into the term $(\lambda y.3*y)$, resulting in $3*(3+1)$, which again delta reduces to 12
+\end{itemize}
+
+This is a subtle but very important difference, call-by-need can be proven to always turn a lambda term into its normal form if one exists \cite{Horowitz2013}, unlike call-by-value. Because of this property, call-by-need is often referred to as normal-order-reduction.
+
+\subsection{Typing}
+
+A desirable property in software engineering is static checking at compile time. This can be done with lambda calculus by introducing types, which can be used to verify a lambda term is performing valid computations before being evaluated with delta reduction. For example, the lambda term $(\lambda x.x+1)y$ is a valid term, but is not feasible if y is a boolean value such as TRUE or FALSE (since addition is not a valid operation with boolean values).\\
+
+To use this, a type definition is first needed, defined below. A type T can be \cite{Gay2019}:
+
+\begin{itemize}
+	\item Of ground type A (boolean or integer)
+	\item Of function type T$\rightarrow$T (taking a type T, and converting it into another type T through a function)
+\end{itemize}
+
+In order to type-check the validity of a lambda term, a typing context $\Gamma$ is expressed which declares a set of variables to be associated with specific types. From this, three typing rules can be expressed \cite{Gay2019}:
+
+\begin{itemize}
+	\item For variables, if x of type T belongs to the typing context $\Gamma$, in $\Gamma$, x is of type T:
+	
+	\begin{equation}
+	\centering
+	\frac{x:T\in \Gamma}{\Gamma \vdash x:T}TVar
+	\label{variable_type}
+	\end{equation}
+	\item For abstractions, if in a typing context $\Gamma$ where x has type T, if M has type U, then $\lambda$x.M has type T $\rightarrow$ U:
+	
+	\begin{equation}
+	\centering
+	\frac{\Gamma ,x:T\vdash M:U}{\Gamma \vdash \lambda x:T.M:T \to U}TAbs
+	\end{equation}
+	\item  In an application MN, if M has type T$\rightarrow$U and N has type T, then MN has type U
+	
+	\begin{equation}
+	\centering
+	\frac{\Gamma \vdash M:T \to U \qquad \Gamma \vdash N:T}{\Gamma \vdash MN:U}TApp
+	\label{application_types}
+	\end{equation}
+\end{itemize}
+
+This is all that is needed to statically analyse a lambda term, and determine the following:
+
+\begin{enumerate}
+	\item Whether or not a lambda term is typeable, or feasible when considering typing and typing rules
+	\item What type the lambda term should return, provided information about the types of some of the variables
+\end{enumerate}
+
+%Type inference section here
+
+\chapter{Analysis}
+As defined in the project description (defined somewhere else in this report), the focus is to help students taking the Theory of Computation course to gain a better grasp lambda calculus. The point is not to teach them lambda calculus, but to allow them to evaluate lambda terms in an interface aimed at supporting their learning.
+
+\section{Lambda Calculus}
+The Theory of Computation course details \cite{CourseSpecification} state three key intended learning outcomes relating specifically to Lambda Calculus:
+
+\begin{itemize}
+	\item Evaluate expressions in lambda calculus according to the definition of reduction relation
+	\item Determine whether or not expressions in lambda calculus are typeable in the simple type system
+	\item Implement lambda calculus expressions in a functional language such as Haskell or ML, or the functional fragment of Python
+\end{itemize}
+
+From the lecture notes of the most recent academic year, the following topics are covered, most of which have been defined in the background section above:
+
+\begin{itemize}
+	\item Subterms
+	\item Contexts
+	\item Applied lambda calculus
+	\item Barendregt convention and the definition of free and bound variables
+	\subitem This is in contrast to the De Bruijn notation as discussed previously
+	\item Beta reduction and normal form, including different reduction strategies (call-by-value and call-by-need)
+	\item Typing rules and derivations
+\end{itemize}
+
+Since the goal of this project is to aid in students understanding of lambda calculus, the learning outcomes and what is taught on the course will be focused on. Because of this, the following objectives can be selected:
+
+\begin{itemize}
+	\item The Barendregt Convention is being selected as a means of avoiding variable capture over De Bruijn notation, since it is what is taught and therefore will better benefit student learning
+	\item Simply typed applied lambda calculus will be implemented
+	\item Subterms and nested terms will be allowed
+	\item Contexts aren’t a large part of the course so will not be included in order to put focus on more prominent sections of lambda calculus such as reduction
+	\item Beta reduction will be included, with options to evaluate terms using both call-by-value and call-by-need reduction strategies
+	\item Typing derivations will be implemented in order to type check the lambda term and evaluate the final type of the reduced function, but a typing derivation will not be explicitly given to the user, since this can be found in the lecture slides
+	\item Similarly, beta reduction steps will not be shown explicitly, just a final result will be shown
+\end{itemize}
+
+Further to what is taught in the course, there are other options which could be included in such an interface.
+
+\begin{itemize}
+	\item Delta reduction has been discussed throughout the background section. While this isn’t taught explicitly, lecture slides do include constants being added together arithmetically, performing delta reduction implicitly.
+	\subitem Because of this, delta reduction will be included in the final program, but won’t be explicit, the resultant lambda term will just have arithmetic constants evaluated
+	\item Eta reduction has also been discussed, but is not an integral step to lambda calculus, in fact most resources teaching lambda calculus miss it out \cite{Acar2008} \cite{Barendregt2000} \cite{Gay2019} \cite{Horowitz2013} \cite{Rojas1998} \cite{Hankin2004}
+	\subitem Because of this, and because manipulating the final result in a way students have not been taught could cause further confusion, eta reduction will not be included in the final program
+\end{itemize}
+
+\section{Abstract Syntax}
+
+To take a set of rules which define how a lambda calculus term should be processed and turn it into a program which can evaluate lambda terms, a way of representing the structure of a lambda term is needed. Once this has been completed, the resultant program can use the defined rules to evaluate terms.\\
+
+The idea behind this is to turn a sequence of character strings (the surface syntax of an expression) into an abstract syntax (a representation of the meaning of the expression). A lexer is used to do this, which converts a character sequence into a series of identifiers called tokens, as defined by the grammar of a language (in this case lambda calculus, the grammar of which is defined above). A parser is then used which turns this sequence of tokens into a tree known as an Abstract Syntax Tree, which can then be traversed and explored to create compilers and interpreters of a language \cite{Pierce2002}. The applications of this are wide, it can be used to evaluate arithmetic expressions \ref{arithmetic_syntax_tree}, in syntactic analysis used for natural language processing \cite{Bird2009} \ref{nlp_tree}, or to evaluate lambda calculus terms, as done in this project \ref{abstract_syntax_tree}.
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[scale=0.75]{images/arithmetic_syntax_tree}
+	\caption{Syntax Tree of an Arithmetic Term (generated using code from \protect\cite{Everett2019})}
+	\label{arithmetic_syntax_tree}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[scale=0.75]{images/nlp_tree}
+	\caption{Syntax Tree for Natural Language Processing \protect\cite{Bird2009}}
+	\label{nlp_tree}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[scale=0.75]{images/abstract_syntax_tree}
+	\caption{Lambda Calculus term $(\lambda x.A)M$ abstract syntax tree}
+	\label{abstract_syntax_tree}
+\end{figure}
+
+
+\section{Antlr}
+
+One such tool which can help represent the structure of a term based on a particular grammar is Antlr. Antlr is a parsing tool which is used to build and explore syntax trees from character strings. It has a lexer to generate tokens, and has a parser to turn this stream of tokens into an abstract syntax tree which can then be evaluated using either a listener or a visitor \cite{Parr2012}. It has been used in a wide variety of contexts, including Twitter (for query parsing) and the NetBeans IDE (for parsing C++). %[is this enough of an explanation of antlr?]
+
+\section{Interface}
+
+Finally, once a program has been created which can parse and evaluate lambda terms, an interface is needed to allow this to be used by students. The interface should be simple to understand, and should include the following:
+
+\begin{itemize}
+	\item A place for user input which will allow students to input a lambda expression
+	\item An output showing the resultant reduced expression
+	\item An input which will allow the user to select different types of beta reduction (call-by-value or call-by-name)
+	\item An output which shows whether the typing is valid, and if so, what type the resultant function will be (if this can be determined)
+\end{itemize}
+
+The interface will not be connected to any central database containing personal information, nor will it require a login or store any personal data at all, so does not need to be protected from SQL injection.\\
+
+However, it will allow users to type information into the interface so should be protected from HTML injection, cross site scripting and buffer overflow attacks.
+
+\chapter{Aims and Objectives}
+
+From the background and analysis discussed above, a set of key aims and objectives can be defined. These eight objectives have been defined in order of importance below, from most to least important.
+The program will include:
+
+\begin{enumerate}
+	\item The ability to evaluate the validity of lambda calculus terms
+	\subitem So students can enter terms and check whether or not they are valid
+	\subitem This will be done by turning the user input lambda term into an Abstract Syntax Tree using Antlr
+	\item Applied lambda calculus
+	\subitem To allow the input of expressions
+	\item The ability to alpha convert these terms
+	\subitem To help students understand alpha conversion and equivalence
+	\subitem This will be done by navigating the abstract syntax tree generated by Antlr
+	\item Which will be contained in a web interface 
+	\subitem To allow users to actually use the tool
+	\item Using beta reduction to evaluate terms to normal form
+	\subitem To help students understand beta reduction
+	\subitem This will also be done by navigating the abstract syntax tree generated by Antlr
+	\item Which includes types
+	\subitem To help students understand types and typing rules
+	\item Which offers different reduction strategies
+	\subitem To give students the option to understand call by value/call by need evaluation
+	\item And arithmetically evaluates these terms using delta reduction
+	\subitem For completeness
+	
+\end{enumerate}
+
+\chapter{Design and Implementation}
+\section{Design}
+
+The overall program is split into a number of distinct elements, all of which are based on the fundamental rules of Lambda Calculus as defined in previous sections.\\
+
+Firstly, a grammar is written which defines the syntax of lambda terms and allows a term to be broken down into individual tokens. Antlr uses this grammar to process lambda terms, creating an Abstract Syntax Tree for each incoming expression\cite{Parr2012}, a process which has been well documented and therefore will not need to be rewritten. A tree traversal mechanism is the main section of code which navigates the abstract syntax tree and performs operations to determine the resultant expression. This is the section of code which will perform the evaluation, and therefore needs to be designed effectively, with the rules of beta reduction and lambda calculus in mind. A web interface is used to house this program, giving the user a simple and convenient way to interact with the underlying system.\\
+
+The relevant sections have been discussed below, detailing design and key decisions which needed to be made before implementation began. %WHAT TENSE IS THIS
+
+\subsection{Grammar}
+
+The key aim in creating this grammar was creating a syntax which sticks as closely as possible to the rules of lambda calculus. Lambda Calculus grammar is already clearly defined, with a lambda term being either a variable, an abstraction or an application \cite{Hankin2004}. Applied lambda calculus adds functions and constants to this definition \cite{Slonneger1995}, resulting in the following lambda grammar. A lambda term is one of the following:
+
+\begin{itemize}
+\item[|] An application (of form \texttt{[term] [term]})
+\item[|] An abstraction (of form \texttt{[abstraction_term].[term]} where \texttt{[abstraction_term]} is defined by \texttt{$\lambda$[variable]})
+\item[|] A function (of form \texttt{[term] [operation] [term]})
+\item[|] A value (of form \texttt{[variable]} (the letters a-z) or \texttt{[number]} (constant))
+\end{itemize}
+
+With the addition of types, the grammar adds the option of a \texttt{:[type]} term to each variable, with each type being either a ground type (bool, int or none), or in the form \texttt{[type] $\rightarrow$ [type]}. This follows the standard syntax for typing used in the lecture material \cite{Hankin2004} \cite{Gay2019}, and consistency with this syntax allows students on the Theory of Computation course to input a lambda term directly from the lecture slides with minimal adjustment.
+
+\subsection{Expression Evaluator}
+
+The fundamental component of this evaluator is a tree traversal, which navigates through the token nodes and performs different operations depending on the type of node encountered. For example, application tokens in the form MN will pass the right-hand term N to the left-hand term M. Abstractions will take an incoming value if one exists, and substitute it into the body of the abstraction. This allows an evaluated expression to be built up, and a result determined.\\
+
+Antlr provides two mechanisms for traversing an abstract syntax tree: listeners and visitors. A listener is a passive way of evaluating a syntax tree, used within an antlr Walker class which traverses the tree using a depth-first approach, triggering methods from the listener as it enters and exits each token \cite{Parr2012}. These listener methods are unable to return values, so expressions and evaluations have to be handled using separate objects within the listener class. As the walker traverses the tree, the listener builds up a running evaluation of the term, returning the result when it exits the topmost node \cite{Srivastav2017}.\\
+
+Unlike listeners, visitors control their own traversal of the tree. By visiting the children of each node encountered explicitly, the path they take around the tree can be controlled \cite{Parr2012}, allowing some children to not being visited until their parents are evaluated, or a right-hand child of a node being visited and evaluated before its left.\\
+
+Visitors also allow custom return types, meaning nodes can return their resultant expressions directly to their parent node and do not have to rely on separate objects \cite{Srivastav2017}.\\
+
+With beta reduction, different methods take different approaches to evaluating terms. In an application MN using a call-by-value approach, N is evaluated before M. In a call-by-need approach, N is passed into M before being evaluated. This means that depending on the type of reduction selected, the evaluator will have to traverse the tree in a different order, suggesting visitor over listener is more appropriate for this task. The fact that evaluation happens as the tree is being visited supports this further, since there will be a large amount of data being passed around the tree. Having a separate object for storing these values could get complex, and so the visitor methods being able to return values directly to their parents will be more convenient for this task.\\
+
+%Note to self: what tense is this section?
+The visitor therefore was the main code written in this project. An Antlr generated parser will be passed to a custom visitor interface. Different visitors will be defined for each of the beta-reduction strategies being implemented, since each method takes a different approach to evaluating expressions.\\
+
+The visitor should return three separate items upon returning to the topmost node: the evaluated value of the input lambda term, whether or not the term is typeable, and what type the expression will be. It will also return details of any errors where applicable, for example syntax errors which Antlr can't parse, or cases where the normal form of a lambda term does not exist.
+
+\subsection{Web Interface}
+
+The web interface will allow the user to input a lambda term along with the type of any variable. It will also allow the user to select which reduction strategy they would like to have the term evaluated by, with call-by-need (or normal order reduction) being selected as the default.\\
+
+The code running the interface and the underlying evaluation code will be kept as separate entities, communicating through input parameters and return statements. This is to ensure the code is kept as modular as possible, allowing the evaluator code to be run using multiple different mechanisms, for example through a web interface and a command line for testing purposes. Any data the user enters will be passed to the underlying code, which will process the term and return any output via a return statement, being read and displayed to the user.\\
+
+The layout of the interface should be simple and uncluttered, and should be suitable for those with a visual impairment.
+
+\section{Implementation}
+
+Despite the examples in the Antlr Reference Guide \cite{Parr2012} all being written in Java, Python was chosen as the main language for this project. Antlr offers support for Java and Python, both of which are regularly listed in the top 3 programming languages being used in industry from various sources \cite{ProgLang1}\cite{ProgLang2}\cite{ProgLang3}. Since the MSc Software Development course which this dissertation is being written for teaches only Java, Python was chosen in order to expand the number of programming languages encountered throughout the course. Therefore the majority of the code for this project will be written in Python, with HTML being used for the web interface.
+
+\subsection{Grammar}
+
+Antlr requires that the grammar of a language is contained in a .g4 file which defines the parser and lexer rules for lambda calculus in this case. A section of the grammar is shown in Figure \ref{parser_rules}, and indicates the parser rules for some of the token nodes, alongside the lexer rules which are shown in Figure \ref{lexer_rules}. This grammar is consistent with the syntax defined in the background section of this report, with slight modifications such as the addition of parentheses and an explicit definition for boolean and integer values.
+
+\begin{figure}[p]
+\centering
+\includegraphics[scale=0.75]{images/parser_rules}
+\caption{Parser Rules}
+\label{parser_rules}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[scale=0.75]{images/lexer_rules}
+\caption{Lexer Rules}
+\label{lexer_rules}
+\end{figure}
+
+\subsection{Abstract Syntax Tree}
+
+Having defined a grammar, Antlr can then be used to create an abstract syntax tree, which can be seen for an example term in Figure \ref{abstract_syntax_tree_example}. This is very simple to do using Antlr libraries, and involves passing the input term through an Input Stream class, feeding the resultant string of characters into a lexer (which outputs a set of tokens), a class which converts the tokens into an indexable list, and finally passing this through a parser which turns the tokens into an abstract syntax tree\cite{Tomassetti2007}. The lexer and parser are created by Antlr when the grammar file is compiled, resulting in a syntax tree which processes terms based only on the syntax of the defined language.\\
+
+The process of creating a tree from the grammar and an incoming term is well documented, and so no modifications need to be made, with the exception of attaching a custom Error Listener to both the lexer and parser, as expanded on later on in this Implementation section.
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[scale=0.4]{images/abstract_syntax_types}
+	\caption{Abstract Syntax Tree Example for (($\lambda$x.$\lambda$y.x)y:int)z:bool}
+	\label{abstract_syntax_tree_example}
+\end{figure}
+
+\subsection{Expression Evaluator}
+This is the largest block of code in the program, and defines how the incoming lambda term should be evaluated depending on the input given by the user. For the purposes of simplicity this code can be split into three distinct sections, alpha conversion, beta reduction and typing rules.
+
+\subsubsection{Alpha Conversion}
+The alpha conversion is based on the rules for explicit alpha conversion with substitution, as defined by \cite{Acar2008}, and as discussed in detail in a previous chapter but which are repeated below for clarity:
+
+\begin{equation*}
+[t/x]y=\begin{cases}
+t & \text{if $y=x$}\\
+y & \text{if $y\ne x$}
+\end{cases}
+\end{equation*}
+
+\begin{equation*}
+[t/x](t_1t_2)=[t/x]t_1[t/x]t_2
+\end{equation*}
+
+\begin{equation*}
+[t'/x](\lambda y.t)=\begin{cases}
+\lambda y.t & \text{if $x=y$}\\
+\lambda z.[t'/x][z/y]t & \text{if $x\ne y \land z\notin FV(t) \cup FV(t')$}
+\end{cases}
+\end{equation*}
+
+The final rule is the rule to be focused on, and defines the process of finding a variable z that does not appear in the free variables of the incoming term or the existing term, replacing all bound variables y with this new term z, and then substituting in t’ as normal.\\
+
+The alpha conversion code written for this project follows this process. First, the set of free variables in the term are determined, by taking the set of all alphabetic characters in the term and eliminating the bound variables. These variables are then replaced with letters that are not in the list of free variables, in situations where a clash in free variables between the two expressions are found. This produces an alpha-converted term, into which substitution can be performed using a simple \texttt{String.replace()} method in Python, abiding by the Barendregt Convention.
+
+\subsubsection{Beta Reduction}
+
+Two beta reduction strategies are taught on the Theory of Computation course, call-by-value and call-by-name. The differences between these two strategies have been discussed in detail, but the key difference is in the order in which substitution and evaluation occurs in an application MN.\\
+
+Because of these differences in evaluation strategy, two separate visitors are used to limit the use of control coupling\cite{Lethbridge2004}. However, since their differences are only in evaluation order with the rest of the functionality being the same, a BaseVisitor was defined which contains all common code between these two strategies. The two call-by-value and call-by-need visitors are subclassed from this base visitor, and define their unique behaviour for the application and abstraction terms.\\
+
+The abstraction term differs between the two methods due to nothing other than typing, since determining the type of a term happens during the evaluation of that term. In call-by-value, the type of N is known before substitution, so can be carried throughout the function. In call-by-need, the whole term needs to be type checked after substitution has happened to determine the type of M with N incorporated. Two separate abstraction methods were therefore needed, with common code moved into a \texttt{process_abstraction()} method defined within the base visitor.
 
 \subsubsection{Typing}
 
-Lambda Calculus has clearly defined typing rules which are taught in the Theory of Computation course. These rules have been discussed in more detail previously, and are as follows:
+Lambda Calculus has clearly defined typing rules which are taught in the Theory of Computation course. These rules have been discussed in more detail previously, but are repeated below for clarity:
 
-\begin{equation}
+\begin{equation*}
 \frac{x:T\in \Gamma}{\Gamma \vdash x:T}TVar
-\label{variable_type}
-\end{equation}
+\end{equation*}
 
-\begin{equation}
+\begin{equation*}
 \frac{\Gamma ,x:T\vdash M:U}{\Gamma \vdash \lambda x:T.M:T \to U}TAbs
-\end{equation}
+\end{equation*}
 
-\begin{equation}
+\begin{equation*}
 \frac{\Gamma \vdash M:T \to U \qquad \Gamma \vdash N:T}{\Gamma \vdash MN:U}TApp
-\label{application_types}
-\end{equation}
+\end{equation*}
 
-There are two minimal types (\texttt{int} and \texttt{bool}) and one supertype (\texttt{none}) as defined in the Theory of Computation lecture slides \cite{Gay2019}. These will be the only types allowed by the program.\\
+Each type can either be of ground type T, or function type T$\rightarrow$U\cite{Hankin2004}.\\
 
-Since the visitNode methods already evaluate their children nodes, these typing rules can be integrated directly into these nodes, with each visitNode method returning a value and a type. Type checking happens throughout the code, in each method which could contain conflicting types. This is implemented as follows:\\
-
-\textit{Abstraction}\\
-Users enter types in the form \texttt{x:type}, which can be applied to any variable included in the term. This means that the term \texttt{$\lambda$ x:int.x:bool} is valid, but type invalid (since the type of x is different for each x term). This is checked inside the visitAbstraction method.
-
-The abstraction method takes the input type T (as determined either from input by the user or through type inference from a function, discussed below), and joins it with the output type (again, either from user input or determined from the function) with \texttt{->}, to become of type \texttt{input->output}.\\
-
-\textit{Application}\\
-Application typing is far simpler than abstraction, for an application MN the code simply takes the type of M (in the form \texttt{T} or \texttt{T->U}) and iteratively removes the first type from both M and N until the type of N is None, at which point it returns type M. If at any point the first type in M does not match the first types in N, or the number of types in N is larger than the type of M, the type checking is declared invalid. This is as per rule \ref{application_types}.\\
+Since the visitNode methods already evaluate their children nodes, these typing rules can be integrated directly into these nodes, with each visitNode method returning a value and a type. Type checking happens throughout the code in each method where evaluation occurs, and is implemented as follows:\\
 
 \textit{Variable}\\
-The variable terms return the type given to them by the user, as defined by Rule \ref{variable_type}. Any number is given type \texttt{int}, and any boolean values TRUE or FALSE are given type \texttt{bool}.\\
+Variables simply return the type given to them by the user, as defined by Rule \ref{variable_type}. Any number is given type \texttt{int}, and any boolean values TRUE or FALSE are given type \texttt{bool}.\\
 
-In the visitFunction node, the input and output types of terms can be inferred by examining the operation term. The following is stated in code:
+\textit{Abstraction}\\
+Users enter types in the form \texttt{x:type}, which can be applied to any variable included in the term. The abstraction method takes the input type T, and joins it with the output type with \texttt{->}, to become of function type \texttt{input->output}. The input and output types are either specified by the user, or determined through type inference when the body of the abstraction is a function.\\
+
+\textit{Application}\\
+For an application MN, application typing involves iteratively removing the first ground type of M and the first ground type of N until the type of N is None. For example, if M is of type \texttt{int->bool->int} and N is of type \texttt{int->bool} the typing of application MN is of type \texttt{int} through the following process:
+
+\begin{equation*}
+M:int\rightarrow bool\rightarrow int \qquad N:int\rightarrow bool
+\end{equation*}
+\begin{equation*}
+M:bool\rightarrow int \qquad N:bool
+\end{equation*}
+\begin{equation*}
+M:int \qquad N:None
+\end{equation*}
+
+If at any point the first ground type of N does not match the first ground type of M, the typing is invalid (for example if N was of type \texttt{bool->bool} in this case). This is implemented using string manipulation, splitting a type T into its individual ground type using the \texttt{split()} method in Python, then comparing and removing the types of M and N iteratively.\\
+
+In the visitFunction node, the input and output types of terms can be inferred by examining the operation term. The following is declared in code:
 
 \begin{itemize}
-	\item The operations \{\&,|\} take two boolean values and return a boolean. Therefore the type of the incoming term can be inferred to be a bool, likewise with the output term
-	\item The operations \{+,-,*\} take two integer values and return an integer. As above, the input term can be inferred to be an integer, matching the output term
-	\item The operations \{==,>,<\} take two integer values and return a boolean, so it can be inferred that the input term is an integer, and the output is a boolean. 
+	\item The operations \{\&,|\} take two boolean values and return a boolean. Therefore the type of the incoming and outgoing term can be inferred to be of type boolean
+	\item The operations \{+,-,*\} take two integer values and return an integer. Similar to above, the incoming and outgoing term can be inferred to be of type integer
+	\item The operations \{==,>,<\} take two integer values and return a boolean, it can therefore be inferred that the input term is of type integer, and the output is of type boolean. 
 \end{itemize}
 
-This is used to determine the output type of a function which is used to determine the type output by its parent term. In an abstraction, this type inference can be used to determine the type of its input term, for example the lambda term $\lambda x.x+1$ can be inferred to have type \texttt{int->int} despite no input type given by the user.\\
+The output type of a function is used to determine the output type of its parent node. In an abstraction, this type inference can be used to determine the type of its input term, for example the lambda term $\lambda x.x+1$ can be inferred to have type \texttt{int->int} despite no input type given by the user.\\
 
-There is a limit to this type inference, the function will infer the input type when there is only one operation term. For example, the term $\lambda x.(x==1)\&b$ contains two operations, == and \&. In this case, working out the input type is more complicated, since the typing has to be broken down in to sub-functions, which need to determine what they think the input type should be, which then needs to be examined collectively as a complete term. The type of this output is returned by the program therefore as \texttt{None->bool}, which is correct, it's just not as refined as \texttt{int->bool}.\\
+There is a limit to this type inference, the function will infer the input type when there is only one operation term. For example, the term $\lambda x.(x==1)\&b$ contains two operations, == and \&. In this case, working out the input type is more complicated, since the typing has to be broken down in to sub-functions, which need to determine what they think the input type should be, which then needs to be examined collectively as a complete term. The type of this output is returned by the program therefore as \texttt{None->bool}. This is correct, just not as minimal as its alternative type \texttt{int->bool}.\\
 
-While this is definitely possible, it is not the key goal in the project, and is a small edge-case when it comes to improving students understanding. The result is correct, just not completely minimal. Because of this, and due to the finite nature of this project, this has been deemed an acceptable limitation of the code, with other tasks which more greatly contribute to students understanding of lambda calculus being prioritised.
+While narrowing type inference to its most minimal state is definitely possible, it is not the key goal in the project, and is a small edge-case when it comes to improving student understanding. Because of this, and due to the finite nature of this project, this limitation has been deemed acceptable, with other tasks which more greatly contribute to students understanding of lambda calculus being prioritised.
 
-\subsubsection{Overall Lambda Code}
+\subsubsection{Error Handling}
 Each visit method in the visitor returns an evaluated result and a type, which is used to build the evaluated term and determine the final result, type and type validity of the input expression.\\
 
-However, during this process, there are a number of occurrences which could stop the program from being able to return a final result. These are broken down into two key issues: syntax errors and occurrences where a term doesn't have a normal form and therefore cannot be evaluated to termination. These have been discussed below.\\
+However, during this process, there are a number of occurrences which could stop the program from being able to return a final result. These are broken down into two key issues: syntax errors and occurrences where a term doesn't have a normal form (and therefore cannot be evaluated to termination). These have been summarised below.\\
 
 \textit{Syntax Errors}\\
-Lambda terms often include nested parentheses. It is easy for a user to mismatch brackets, for example for a term to include three open brackets but only two close brackets. Because of this, before the term is passed to antlr, the code checks to ensure brackets are matched correctly, and if not, returns an error to the user informing them of the issue and asking them to re-enter.
+Lambda terms often include nested parentheses. It is easy for a user to mismatch brackets, such as forgetting to close an open bracket. Because of this, before the term is passed to antlr, the code checks to ensure brackets are matched correctly, and if not, returns an error to the user informing them of the issue and asking them to re-enter.
 
-Apart from this, general syntax errors are likely to occur, for example a user forgetting to put a . in an abstraction term. To handle this, antlr's ErrorListener class is overridden, instead throwing a custom SyntaxTokenError exception, which can be caught by the program and passed back to the user.\\
+Aside from this, syntax errors specific to lambda calculus are likely to occur which cannot be picked up until the term is passed through a lexer. To handle this, Antlr's ErrorListener class is overridden, instead throwing a custom SyntaxTokenError exception which can be caught by the program and passed back to the user.\\
 
 \textit{Recursion Errors}\\
-Recursion errors are thrown in Python when a maximum stack depth is reached in order to protect Python from crashing \cite{PythonStack2019}. This is the exception which is thrown when a lambda term has no normal form, as the code keeps trying to evaluate it before eventually throwing a RecursionError.\\
+Recursion errors are thrown in Python when a maximum stack depth is reached in order to protect Python from crashing \cite{PythonStack2019}. This is the exception which is thrown when a lambda term has no normal form, as the code keeps trying to evaluate the term before eventually throwing a RecursionError.
 
-To handle this, the recursion limit for the code is set to 200, smaller than the python default to prevent excessive time waiting for the program to fail, but large enough to ensure that any reasonable lambda term a student could want to input can be processed. A recursion limit for the code equates to a lambda term with approximately 50 nested abstractions (since each abstraction could potentially be comprised of the following nodes: its parent term, the abstraction contained within parentheses, the actual abstraction and its inner terms). While this is a limitation, it's is deemed to be a reasonable one.\\
+To handle this, the recursion limit for the code is set to 200, smaller than the python default to prevent excessive time waiting for the program to fail, but large enough to ensure that any reasonable lambda term can be processed. A recursion limit for the code equates to a lambda term with approximately 50 nested abstractions (since each abstraction could potentially be comprised of the following nodes: its parent term, the abstraction contained within parentheses, the actual abstraction and its inner terms). While this is a limitation, it's is deemed to be a reasonable one, as limiting students to 50 nested abstractions as opposed to 100 is unlikely to affect student understanding.
 
-If a recursion error is thrown, it is caught by the code in a \texttt{try/except} block, and an error message informing the user that a normal form cannot be found for this term is given to the user.
+If a recursion error is thrown, it is caught by the code in a \texttt{try/except} block, and an error message informing the user that a normal form cannot be found for this term is given.
 
 \subsubsection{Web Interface}
 
-Flask is a web framework designed for use with Python, and allows python scripts to be controlled and run from a web interface which is served by Flask\cite{FullStack2019}. The front-end of the web interface is written in HTML, and is connected to the python file using Flask's render_template() function.\\
+Flask is a web framework designed for use with Python, and allows python scripts to be controlled from a web interface\cite{FullStack2019}. The websites' front-end is written in HTML, and is connected to the python file using Flask's render_template() function.\\
 
-Users enter lambda terms in the input dialogue box, and enter the lambda symbol by entering a \texttt{\%} sign. Using a HTML onkeydown event, the interface automatically changes this symbol to a $\lambda$, allowing users to easily enter lambda terms. The complete web interface can be seen in \ref{web_interface_no_input} and \ref{web_interface_input}.\\
+Users enter lambda terms in the input dialogue box, entering a \% sign as a lambda symbol. Using a HTML onkeydown event, the interface automatically changes this symbol to a $\lambda$, allowing users to easily enter lambda terms. The complete web interface can be seen in Figure \ref{web_interface_no_input}, Figure \ref{web_interface_input} and Figure \ref{web_interface_error}.\\
 
-Clicking the \textit{Check Expression} button on the web interface sends a HTTP post request to the Flask server, which takes the value held in the user input box along with the selection of reduction strategy, and sends this to the main antlr Lambda program. The result outputted is then given to the HTML code, and the webpage is re-rendered to display the results, be that an error message indicating a syntax or normal form not found error, or the result, type and type validity of the lambda term input by the user.
+Clicking the \textit{Check Expression} button on the web interface sends a HTTP post request to the Flask server, which takes the value held in the user input box along with the selected reduction strategy, and sends this to the main lambda program. The output is returned to the HTML code through Flask, and the webpage is re-rendered to display the results.\\
 
 \begin{figure}[p]
-	\includegraphics[scale=0.4]{images/web_interface_no_input}
+	\includegraphics[scale=0.3]{images/web_interface_no_input}
 	\centering
 	\caption{Web Interface}
 	\label{web_interface_no_input}
@@ -212,23 +530,31 @@ Clicking the \textit{Check Expression} button on the web interface sends a HTTP 
 
 \begin{figure}[p]
 	\centering
-	\includegraphics[scale=0.4]{images/web_interface_input}
+	\includegraphics[scale=0.3]{images/web_interface_input}
 	\caption{Web Interface With Returned Result}
 	\label{web_interface_input}
 \end{figure}
 
+\begin{figure}[p]
+	\centering
+	\includegraphics[scale=0.3]{images/web_interface_error}
+	\caption{Web Interface With Error}
+	\label{web_interface_error}
+\end{figure}
+
 \chapter{Testing}
-The aim of this project is to build a web application which will verify and evaluate lambda calculus terms input by the user, with the goal of helping future students learning functional programming to gain a better understanding of lambda calculus.\\
+The aim of this project is to build a web application which will verify and evaluate lambda calculus terms input by the user, with the goal of improving student understanding.\\
 
 This can be broken down into two key goals for the created tool:
 \begin{itemize}
 	\item The interface should evaluate lambda terms accurately
-	\item The interface should be easy to use and understand
+	\item The interface should be useful for students learning functional programming, and should be easy to use
 \end{itemize}
 
-Because of this, the testing will be broken down into two sections in accordance with these two goals. The first set of tests will evaluate the accuracy of the lambda term evaluation. The second set of tests will test the usability of the interface and whether or not it meets the goal of improving student understanding, by performing a user test with students who have an understanding of computer science but who have little to no knowledge of lambda calculus.
+Because of this, the testing will be broken into sections in accordance with these two goals. The first set of tests will evaluate the accuracy of the lambda term evaluation. The second set of tests will test the usability of the interface and whether or not it meets the goal of improving student understanding, by performing a user test with students who have an understanding of computer science but who have little to no knowledge of lambda calculus.
 
 \section{Accuracy of Lambda Term Evaluation}
+\label{Accuracy of Lambda Term Evaluation}
 A page here testing different lambda terms, including:
 \begin{itemize}
 	\item Alpha conversion
@@ -244,15 +570,14 @@ A page here testing different lambda terms, including:
 \label{interface usefulness and usability}
 \subsection{Testing}
 
-In order to test the usability and usefulness of the interface, a user test was conducted using participants who had a background in computer science but who had little to no understanding of lambda calculus, in order to simulate students on the Theory of Computation course who have just been introduced to Lambda Calculus for the first time.\\
+In order to test the usability and usefulness of the interface, a user test was conducted using participants who had a computer science background but who had little to no understanding of lambda calculus. This was done in order to simulate students on the Theory of Computation course who have just been introduced to Lambda Calculus for the first time.\\
 
-Participants were first given a Participant Information sheet and to sign a Participant Consent Form, which stated they were happy with the results of the user test to be included in this dissertation, with the confirmation that their answers will be kept anonymous.\\
+Participants were first given a Participant Information sheet and to sign a Participant Consent Form, which stated they were happy with the results of their user test to be included in this dissertation, provided their answers will be kept anonymous as will be done here.\\
 
-They were then asked to read a document giving them a brief introduction to lambda calculus, which was written for this test and was based on the Theory of Computation lecture slides \cite{Gay2019}. (should I put this document in the appendix?) This was done in order to give them a small introduction, to simulate students who have attended a couple of lectures in lambda calculus and therefore have a slight starting point, but are still very new to the subject.\\
+They were then asked to read a document giving them a brief introduction to lambda calculus, which was written for this test and was based on the Theory of Computation lecture slides \cite{Gay2019}. This was done to give them a small introduction, to simulate students who have been introduced to lambda calculus, but are still very new to the subject.\\
+%(Note to self: should I put the introduction to lambda calculus document in the appendix?)
 
-They were then asked to rate their understanding of lambda calculus on a scale of 1-10, before being given the interface to test. They were also provided with a few sample lambda terms to test if they wanted to, but were not obligated to use. This was to simulate students who may be using the tool to evaluate a particular lambda expression they have found in the lecture slides or online.\\
-
-Although the test was not conducted with a time limit, each participant spent approximately five minutes using the interface before stating they were ready to move on.\\
+Having read a brief summary, participants were asked to rate their understanding of lambda calculus on a scale of 1-10, before being given the interface to test. They were provided with a few sample lambda terms to test if they wanted to, but were not obligated to use them. This was to simulate students who may be using the tool to evaluate a particular lambda expression they have found in the lecture slides or online.\\
 
 Finally, users were given a questionnaire which again asked them to rate their understanding of lambda calculus having used the interface for a short period of time, so their understanding could be compared before and after using the tool.\\
 
@@ -268,15 +593,15 @@ The questionnaire also asked the following questions:
 \end{itemize}
 
 \subsection{Results}
-As can be seen from figure \ref{participant_understanding}, in the 5 minutes participants interacted with the interface, their understanding improved by 15\% on average. 100\% of participants said they would use the tool created if they were on the Theory of Computation course, and 100\% said they found it useful in improving their understanding.\\
+Although the test was not conducted with a time limit, each participant spent approximately five minutes using the interface before stating they were ready to move on. As can be seen from Figure \ref{participant_understanding}, in the five minutes participants interacted with the interface their understanding improved by 15\% on average. 100\% of participants said they would use the tool created if they were on the Theory of Computation course, and 100\% said they found it useful in improving their understanding.\\
 
 The qualitative questions on the interface and tool revealed that participants found the system simple and easy to use, with suggestions for improvement including adding tooltips to give the user more information, and changing the colour of the input box to make it more obvious that it is an input box and not a menu.\\
 
-Overall the feedback was incredibly positive, supporting the conjecture that the tool created could support student learning for those learning lambda calculus for the first time.\\
+Overall the feedback was incredibly positive, supporting the conjecture that the tool created could support student learning for those starting out with lambda calculus.\\
 
 [I am going to add more participant data to this - so far I have done two user tests, I'm expecting 4 more]
 
-[Note to self: should I include the results from the google survey in the appendix?]
+%Note to self: should I include the results from the google survey in the appendix?
 
 \begin{figure}[h]
 	\includegraphics{images/participant_understanding}
@@ -296,15 +621,15 @@ As stated in the beginning of this report, the project summary is as follows:
 This chapter will discuss whether or not the project description has been met, and whether or not the tool created could be used as a supplementary resource for students learning lambda calculus on the Theory of Computation course taught at the University of Glasgow.
 
 \section{Accurately Evaluating Lambda Terms}
-As evidenced by the [software testing] section of this report, the tool created does accurately evaluate lambda terms, returning the normal form, type and type validity of lambda terms for both call-by-value and call-by-need evaluation strategies. Applied lambda calculus with types is supported, as taught on the Theory of Computation Course.\\
+As evidenced by section \ref{Accuracy of Lambda Term Evaluation}, the tool created does accurately evaluate lambda terms, returning the normal form, type and type validity of lambda terms for both call-by-value and call-by-need evaluation strategies. Applied lambda calculus with types is supported, as taught on the Theory of Computation Course.\\
 
 [list of known limitations and bugs]
 [limitations: mutual left recursion issue (discuss in Future Work), type inference]
 
 \section{Improving Student Understanding}
-The user tests conducted and summarised in the \ref{interface usefulness and usability} section of this report suggest that students with a computer science background learning lambda calculus for the first time would likely find the tool useful in supporting their learning. Possible improvements such as including tooltips as suggested in user feedback are valid and would be implemented given more time.\\
+The user tests conducted and summarised in section \ref{interface usefulness and usability} suggest that students with a computer science background learning lambda calculus for the first time would likely find the tool useful in supporting their learning. Possible improvements such as including tooltips as suggested in user feedback are valid and would be implemented given more time.\\
 
-The user feedback also suggested that the simplicity of the interface is a positive, and care must be taken to prevent the interface from becoming too complicated. The interface is to be used as support for the Theory of Computation lecture slides or other lambda calculus guidance, as opposed to teaching those using the interface lambda calculus.\\
+The user feedback also suggested that the simplicity of the interface is a positive, and care must be taken to prevent the interface from becoming too complicated. The interface is to be used as support for the Theory of Computation lecture slides or other lambda calculus guidance, as opposed to teaching those using the interface lambda calculus, and this should be maintained in any future work done.\\
 
 With a goal of supporting learning by providing an interface which accurately evaluates lambda terms, it can be said that these goals have been met.\\
 
@@ -313,7 +638,7 @@ Due to the time limited nature of this project, not all features or corrections 
 
 \begin{enumerate}
 	\item Fix the bugs discussed previously
-	\item Add in multi-input abstraction terms to allow users to enter $\lambda xy.M$ as appears in the lecture slides \cite{Gay2019} as opposed to $\lambda y.\lambda y.M$
+	\item Add in multi-input abstraction terms to allow users to enter $\lambda xy.M$ as appears in the lecture slides \cite{Gay2019} as opposed to $\lambda x.\lambda y.M$
 	\item Improve the type inference to allow input types of multi-operation functions to be inferred
 	\item Include tooltips linked to various aspects of the web interface to give users more information
 	\item Do further user testing for the web interface to get a wider understanding of any style/usability issues that exist 
