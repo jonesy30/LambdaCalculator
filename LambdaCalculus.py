@@ -10,6 +10,7 @@ from CaseCheck import CaseCheck
 from CallByValueVisitor import CallByValueVisitor
 from CallByNameVisitor import CallByNameVisitor
 from AlphaConversionVisitor import AlphaConversionVisitor
+from DeltaReductionVisitor import DeltaReductionVisitor
 from Stack import Stack
 
 from sympy.solvers import solve
@@ -164,5 +165,19 @@ def run(expression, visitor):
     except Exception:
         return -1
 
+def delta_reduction_test():
+    
+    expression = input("Enter test expression: ")
+    stream = InputStream(expression)
+    lexer = LambdaCalculusLexer(stream)
+    tokens = CommonTokenStream(lexer)
+    parser = LambdaCalculusParser(tokens)
+    tree = parser.term()
+    visitor = DeltaReductionVisitor()
+    return_value = visitor.visit(tree)
+
+    print("Return value = "+str(return_value))
+
 if __name__ == '__main__':
-    main()
+    #main()
+    delta_reduction_test()

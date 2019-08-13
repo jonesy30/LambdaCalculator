@@ -24,7 +24,6 @@ class AlphaConversionVisitor(LambdaCalculusVisitor):
         if parenthesis_check != -1:
             return parenthesis_check
 
-        print("In term "+ctx.getText())
         return self.visitChildren(ctx)
 
     # Application needs to change to:
