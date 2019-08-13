@@ -49,9 +49,6 @@ class DeltaReductionVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#function.
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
 
-        print("Left child = "+ctx.getChild(0).getText())
-        print("Right child = "+ctx.getChild(2).getText())
-
         bool_bool = ["&","|"]
         int_int = ["+","-","*","/","^","==",">","<"]
 
@@ -81,18 +78,33 @@ class DeltaReductionVisitor(LambdaCalculusVisitor):
                 left_number = left    
             if re.match(number_regex, right):
                 right_number = right
-            #check for booleans here
+
+            left_bool = None
+            right_bool = None
+
+            if left == 'TRUE' or left == 'true' or left == 'True':
+                left_bool = True
+            elif left == 'FALSE' or left == 'false' or left == 'False':
+                left_bool = False
+            if right == 'TRUE' or right == 'true' or right == 'True':
+                right_bool = True
+            elif right == 'FALSE' or right == 'false' or right == 'False':
+                right_bool = False
 
             op = ctx.getChild(1).getText()
             
             remaining_string = None
-            if right_number == None:
+            if right_number == None and right_bool == None:
                 print("Right = "+str(right))
                 right_left_match = re.search("^0|^[1-9][0-9]*", right)
-                if right_left_match != None:
+                if right_left_match!=None and left_number!=None:
                     right_number = right_left_match.group(0)
                     remaining_string = re.sub("^0|^[1-9][0-9]*", "", right, 1)
-                print("Right left match = "+str(right_number))
+
+                right_left_match = re.search("^[Tt][Rr][Uu][Ee]|^[Ff][Aa][Ll][Ss][Ee]", right)
+                if right_left_match!=None and left_bool!=None:
+                    right_bool = right_left_match.group(0)
+                    remaining_string = re.sub("^[Tt][Rr][Uu][Ee]|^[Ff][Aa][Ll][Ss][Ee]", "", right, 1)
 
             return_string = "" + left + op + right
             if op in int_int:
@@ -119,26 +131,17 @@ class DeltaReductionVisitor(LambdaCalculusVisitor):
                     arithmetic_returned = return_string
                 return_string = str(arithmetic_returned)
             elif op in bool_bool:
-                left = left.upper()
-                if left == "TRUE":
-                    left = True
-                elif left == "FALSE":
-                    left = False
-                right = right.upper()
-                if right == "TRUE":
-                    right = True
-                elif right == "FALSE":
-                    right = False
-
-                if left == True or left == False:
-                    if right == True or right == False:
-                        if op == "&":
-                            boolean_returned = left and right
-                        elif op == "|":
-                            boolean_returned = left or right
-                        else:
-                            boolean_returned = return_string
-                    return_string = str(boolean_returned)
+                #HERE
+                if left_bool is not None and right_bool is not None:
+                    if op == "&":
+                        boolean_returned = left_bool and right_bool
+                    elif op == "|":
+                        boolean_returned = left_bool or right_bool
+                    else:
+                        boolean_returned = return_string
+                else: 
+                    boolean_returned = return_string
+                return_string = str(boolean_returned)
             
             if remaining_string != None:
                 return_string = return_string + remaining_string

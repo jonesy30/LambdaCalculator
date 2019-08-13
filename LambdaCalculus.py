@@ -59,9 +59,12 @@ def main():
             result = return_value[0]
             return_type = return_value[1]
             valid_type = return_value[2]
-            result,return_type = visitor.post_process(result, return_type)
+            result,return_type = post_process(result, return_type)
+
+            arithmetically_reduced = delta_reduction(result)
         
             print("Result = "+result)
+            print("Arithmetically reduced = "+arithmetically_reduced)
             print("Return type = "+return_type)
             print("Valid type = "+valid_type)
     elif visitor_selection == "a":
@@ -108,9 +111,13 @@ def web_interface(expression, evaluate_selection):
         result = return_value[0]
         return_type = return_value[1]
         valid_type = return_value[2]
-        result,return_type = visitor.post_process(result, return_type)
+        result,return_type = post_process(result, return_type)
+
+        arithmetically_reduced = delta_reduction(result)
+        if result == arithmetically_reduced:
+            return "Result = "+str(result)+"<br>"+"Valid typing = "+str(valid_type)+"<br>"+"Type returned = "+str(return_type)+"<br>"        
     
-    return str(result), str(return_type), str(valid_type)
+    return "Result = "+str(result)+" = "+str(arithmetically_reduced)+" by arithmetic reduction<br>"+"Valid typing = "+str(valid_type)+"<br>"+"Type returned = "+str(return_type)+"<br>"
 
 def pre_process(expression):
 
@@ -122,6 +129,24 @@ def pre_process(expression):
     processed_expression = "".join(expression_list)
     
     return processed_expression
+
+def post_process(output, return_type=None):
+
+    bad_strings = [":int",":Int",":INT",":bool",":Bool",":BOOL",":None",":NONE",":none"]
+
+    output = str(output)
+    return_type = str(return_type)
+    for string in bad_strings:
+        output = output.replace(string,"")
+
+    output_list = list(output)
+    for i,character in enumerate(output_list):
+        if character == '%':
+            output_list[i] = 'λ'
+        
+    output_processed = "".join(output_list)
+
+    return output_processed,return_type
 
 def run(expression, visitor):
     sys.setrecursionlimit(200)
@@ -142,7 +167,6 @@ def run(expression, visitor):
                 return tree
             if visitor != None:
                 return_value = visitor.visit(tree)
-                print("Return value = "+str(return_value))
                 if return_value == -1:
                     return -1
                 elif isinstance(return_value, str):
@@ -151,8 +175,8 @@ def run(expression, visitor):
                     result = return_value[0]
                     return_type = return_value[1]
                     valid_type = return_value[2]
-                    result,return_type = visitor.post_process(result, return_type)
-                
+                    result,return_type = post_process(result, return_type)
+
                 return str(result),str(return_type),str(valid_type)
             else:
                 return -5
@@ -165,19 +189,18 @@ def run(expression, visitor):
     except Exception:
         return -1
 
-def delta_reduction_test():
-    
-    expression = input("Enter test expression: ")
+def delta_reduction(expression):
+    expression = pre_process(expression)
     stream = InputStream(expression)
     lexer = LambdaCalculusLexer(stream)
     tokens = CommonTokenStream(lexer)
     parser = LambdaCalculusParser(tokens)
     tree = parser.term()
     visitor = DeltaReductionVisitor()
-    return_value = visitor.visit(tree)
+    arithmetically_reduced = visitor.visit(tree)
+    arithmetically_reduced,_ = post_process(arithmetically_reduced)
 
-    print("Return value = "+str(return_value))
+    return arithmetically_reduced
 
 if __name__ == '__main__':
-    #main()
-    delta_reduction_test()
+    main()
