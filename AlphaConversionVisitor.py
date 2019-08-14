@@ -26,18 +26,13 @@ class AlphaConversionVisitor(LambdaCalculusVisitor):
 
         return self.visitChildren(ctx)
 
-    # Application needs to change to:
-    # visit(0), visit(1), return the string of them both
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
-        print("In applicaiton "+ctx.getText())
-
         #Check for parentheses
         parenthesis_check = self.check_for_parenthesis(ctx)
         if parenthesis_check != -1:
             return parenthesis_check
 
         right_child = self.visit(ctx.getChild(1))
-        print("Right child = "+str(right_child))
         if right_child != None:
             self.incoming_values.push(right_child)
         
@@ -47,9 +42,7 @@ class AlphaConversionVisitor(LambdaCalculusVisitor):
 
         return returned_result
 
-    # Abstraction needs to become an alpha-converter (after having visited children)
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
-        print("In abstraction "+ctx.getText())
         #Check for parentheses
         parenthesis_check = self.check_for_parenthesis(ctx)
         if parenthesis_check != -1:
@@ -58,10 +51,8 @@ class AlphaConversionVisitor(LambdaCalculusVisitor):
         #inner_expression = self.visit(ctx.getChild(2))
         inner_expression = ctx.getChild(2).getText()
         complete_expression = "" + ctx.getChild(0).getText() + ctx.getChild(1).getText() + inner_expression
-        print("Complete expression = "+str(complete_expression))
 
         incoming = self.incoming_values.pop()
-        print("In abstraction, incoming = "+str(incoming))
 
         if incoming != -1:
             returned_abstraction = self.alpha_calculator.calculate_alpha(complete_expression, incoming)

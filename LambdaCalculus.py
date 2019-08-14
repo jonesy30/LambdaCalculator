@@ -41,6 +41,8 @@ def main():
     elif visitor_selection == "n":
         visitor = CallByNameVisitor()
     elif visitor_selection == "a":
+        #Types are not supported with alpha conversion, so remove all types the user has input before processing
+        expression = remove_types(expression)
         visitor = AlphaConversionVisitor()
     else:
         print("No visitor")
@@ -90,24 +92,25 @@ def web_interface(expression, evaluate_selection):
     elif evaluate_selection == "n":
         visitor = CallByNameVisitor()
     elif evaluate_selection == "a":
+        expression = remove_types(expression)
         visitor = AlphaConversionVisitor()
     else:
         return -5
     
     return_value = run(expression, visitor)
     print("Return value = "+str(return_value))
-    if isinstance(return_value,int):
-        if return_value == -1:
-            return "Syntax error - check the term and try again?"
-        elif return_value == -2:
-            return "Normal form cannot be found - does this term have a normal form?"
-        elif return_value == -5:
-            return "Invalid visitor selected - try refreshing the page and try again"
-        else:
-            return str(return_value)
-    elif isinstance(return_value,str):
+    if return_value == -1:
+        return "Syntax error - check the term and try again?"
+    elif return_value == -2:
+        return "Normal form cannot be found - does this term have a normal form?"
+    elif return_value == -5:
+        return "Invalid visitor selected - try refreshing the page and try again"
+    elif evaluate_selection == "a":
+        #If alpha conversion is selected, just post-process and return result
+        return_value,_ = post_process(return_value)
         return "Result = "+return_value
     else:
+        #If non-alpha conversion visitor selected, variable needs to be unpacked and delta-reduced
         result = return_value[0]
         return_type = return_value[1]
         valid_type = return_value[2]
@@ -130,14 +133,21 @@ def pre_process(expression):
     
     return processed_expression
 
-def post_process(output, return_type=None):
-
+def remove_types(output):
     bad_strings = [":int",":Int",":INT",":bool",":Bool",":BOOL",":None",":NONE",":none"]
 
     output = str(output)
-    return_type = str(return_type)
     for string in bad_strings:
         output = output.replace(string,"")
+    
+    return output
+
+def post_process(output, return_type=None):
+    
+    output = str(output)
+    return_type = str(return_type)
+
+    output = remove_types(output)
 
     output_list = list(output)
     for i,character in enumerate(output_list):
@@ -182,12 +192,12 @@ def run(expression, visitor):
                 return -5
         except RecursionError:
             return -2
-        except Exception:
-            return -1
+        #except Exception:
+        #    return -1
     except RecursionError:
         return -2
-    except Exception:
-        return -1
+    #except Exception:
+    #    return -1
 
 def delta_reduction(expression):
     expression = pre_process(expression)

@@ -85,6 +85,37 @@
     \field{urlyear}{2019}
   \endentry
 
+  \entry{Bezem2008}{book}{}
+    \name{author}{2}{}{%
+      {{hash=BM}{%
+         family={Bezem},
+         familyi={B\bibinitperiod},
+         given={Marc},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=GJF}{%
+         family={Groote},
+         familyi={G\bibinitperiod},
+         given={Jan\bibnamedelima F.},
+         giveni={J\bibinitperiod\bibinitdelim F\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer-Verlag}%
+    }
+    \strng{namehash}{BMGJF1}
+    \strng{fullhash}{BMGJF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{pages}{356}
+    \field{title}{Typed Lambda Calculi and Applications}
+    \field{day}{13}
+    \field{month}{06}
+    \field{year}{2008}
+  \endentry
+
   \entry{Bird2009}{book}{}
     \name{author}{3}{}{%
       {{hash=BS}{%
@@ -179,6 +210,29 @@
     \field{year}{1936}
   \endentry
 
+  \entry{Agile2014}{booklet}{}
+    \name{author}{1}{}{%
+      {{hash=CAB}{%
+         family={Consortium},
+         familyi={C\bibinitperiod},
+         given={Agile\bibnamedelima Business},
+         giveni={A\bibinitperiod\bibinitdelim B\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {DSSM CONSORTiUM}%
+    }
+    \strng{namehash}{CAB1}
+    \strng{fullhash}{CAB1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{title}{The DSDM Agile Project Framework}
+    \field{month}{01}
+    \field{year}{2014}
+  \endentry
+
   \entry{Gay2019}{misc}{}
     \name{author}{2}{}{%
       {{hash=DO}{%
@@ -203,7 +257,11 @@
     \field{labeltitlesource}{title}
     \field{sortinit}{D}
     \field{sortinithash}{D}
-    \field{title}{The Theory of Computation}
+    \field{title}{The Theory of Computation (H), course code COMPSCI4072
+  Lecture Slides}
+    \verb{url}
+    \verb https://www.gla.ac.uk/coursecatalogue/course/?code=COMPSCI4072
+    \endverb
     \field{year}{2019}
   \endentry
 
@@ -222,7 +280,7 @@
     \field{labeltitlesource}{title}
     \field{sortinit}{E}
     \field{sortinithash}{E}
-    \field{title}{Arithmetic Grammar}
+    \field{title}{Grammar}
     \verb{url}
     \verb https://github.com/antlr/grammars-v4/tree/master/arithmetic
     \endverb
@@ -403,7 +461,7 @@
          giveni={T\bibinitperiod\bibinitdelim C\bibinitperiod},
       }}%
       {{hash=LR}{%
-         family={Laganière.},
+         family={Laganière},
          familyi={L\bibinitperiod},
          given={Robert},
          giveni={R\bibinitperiod},
@@ -787,6 +845,36 @@
     \field{urlday}{06}
     \field{urlmonth}{08}
     \field{urlyear}{2019}
+  \endentry
+
+  \entry{Wiesner2011}{online}{}
+    \name{author}{1}{}{%
+      {{hash=WS}{%
+         family={Wiesner},
+         familyi={W\bibinitperiod},
+         given={Sebastian},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Technische Universität München, Department of Computer Science}%
+    }
+    \strng{namehash}{WS1}
+    \strng{fullhash}{WS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{title}{Type Inference - Main seminar, summer term 2011}
+    \verb{url}
+    \verb http://www2.in.tum.de/hp/file?fid=880
+    \endverb
+    \field{day}{14}
+    \field{month}{08}
+    \field{year}{2019}
+    \field{urlday}{22}
+    \field{urlmonth}{06}
+    \field{urlyear}{2011}
   \endentry
 \enddatalist
 \endinput
