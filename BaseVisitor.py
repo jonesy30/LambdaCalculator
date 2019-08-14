@@ -255,16 +255,20 @@ class BaseVisitor(LambdaCalculusVisitor):
     def add_bound_variable_types_to_function(self, bound_variable, function, type):
         
         print("Type = "+str(type))
+        print("Bound variable = "+str(bound_variable))
 
+        # need to fix this here
         if ":" in bound_variable:
             head, sep, tail = bound_variable.partition(':')
             bound_variable = head
 
         if type is not None:
             function_list = list(function)
+            function_list.append(" ")
             for i,character in enumerate(function_list):
                 if character == bound_variable:
-                    function_list[i] = character + ":" + type
+                    if function_list[i+1] != ":":
+                        function_list[i] = character + ":" + type
 
             processed_function = "".join(function_list)
             
@@ -280,24 +284,6 @@ class BaseVisitor(LambdaCalculusVisitor):
                 term_type = None
             
         return term_type
-
-    def post_process(self, output, return_type):
-
-        bad_strings = [":int",":Int",":INT",":bool",":Bool",":BOOL",":None",":NONE",":none"]
-
-        output = str(output)
-        return_type = str(return_type)
-        for string in bad_strings:
-            output = output.replace(string,"")
-
-        output_list = list(output)
-        for i,character in enumerate(output_list):
-            if character == '%':
-                output_list[i] = 'λ'
-            
-        output_processed = "".join(output_list)
-
-        return output_processed,return_type
 
     def create_tree(self, function):
         if function is not None:
@@ -340,6 +326,7 @@ class BaseVisitor(LambdaCalculusVisitor):
         incoming_type = self.convert_type_if_none(incoming_type)
         to_substitute_type = self.convert_type_if_none(to_substitute_type)
 
+        print("To substitute = "+str(to_substitute))
         print("Incoming type = "+str(incoming_type))
         print("To substitute type = "+str(to_substitute_type))
 
@@ -358,7 +345,9 @@ class BaseVisitor(LambdaCalculusVisitor):
         if to_substitute_type == None:
             to_substitute_type = input_type
 
+        print("Before adding bound variable types = "+str(function))
         function = self.add_bound_variable_types_to_function(to_substitute,function,to_substitute_type)
+        print("After adding bound variable types = "+str(function))
         new_function = function
 
         #If there is a value to subsitute into this abstraction
@@ -379,7 +368,14 @@ class BaseVisitor(LambdaCalculusVisitor):
                             bound_variables_left[i] = bound_variable.replace(type_match.group(0),"")
 
                     #More than one bound variable - check whether they match the current bound variable
-                    if to_substitute in bound_variables_left:
+                    print("Bound variables left = "+str(bound_variables_left))
+                    print("To subsitute = "+str(to_substitute))
+                    
+                    to_substitute_comparison = to_substitute
+                    if ":" in to_substitute:
+                        head, sep, tail = to_substitute.partition(':')
+                        to_substitute_comparison = head
+                    if to_substitute_comparison in bound_variables_left:
                         #Bound variable repeated, need to check for the next instance of it and stop evaluating there
                         for i,letter in enumerate(function):
                             if letter == '%':
@@ -388,17 +384,19 @@ class BaseVisitor(LambdaCalculusVisitor):
                                 type_match = re.search(":(.*)", bound_variable)
                                 if type_match is not None:
                                     bound_value = bound_value.replace(type_match.group(0),"")
-                                if to_substitute == bound_value:
+                                if to_substitute_comparison == bound_value:
                                     break
                         end_value = i
                         function = calculate_alpha(to_substitute, function, incoming, 0, end_value)
-                    
+                        print("Checkpoint 3")
                     #If there is not more than one of the same bound variable detected, just alpha convert as normal
                     else:
+                        print("Checkpoint 2")
                         function = calculate_alpha(to_substitute, function, incoming)
                 
                 #If there are no bound variables inside the string found, alpha convert as normal
                 else:
+                    print("Checkpoint 1")
                     function = calculate_alpha(to_substitute, function, incoming)
 
                 #Replace the bound variables with the incoming value, up until the end point (the point where there's bound variable crossover)
@@ -406,7 +404,6 @@ class BaseVisitor(LambdaCalculusVisitor):
 
                 #Convert the new function to include the types from either the bound value or the incoming value (depending on which has a type)
                 print("New function after convert_with_type = "+function)
-                print("End value now = "+str(end_value))
                 #Replace the bound variable with the new incoming value
                 #new_function,end_value = self.convert_function_with_type(to_substitute, to_substitute_type, incoming, incoming_type, function, end_value)
                 new_function = function

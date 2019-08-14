@@ -98,6 +98,8 @@ class CallByValueVisitor(BaseVisitor):
             incoming = incoming_tuple[0]
             incoming_type = incoming_tuple[1]
 
+        print("Incoming = "+str(incoming))
+
         abstraction_result, abstraction_type = self.perform_abstraction(ctx, incoming, incoming_type, to_substitute, to_substitute_type)
         
         print("Returning abstraction type = "+str(abstraction_type))
