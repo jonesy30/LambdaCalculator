@@ -331,7 +331,7 @@ The process of creating a tree from the grammar and an incoming term is well doc
 
 \begin{figure}[p]
 	\centering
-	\includegraphics[scale=0.4]{images/abstract_syntax_types}
+	\includegraphics[scale=0.8]{images/abstract_syntax_types}
 	\caption{Abstract Syntax Tree Example for (($\lambda$x.$\lambda$y.x)y:int)z:bool}
 	\label{abstract_syntax_tree_example}
 \end{figure}
@@ -456,7 +456,7 @@ Users enter lambda terms in the input dialogue box, entering a \% sign as a lamb
 Clicking the \textit{Check Expression} button on the web interface sends a HTTP post request to the Flask server, which takes the value held in the user input box along with the selected reduction strategy, and sends this to the main lambda program. The output is returned to the HTML code through Flask, and the webpage is re-rendered to display the results.\\
 
 \begin{figure}[p]
-	\includegraphics[scale=0.3]{images/web_interface_no_input}
+	\includegraphics[scale=0.4]{images/web_interface_no_input}
 	\centering
 	\caption{Web Interface}
 	\label{web_interface_no_input}
@@ -464,14 +464,14 @@ Clicking the \textit{Check Expression} button on the web interface sends a HTTP 
 
 \begin{figure}[p]
 	\centering
-	\includegraphics[scale=0.3]{images/web_interface_input}
+	\includegraphics[scale=0.4]{images/web_interface_input}
 	\caption{Web Interface With Returned Result}
 	\label{web_interface_input}
 \end{figure}
 
 \begin{figure}[p]
 	\centering
-	\includegraphics[scale=0.3]{images/web_interface_error}
+	\includegraphics[scale=0.4]{images/web_interface_error}
 	\caption{Web Interface With Error}
 	\label{web_interface_error}
 \end{figure}
@@ -485,16 +485,20 @@ Because of this, the testing will be broken into sections in accordance with the
 
 \section{Accuracy of Lambda Term Evaluation}
 \label{Accuracy of Lambda Term Evaluation}
-A page here testing different lambda terms, including:
-\begin{itemize}
-	\item Alpha conversion
-	\item Basic lambda terms
-	\item Multi-input lambda terms
-	\item Call by value and call by need (with ($\lambda$x.$\lambda$y.y)(($\lambda$z.zz)($\lambda$z.zz)))
-	\item Types
-	\item Type inference
-\end{itemize}
+In order to test the accuracy of the evaluation, the tests were split into three categories: alpha-conversion, beta-reduction and typing rules. For each category, key points of potential failure were identified, such as multi-input lambda terms, bound variable naming clashes ($\lambda x$ being used twice in the same term testing the scope of the lambda term), order of operations issues (since applications are left-associative), and terms with no normal form.\\
+
+All of the above were tested for, the results shown in Figure \ref{testing_log} below. The table includes the input to test, the motivation for testing that input, the expected and actual results, and an indicator showing whether or not the test was successful.
+
+\begin{figure}[p]
+	\includegraphics[scale=1.4]{images/Testing_Log}
+	\centering
+	\caption{Evaluating the Accuracy of Lambda Term Evaluation}
+	\label{testing_log}
+\end{figure}
+
 \newpage
+
+Figure \ref{testing_log} demonstrates that in the majority of cases which have been tested, the evaluation is accurate and does yield expected results. There are a few instances where the output is not as expected, which have been discussed in greater detail in the Evaluation section of this report.
 
 \section{Interface Usefulness and Usability}
 \label{interface usefulness and usability}
@@ -525,7 +529,6 @@ The questionnaire also asked the following questions:
 \subsection{Results}
 Although the test was not conducted with a time limit, each participant spent approximately five minutes using the interface before stating they were ready to move on. As can be seen from Figure \ref{participant_understanding}, in the five minutes participants interacted with the interface their understanding improved by 27\% on average. 100\% of participants said they would use the tool created if they were on the Theory of Computation course, and 100\% said they found it useful in improving their understanding.\\
 
-%NOTE: I NEED TO REWRITE THIS SECTION
 The qualitative questions on the interface and tool revealed that participants found the system simple and easy to use, with some suggestions for improvement. Suggested interface changes included making the colour of the input box darker to differentiate between input boxes and menus, and changing the background as some participants found it distracting. Participants also suggested adding additional features such as tooltips to give the user more information on what particular lambda terms meant, and adding a workbook section which would allow users to save the results to a file in order to create a study resource they could go back to later.\\
 
 Overall the feedback was incredibly positive, supporting the conjecture that the tool created could support student learning for those starting out with lambda calculus. Participants commented that it helped improve understanding by adding a practical element to the much more theoretical-based lecture slides.\\

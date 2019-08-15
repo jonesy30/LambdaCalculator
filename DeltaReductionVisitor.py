@@ -30,7 +30,7 @@ class DeltaReductionVisitor(LambdaCalculusVisitor):
         if parenthesis_check == "(":
             return "" + ctx.getChild(0).getText() + self.visit(ctx.getChild(1)) + ctx.getChild(2).getText()
         else:
-            return self.visitChildren(ctx)
+            return self.visit(ctx.getChild(0)) + self.visit(ctx.getChild(1))
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
@@ -95,7 +95,6 @@ class DeltaReductionVisitor(LambdaCalculusVisitor):
             
             remaining_string = None
             if right_number == None and right_bool == None:
-                print("Right = "+str(right))
                 right_left_match = re.search("^0|^[1-9][0-9]*", right)
                 if right_left_match!=None and left_number!=None:
                     right_number = right_left_match.group(0)

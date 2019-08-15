@@ -117,10 +117,16 @@ def web_interface(expression, evaluate_selection):
         result,return_type = post_process(result, return_type)
 
         arithmetically_reduced = delta_reduction(result)
-        if result == arithmetically_reduced:
-            return "Result = "+str(result)+"<br>"+"Valid typing = "+str(valid_type)+"<br>"+"Type returned = "+str(return_type)+"<br>"        
-    
-    return "Result = "+str(result)+" = "+str(arithmetically_reduced)+" by arithmetic reduction<br>"+"Valid typing = "+str(valid_type)+"<br>"+"Type returned = "+str(return_type)+"<br>"
+
+        output_string = "Result = "+str(result)
+        if result != arithmetically_reduced:
+            output_string = output_string + " = "+str(arithmetically_reduced)+" by arithmetic reduction"
+        output_string = output_string + "<br>Valid typing = "+str(valid_type)+"<br>"
+        if valid_type == False or valid_type == "False":
+            return output_string
+        else:
+            output_string = output_string + "Type returned = "+str(return_type)+"<br>"
+            return output_string
 
 def pre_process(expression):
 
@@ -214,3 +220,6 @@ def delta_reduction(expression):
 
 if __name__ == '__main__':
     main()
+    # expression = input("Test expression = ")
+    # result = delta_reduction(expression)
+    # print("Result = "+result)
