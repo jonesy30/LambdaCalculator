@@ -535,6 +535,31 @@
     \field{urlyear}{2019}
   \endentry
 
+  \entry{Michaelson2011}{book}{}
+    \name{author}{1}{}{%
+      {{hash=MG}{%
+         family={Michaelson},
+         familyi={M\bibinitperiod},
+         given={Greg},
+         giveni={G\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Dover Publications Inc.}%
+    }
+    \strng{namehash}{MG1}
+    \strng{fullhash}{MG1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{An Introduction to Functional Programming through Lambda
+  Calculus}
+    \field{day}{21}
+    \field{month}{04}
+    \field{year}{2011}
+  \endentry
+
   \entry{Parr2012}{book}{}
     \name{author}{1}{}{%
       {{hash=PT}{%

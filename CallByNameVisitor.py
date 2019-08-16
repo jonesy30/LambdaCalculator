@@ -15,6 +15,8 @@ class CallByNameVisitor(BaseVisitor):
         super()
         self.incoming_values = Stack() #NOTE: This definitely needs renamed
         self.valid_typing = True
+        self.type_context_var = []
+        self.type_context_type = []
     
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):

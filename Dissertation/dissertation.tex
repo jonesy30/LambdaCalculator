@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{report}
+\documentclass[a4paper,11pt]{report}
 \usepackage{graphicx}
 \usepackage[backend=bibtex]{biblatex}
 \usepackage{pgfplots}
@@ -7,12 +7,22 @@
 \usepackage{amsmath}
 \bibliography{dissertation}
 
-\addtolength{\oddsidemargin}{-.5in}
-\addtolength{\evensidemargin}{-.5in}
+\addtolength{\oddsidemargin}{-.7in}
+\addtolength{\evensidemargin}{-.7in}
 \addtolength{\textwidth}{1in}
 
-\addtolength{\topmargin}{-.5in}
+\addtolength{\topmargin}{-.7in}
 \addtolength{\textheight}{1in}
+
+\usepackage{titlesec}
+\titleformat{\chapter}[hang]
+{\normalfont\Huge\bfseries}{\chaptertitlename~\thechapter:}{10pt}{\Huge\bfseries}
+\titlespacing{\chapter}{0pt}{20pt}{10pt} 
+\titleformat*{\section}{\LARGE\bfseries}
+\titleformat*{\subsection}{\Large\bfseries}
+\titleformat*{\subsubsection}{\large\bfseries}
+%\titlespacing*{\chapter}{0pt}{40pt}{40pt}
+%\titlespacing*{name=\chapter}{0pt}{40pt}{10pt}
 
 \begin{document}
 \title{Writing a Program to Evaluate Lambda Expressions}
@@ -23,6 +33,24 @@
 %
 % 	WHAT TENSE IS THIS
 %
+\renewcommand{\cleardoublepage}{}
+\renewcommand{\clearpage}{}
+\chapter{Introduction}
+Lambda calculus is often stated as being the worlds smallest programming language \cite{Michaelson2011} expressing terms as mathematical functions which can represent any computable problem \cite{Selinger2013}. Students on the Theory of Computation course taught at Glasgow University learn lambda calculus to give them an understanding of functional programming and other programming paradigms \cite{CourseSpecification}.\\
+
+This report will cover the work done in producing a web application which will verify and evaluate lambda calculus terms input by a user, in order to support future students learning functional programming. The project has been split into three major tasks:
+
+\begin{enumerate}
+	\item Understand and use ANTLR to create a parser which will read lambda terms and produce an abstract syntax tree from the user input
+	\item Write a program which will use this tree to find the result of the incoming lambda term
+	\item Create a web interface which will allow users to input lambda calculus terms and have them checked and evaluated, in order to aid their understanding of lambda calculus
+\end{enumerate}
+
+Since the focus is the Theory of Computation course, learning outcomes and course material have been analysed in order to produce a tool which accurately reflects what is taught. An effort has been made however to make the tool accessible to those learning lambda calculus through different means, for example self teaching or those at other universities. This has resulted in an interface which is aimed at supporting the lecture material but not limited by it, with goals of future work aimed at expanding the interface further to support alternative notation than what is covered in the lectures.\\
+
+Overall the project was a success, an interface was created which accurately evaluates lambda terms through a web interface. The tool implements simply typed applied lambda calculus as taught in the lecture slides, while not requiring users to enter types or functions for those on alternate courses. It also allows for different reduction strategies for those who want a more in depth understanding, wrapped in a simple and clear layout that is easy to use. User testing found that participants enjoyed the interface and said they would use such an interface if they were learning lambda calculus, reporting a significant increase in understanding of lambda calculus having used the interface for a short time. The tool created for this project will be given to students on the Theory of Computation course when it it is next taught at the University of Glasgow, in the hopes that it will aid understanding by giving students practical support in lambda calculus.\\
+
+The following report documents the process in creating such a tool, by introducing key concepts and literature and refining specific project objectives, then expanding on the design and implementation stages, before finally documenting the testing process and evaluating whether or not the goals of the project have been met.\\
 
 \chapter{Background}
 \section{Lambda Calculus}
@@ -158,43 +186,22 @@ In a lambda expression, the type of a term can often be inferred without any exp
 
 This gathering of information can be split into two categories, structural and syntax \cite{Bezem2008}. Structural is done using lambda typing rules, for example using the fact that abstractions are function types of form $T \rightarrow T$ to find the final type of the term $\lambda x.x+5$. The syntax of the term can also be used to gather information, for example using arithmetic or boolean operators to determine the type of a variable used in that expression.
 
+\renewcommand{\cleardoublepage}{}
+\renewcommand{\clearpage}{}
 \chapter{Analysis}
 As defined in the project description (defined somewhere else in this report), the focus of this tool is to help students taking the Theory of Computation course gain a better grasp lambda calculus. The point is not to teach them lambda calculus, but to allow them to evaluate lambda terms in an interface aimed at supporting their learning.
 
 \section{Lambda Calculus}
-The Theory of Computation course details \cite{CourseSpecification} state three key intended learning outcomes relating specifically to Lambda Calculus: evaluate expressions in lambda calculus according to the definition of reduction relation, determine whether or not expressions in lambda calculus are typable in the simple type system, and implement lambda calculus expressions in a functional language such as Haskell or ML, or the functional fragment of Python.
-
-From the lecture notes of the most recent academic year, the following topics are covered, most of which have been defined in the background section:
-
-\begin{itemize}
-	\item Subterms
-	\item Contexts
-	\item Applied lambda calculus
-	\item Barendregt convention and the definition of free and bound variables
-	\subitem This is in contrast to the De Bruijn notation as discussed previously
-	\item Beta reduction and normal form, including different reduction strategies (call-by-value and call-by-need)
-	\item Typing rules and derivations
-\end{itemize}
-
-Since the goal of this project is to aid students understanding of lambda calculus, the learning outcomes and what is taught on the course will be focused on. Because of this, the following objectives can be selected:
+The Theory of Computation course details \cite{CourseSpecification} state two key intended learning outcomes relating specifically to Lambda Calculus: evaluate expressions in lambda calculus according to the definition of reduction relation and determine whether or not expressions in lambda calculus are typable in the simple type system. Since the goal of this project is to aid students understanding of lambda calculus, the learning outcomes and what is taught on the course will be focused on. Because of this, the following objectives can be selected:
 
 \begin{itemize}
 	\item The Barendregt Convention is being chosen as a means of avoiding variable capture over De Bruijn notation, since it aligns more closely with what is taught on the course and therefore will better support student learning
 	\item Simply typed applied lambda calculus will be implemented
-	\item Subterms and nested terms will be allowed
-	\item Contexts are not a large part of the course so will not be included in order to put focus on more prominent sections of lambda calculus such as reduction
-	\item Beta reduction will be included, with options to evaluate terms using both call-by-value and call-by-need reduction strategies
+	\item Beta reduction will be included, with options to evaluate terms using both call-by-value and call-by-need reduction strategies as per what is taught
 	\item Typing derivations will be implemented in order to type check the lambda term and evaluate the final type of the reduced function
 \end{itemize}
 
-Further to what is taught in the course, there are other options which could be included in such an interface.
-
-\begin{itemize}
-	\item Delta reduction has been discussed throughout the background section. While this is not taught explicitly, lecture slides do include constants being added together arithmetically, performing delta reduction implicitly.
-	\subitem Because of this, the resultant lambda term will have arithmetic constants evaluated but delta reduction will not be explicit
-	\item Eta reduction has also been discussed, but is not an integral step to lambda calculus, and most resources teaching lambda calculus miss it out \cite{Acar2008} \cite{Barendregt2000} \cite{Gay2019} \cite{Horowitz2013} \cite{Rojas1998} \cite{Hankin2004}
-	\subitem Because of this, and because manipulating the final result in a way students have not been taught could cause further confusion, eta reduction will not be included in the final program
-\end{itemize}
+Further to what is taught in the course, there are other options which could be included in such an interface.  Delta reduction has been discussed throughout the background section but is not taught explicitly, however lecture slides do include constants being added together arithmetically, performing delta reduction implicitly. Because of this, the resultant lambda term will have arithmetic constants evaluated but delta reduction will not be explicit. Eta reduction has also been discussed, but is not an integral step to lambda calculus, and most resources teaching lambda calculus miss it out \cite{Acar2008} \cite{Barendregt2000} \cite{Gay2019} \cite{Horowitz2013} \cite{Rojas1998} \cite{Hankin2004}. Since manipulating the final result in a way students have not been taught could cause further confusion, eta reduction will not be included in the final program.
 
 \section{Abstract Syntax}
 %Note to self: Should this section go in background now the background section is separate?
@@ -234,8 +241,6 @@ One such tool which can help represent the structure of a term based on a partic
 Once a program has been created which can parse and evaluate lambda terms, an interface is needed to allow this to be used by students. The interface should be simple to understand, and as a minimum requirement should include a place for user input which will allow students to input a lambda expression alongside an output showing the resultant reduced expression. It should also include an input which will allow the user to select different types of beta-reduction, and an output which will show the typability and evaluated type of the returned expression.\\
 
 The interface will not be connected to any central database containing personal information, nor will it require a login or store any personal data at all, so does not need to be protected from SQL injection.\\
-
-However, it will allow users to type information into the interface so should be protected from HTML injection, cross site scripting and buffer overflow attacks.
 
 \chapter{Aims and Objectives}
 
@@ -282,9 +287,7 @@ The fundamental component of this evaluator is a tree traversal, which navigates
 
 Antlr provides two mechanisms for traversing an abstract syntax tree: listeners and visitors. A listener is a passive way of evaluating a syntax tree, used within an antlr Walker class which traverses the tree using a depth-first approach, triggering methods from the listener as it enters and exits each token \cite{Parr2012}. These listener methods are unable to return values, so expressions and evaluations have to be handled using separate objects within the listener class. As the walker traverses the tree, the listener builds up a running evaluation of the term, returning the result when it exits the topmost node \cite{Srivastav2017}.\\
 
-Unlike listeners, visitors control their own traversal of the tree. By visiting the children of each node encountered explicitly, the path they take around the tree can be controlled \cite{Parr2012}, allowing some children to not being visited until their parents are evaluated, or a right-hand child of a node being visited and evaluated before its left.\\
-
-Visitors also allow custom return types, meaning nodes can return their resultant expressions directly to their parent node and do not have to rely on separate objects \cite{Srivastav2017}.\\
+Unlike listeners, visitors control their own traversal of the tree. By visiting the children of each node encountered explicitly, the path they take around the tree can be controlled \cite{Parr2012}, allowing some children to not being visited until their parents are evaluated, or a right-hand child of a node being visited and evaluated before its left. Visitors also allow custom return types, meaning nodes can return their resultant expressions directly to their parent node and do not have to rely on separate objects \cite{Srivastav2017}.\\
 
 With beta reduction, different methods take different approaches to evaluating terms. In an application MN using a call-by-value approach, N is evaluated before M. In a call-by-need approach, N is passed into M before being evaluated. This means that depending on the type of reduction selected, the evaluator will have to traverse the tree in a different order, suggesting visitor over listener is more appropriate for this task. The fact that evaluation happens as the tree is being visited supports this further, since there will be a large amount of data being passed around the tree. Having a separate object for storing these values could get complex, and so the visitor methods being able to return values directly to their parents will be more convenient for this task.\\
 
@@ -297,9 +300,7 @@ The visitor should return three separate items upon returning to the topmost nod
 
 The web interface will allow the user to input a lambda term along with the type of any variable. It will also allow the user to select which reduction strategy they would like to have the term evaluated by, with call-by-need (or normal order reduction) being selected as the default.\\
 
-The code running the interface and the underlying evaluation code will be kept as separate entities, communicating through input parameters and return statements. This is to ensure the code is kept as modular as possible, allowing the evaluator code to be run using multiple different mechanisms, for example through a web interface and a command line for testing purposes. Any data the user enters will be passed to the underlying code, which will process the term and return any output via a return statement, being read and displayed to the user.\\
-
-The layout of the interface should be simple and uncluttered, and should be suitable for those with a visual impairment.
+The code running the interface and the underlying evaluation code will be kept as separate entities, communicating through input parameters and return statements. This is to ensure the code is kept as modular as possible, allowing the evaluator code to be run using multiple different mechanisms, for example through a web interface and a command line for testing purposes. Any data the user enters will be passed to the underlying code, which will process the term and return any output via a return statement, being read and displayed to the user.
 
 \section{Implementation}
 
@@ -443,9 +444,7 @@ Aside from this, syntax errors specific to lambda calculus are likely to occur w
 \textit{Recursion Errors}\\
 Recursion errors are thrown in Python when a maximum stack depth is reached in order to protect Python from crashing \cite{PythonStack2019}. This is the exception which is thrown when a lambda term has no normal form, as the code keeps trying to evaluate the term before eventually throwing a RecursionError.
 
-To handle this, the recursion limit for the code is set to 200, smaller than the python default to prevent excessive time waiting for the program to fail, but large enough to ensure that any reasonable lambda term can be processed. A recursion limit for the code equates to a lambda term with approximately 50 nested abstractions (since each abstraction could potentially be comprised of the following nodes: its parent term, the abstraction contained within parentheses, the actual abstraction and its inner terms). While this is a limitation, it's is deemed to be a reasonable one, as limiting students to 50 nested abstractions as opposed to 100 is unlikely to impact student understanding.
-
-If a recursion error is thrown, it is caught by the code in a \texttt{try/except} block, and an error message informing the user that a normal form cannot be found for this term is given.
+To handle this, the recursion limit for the code is set to 200, smaller than the python default to prevent excessive time waiting for the program to fail, but large enough to ensure that any reasonable lambda term can be processed. A recursion limit for the code equates to a lambda term with approximately 50 nested abstractions (since each abstraction could potentially be comprised of the following nodes: its parent term, the abstraction contained within parentheses, the actual abstraction and its inner terms). While this is a limitation, it's is deemed to be a reasonable one, as limiting students to 50 nested abstractions as opposed to 100 is unlikely to impact student understanding. If a recursion error is thrown, it is caught by the code in a \texttt{try/except} block, and an error message informing the user that a normal form cannot be found for this term is given.
 
 \subsubsection{Web Interface}
 
@@ -453,7 +452,7 @@ Flask is a web framework designed for use with Python, and allows python scripts
 
 Users enter lambda terms in the input dialogue box, entering a \% sign as a lambda symbol. Using a HTML onkeydown event, the interface automatically changes this symbol to a $\lambda$, allowing users to easily enter lambda terms. The complete web interface can be seen in Figure \ref{web_interface_no_input}, Figure \ref{web_interface_input} and Figure \ref{web_interface_error}.\\
 
-Clicking the \textit{Check Expression} button on the web interface sends a HTTP post request to the Flask server, which takes the value held in the user input box along with the selected reduction strategy, and sends this to the main lambda program. The output is returned to the HTML code through Flask, and the webpage is re-rendered to display the results.\\
+Clicking the \textit{Check Expression} button on the web interface sends a HTTP post request to the Flask server, which takes the value held in the user input box along with the selected reduction strategy, and sends this to the main lambda program. The output is returned to the HTML code through Flask, and the webpage is re-rendered to display the results.
 
 \begin{figure}[p]
 	\includegraphics[scale=0.4]{images/web_interface_no_input}
@@ -487,16 +486,14 @@ Because of this, the testing will be broken into sections in accordance with the
 \label{Accuracy of Lambda Term Evaluation}
 In order to test the accuracy of the evaluation, the tests were split into three categories: alpha-conversion, beta-reduction and typing rules. For each category, key points of potential failure were identified, such as multi-input lambda terms, bound variable naming clashes ($\lambda x$ being used twice in the same term testing the scope of the lambda term), order of operations issues (since applications are left-associative), and terms with no normal form.\\
 
-All of the above were tested for, the results shown in Figure \ref{testing_log} below. The table includes the input to test, the motivation for testing that input, the expected and actual results, and an indicator showing whether or not the test was successful.
+All of the above were tested for, the results shown in Figure \ref{testing_log} below. The table includes the input to test, the motivation for testing that input, the expected and actual results, and an indicator showing whether or not the test was successful.\\
 
 \begin{figure}[p]
-	\includegraphics[scale=1.4]{images/Testing_Log}
+	\includegraphics[scale=1.3]{images/Testing_Log}
 	\centering
 	\caption{Evaluating the Accuracy of Lambda Term Evaluation}
 	\label{testing_log}
 \end{figure}
-
-\newpage
 
 Figure \ref{testing_log} demonstrates that in the majority of cases which have been tested, the evaluation is accurate and does yield expected results. There are a few instances where the output is not as expected, which have been discussed in greater detail in the Evaluation section of this report.
 
@@ -513,25 +510,14 @@ They were then asked to read a document giving them a brief introduction to lamb
 
 Having read a brief summary, participants were asked to rate their understanding of lambda calculus on a scale of 1-10, before being given the interface to test. They were provided with a few sample lambda terms to test if they wanted to, but were not obligated to use them. This was to simulate students who may be using the tool to evaluate a particular lambda expression they have found in the lecture slides or online.\\
 
-Finally, users were given a questionnaire which again asked them to rate their understanding of lambda calculus having used the interface for a short period of time, so their understanding could be compared before and after using the tool.\\
-
-The questionnaire also asked the following questions:
-\begin{itemize}
-	\item Would you use a tool like this if you were studying the Theory of Computation Course?
-	\subitem Yes/no/other (please detail...)
-	\item Did you find it useful in improving your understanding?
-	\subitem Yes/no/other (please detail...)
-	\item What did you think of the interface?
-	\item Do you have suggestions for any improvements that could be made?
-	\item Any further comments?
-\end{itemize}
+Finally, users were given a questionnaire which again asked them to rate their understanding of lambda calculus having used the interface for a short period of time, so their understanding could be compared before and after using the tool. The questionnaire also asked a number of qualitative questions, asking participants to give feedback on whether or not they would use this tool if they were studying Lambda Calculus, and what they thought of the interface.
 
 \subsection{Results}
 Although the test was not conducted with a time limit, each participant spent approximately five minutes using the interface before stating they were ready to move on. As can be seen from Figure \ref{participant_understanding}, in the five minutes participants interacted with the interface their understanding improved by 27\% on average. 100\% of participants said they would use the tool created if they were on the Theory of Computation course, and 100\% said they found it useful in improving their understanding.\\
 
 The qualitative questions on the interface and tool revealed that participants found the system simple and easy to use, with some suggestions for improvement. Suggested interface changes included making the colour of the input box darker to differentiate between input boxes and menus, and changing the background as some participants found it distracting. Participants also suggested adding additional features such as tooltips to give the user more information on what particular lambda terms meant, and adding a workbook section which would allow users to save the results to a file in order to create a study resource they could go back to later.\\
 
-Overall the feedback was incredibly positive, supporting the conjecture that the tool created could support student learning for those starting out with lambda calculus. Participants commented that it helped improve understanding by adding a practical element to the much more theoretical-based lecture slides.\\
+Overall the feedback was incredibly positive, supporting the conjecture that the tool created could support student learning for those starting out with lambda calculus. Participants commented that it helped improve understanding by adding a practical element to the much more theoretical-based lecture slides.
 
 %Note to self: should I include the results from the google survey in the appendix?
 
@@ -553,23 +539,27 @@ As stated in the beginning of this report, the project summary is as follows:
 This chapter will discuss whether or not the project description has been met, and whether or not the tool created could be used as a supplementary resource for students learning lambda calculus on the Theory of Computation course taught at the University of Glasgow.
 
 \section{Accurately Evaluating Lambda Terms}
-As evidenced by section \ref{Accuracy of Lambda Term Evaluation}, the tool created does accurately evaluate lambda terms, returning the normal form, type and type validity of lambda terms for both call-by-value and call-by-need evaluation strategies. Applied lambda calculus with types is supported, as taught on the Theory of Computation Course.\\
+As evidenced by section \ref{Accuracy of Lambda Term Evaluation}, the tool created does accurately evaluate lambda terms, returning the normal form, type and type validity of lambda terms for both call-by-value and call-by-need evaluation strategies. Applied lambda calculus with types is supported, as taught on the Theory of Computation Course.
 
-[list of known limitations and bugs]
-[limitations: mutual left recursion issue (discuss in Future Work), type inference]
+\subsection{Limitations}
+Figure \ref{testing_log} demonstrates some limitations with the evaluation of the final program. One such limitation is demonstrated by the $\lambda x:int.x:bool$ term with clashing types for like-terms, the results of which present this as valid typing of type \texttt{int$\rightarrow$bool}. This is because type validation within an abstraction happens at the function level when the types of variables are checked against the middle operation. The types of like-terms are not compared, an abstraction simply takes the input type (in this case \texttt{int}) and concatenates it with the output type (\texttt{bool} in this case).\\
+
+This is a limitation, and could be fixed by giving abstractions more control over their inner terms. However, it was decided early on to keep the abstraction and the inner term as distinct as possible, a coding decision which has resulted in this fix requiring a major refactor. Because of this, the gain resulting from this edge case was not deemed high enough to warrant such a refactor in the late stage of the project, and so the limitation was left in.\\
+
+Furthermore with typing rules, Figure \ref{testing_log} demonstrates the type inference issue when functions have multiple operations. This has been discussed in detail in the Implementation section of this report, and therefore will not be discussed here.\\
 
 \section{Improving Student Understanding}
 The user tests conducted and summarised in section \ref{interface usefulness and usability} suggest that students with a computer science background learning lambda calculus for the first time would likely find the tool useful in supporting their learning. Possible improvements such as including tooltips as suggested in user feedback are valid and would be implemented given more time.\\
 
 The user feedback also suggested that the simplicity of the interface is a positive, and care must be taken to prevent the interface from becoming too complicated. The interface is to be used as support for the Theory of Computation lecture slides or other lambda calculus guidance as opposed to teaching those using the interface lambda calculus, and this should be maintained in any future work done.\\
 
-With a goal of supporting learning by providing an interface which accurately evaluates lambda terms, it can be said that these goals have been met.\\
+With a goal of supporting learning by providing an interface which accurately evaluates lambda terms, it can be said that these goals have been met.
 
 \section{Future Work}
 Due to the time limited nature of this project, not all features or corrections have been implemented. Given more time, the following work would be done:
 
 \begin{enumerate}
-	\item Fix the bugs discussed previously
+	\item Add in type-checking for like terms to prevent the same variable being given conflicting types by the user
 	\item Add in multi-input abstraction terms to allow users to enter $\lambda xy.M$ as appears in the lecture slides \cite{Gay2019} as opposed to $\lambda x.\lambda y.M$
 	\item Improve the type inference to allow input types of multi-operation functions to be inferred
 	\item Include tooltips linked to various aspects of the web interface to give users more information
@@ -577,6 +567,22 @@ Due to the time limited nature of this project, not all features or corrections 
 	\item Allow users to enter lambda terms in the De Bruijn notation, for those unfamiliar with the Barendregt convention
 \end{enumerate}
 
+\chapter{Conclusion}
+This report has documented the work done in creating a tool to evaluate lambda terms designed to support those studying the Theory of Computation at Glasgow University. The report has given an introduction to key terms, an analysis to determine specific objectives, and has detailed the design and implementation of the tool. It has also covered the testing and evaluation of the final interface to determine how well key goals have been met.\\
+
+The outcome of the project was extremely successful, resulting in a simple and convenient tool which accurately evaluates lambda calculus terms in an easy-to-use web interface. Design decisions were made based on lecture material, but the tool was not limited so much that it could only be used by those on the Theory of Computation course. The final tool is broad enough to be accessible to those learning lambda calculus through alternate methods, but specific enough to support those on the course achieve understanding of key learning outcomes.\\
+
+Creating this tool was very much a challenge, having no prior knowledge of lambda calculus before the project was started resulted in an extremely steep learning curve and a number of setbacks due to misunderstandings made early on in the project. As well as this ANTLR had to be learned from scratch, resulting in a portion of time being allocated to becoming familiar with the tool in order to utilise it in the best way possible.\\
+
+Due to the finite nature of the project and the amount of learning that had to be done as implementation was underway, there are features which would benefit the tool which have not been included due to time restrictions. These include supporting multiple notations such as De Bruijn notation and multi-input terms which have been discussed previously. The tool could also be expanded in ways which would further benefit student learning, for example the option of evaluating a term step-by-step so students could see the method of evaluation explicitly, and adding tooltips to give users more guidance on the theoretical aspects of lambda calculus.\\
+
+As well as additional features, one key goal would be to perform additional user testing across a wider demographic of participants, including those who previously have taken the Theory of Computation course, those more familiar with Lambda Calculus and those at other universities or learning lambda calculus through other means. This would help improve the tool for a wider range of potential users, and allow additional feature ideas to come from people who would actually be using it.\\
+
+However, despite the narrow demographic of user feedback and the additional features which could potentially be implemented, the project was a huge success. From the [number of test participants] test participants, 100\% said they found the tool useful and would use it if they were on the Theory of Computation course, reporting a [statistic]\% improvement in understanding having used the tool for a short period of time. Testing has also shown that the tool does evaluate lambda terms accurately, by following the rules of lambda calculus as closely as possible and making the best use of the extremely powerful parsing tool that is ANTLR. This has resulted in a system which will accessible to students on the Theory of Computation course next year, being hosted on university servers in the near future.\\
+
+Creating the tool was definitely a challenge, due to having no knowledge of lambda calculus or ANTLR before starting the project. But the tool created has met all the goals which were set out at the start of the project, and includes additional features going beyond the limited specification to further improve student understanding. It is hoped that future students will find this tool useful in their university studies, and that it will help to improve their understanding of lambda calculus and functional programming.
+
+\newpage
 \printbibliography
 
 \end{document}

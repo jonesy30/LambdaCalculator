@@ -23,6 +23,9 @@ class BaseVisitor(LambdaCalculusVisitor):
 
         depth = ctx.depth()
         if depth == 1:
+
+            print("Type context variables = "+str(self.type_context_var))
+            print("Type context types = "+str(self.type_context_type))
             
             output = None
             return_type = None
@@ -74,7 +77,6 @@ class BaseVisitor(LambdaCalculusVisitor):
         print("Left = "+left)
         print("Right = "+right)
 
-
         #Functions that take two booleans and return a boolean
         bool_bool = ["&","|"]
         #Take two ints and return an int
@@ -109,6 +111,11 @@ class BaseVisitor(LambdaCalculusVisitor):
             input_type = None
         
         return_string = "" + left + op + right
+
+        if left.isalpha():
+            self.add_variable_to_context(left,input_type)
+        if right.isalpha():
+            self.add_variable_to_context(right,input_type)
         
         print("Me = "+ctx.getText())
         print("Returning input type = "+str(input_type))
@@ -116,10 +123,17 @@ class BaseVisitor(LambdaCalculusVisitor):
     
     # Visit a parse tree produced by LambdaCalculusParser#variable.
     def visitVariable(self, ctx:LambdaCalculusParser.VariableContext):
+        print("Variable text = "+ctx.getText())
+        variable = (ctx.getChild(0)).getText()
+        print("Variable now = "+variable)
+
         if ctx.getChild(2) is None:
             return ctx.getText(),None
         else:
-            return ctx.getText(),self.visit(ctx.getChild(2))
+            variable_type = self.visit(ctx.getChild(2))
+            self.add_variable_to_context(variable, variable_type)
+
+            return ctx.getText(),variable_type
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
     def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
@@ -506,6 +520,23 @@ class BaseVisitor(LambdaCalculusVisitor):
 
         return new_function, abstraction_type
 
+    def add_variable_to_context(self,variable,variable_type):
+        if variable_type is not None and variable_type != "None":
+            variable_type = variable_type.lower()
+            if variable in self.type_context_var:
+                type_index = self.type_context_var.index(variable)
+                type_clash = self.type_context_type[type_index].lower()
+
+                if type_clash != variable_type:
+                    self.set_valid_typing(False)
+
+                    #If a variable clash has been found, remove it from teh typing context
+                    self.type_context_type.pop(type_index)
+                    self.type_context_var.pop(type_index)
+            else:
+                self.type_context_var.append(variable)
+                self.type_context_type.append(variable_type)
+    
     def set_valid_typing(self,result):
         if self.valid_typing == True:
             self.valid_typing = result
