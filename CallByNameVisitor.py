@@ -15,8 +15,14 @@ class CallByNameVisitor(BaseVisitor):
         super()
         self.incoming_values = Stack() #NOTE: This definitely needs renamed
         self.valid_typing = True
-        self.type_context_var = []
-        self.type_context_type = []
+
+        self.super_typing_context = []
+        self.current_typing_context = []
+        #self.super_type_context_var = []
+        #self.super_type_context_type = []
+
+        #self.type_context_var = []
+        #self.type_context_type = []
     
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
@@ -82,6 +88,27 @@ class CallByNameVisitor(BaseVisitor):
         parenthesis_check = self.check_for_parenthesis(ctx)
         if parenthesis_check != -1:
             return parenthesis_check
+
+        #At each abstraction, if the bound variable is repeated then change all other instances of this in the list to avoid conflicts
+        bound_variable = ctx.getChild(0).getChild(1).getChild(0).getText()
+        print("Bound variable? = "+str(bound_variable))
+        print("Type context var = "+str(self.current_typing_context))
+
+        variable_contexts = []
+        for context in self.current_typing_context:
+            variable_contexts.append(context.get_variable())
+
+        context_log = bound_variable
+        #while context_log in self.current_typing_context:
+        while context_log in variable_contexts:
+            context_log = context_log + "*"
+        print("Context log = "+context_log)
+
+        #if bound_variable in self.current_typing_context:
+        if bound_variable in variable_contexts:
+            #index = self.current_typing_context.index(bound_variable)
+            index = variable_contexts.index(bound_variable)
+            self.current_typing_context[index].set_variable(context_log)      
 
         #NOTE: These all definitely need renamed
         #Visit the left hand child, to get the bound variable type and value

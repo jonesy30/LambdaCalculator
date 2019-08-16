@@ -15,8 +15,14 @@ class CallByValueVisitor(BaseVisitor):
         super()
         self.incoming_values = Stack() #NOTE: This definitely needs renamed
         self.valid_typing = True
-        self.type_context_var = []
-        self.type_context_type = []
+
+        self.super_typing_context = []
+        self.current_typing_context = []
+        #self.super_type_context_var = []
+        #self.super_type_context_type = []
+
+        #self.type_context_var = []
+        #self.type_context_type = []
     
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
@@ -31,6 +37,8 @@ class CallByValueVisitor(BaseVisitor):
         #NOTE: To convert to call-by-name, I need to get the text of child 1, and then evaluate the abstraction with the unprocessed textual version of child 1
         #Then I need to get the abstraction to create a tree of the result of itself (before or after alpha conversion?) which it will then visit and process
         returned_child = self.visit(ctx.getChild(0))
+        self.send_current_to_super_context()
+
         function = returned_child[0]
         function_type = returned_child[1]
 
@@ -52,7 +60,6 @@ class CallByValueVisitor(BaseVisitor):
 
         application_type = None
 
-        print("In application, expression type = "+str(expression_type))
         #If the left hand tree is an abstraction - you're not done! Keep processing using the right hand side of the tree
         if isinstance(am_I_an_abstraction,LambdaCalculusParser.AbstractionContext):
             #Visit the left hand tree with the term created from the right hand side
@@ -63,11 +70,8 @@ class CallByValueVisitor(BaseVisitor):
         else:
             function = str(function) + str(expression)
 
-        print("Function type = "+str(function_type))
-        print("Expression type = "+str(expression_type))
         #Get the type of the application based on the two incoming values
         application_type = self.type_check_application(function_type,expression_type)
-        print("Application_type = "+str(application_type))
 
         #Return the application value and type
         print("Returned value in application = "+function)
@@ -80,6 +84,27 @@ class CallByValueVisitor(BaseVisitor):
         parenthesis_check = self.check_for_parenthesis(ctx)
         if parenthesis_check != -1:
             return parenthesis_check
+
+        #At each abstraction, if the bound variable is repeated then change all other instances of this in the list to avoid conflicts
+        bound_variable = ctx.getChild(0).getChild(1).getChild(0).getText()
+        print("Bound variable? = "+str(bound_variable))
+        print("Type context var = "+str(self.current_typing_context))
+
+        variable_contexts = []
+        for context in self.current_typing_context:
+            variable_contexts.append(context.get_variable())
+
+        context_log = bound_variable
+        #while context_log in self.current_typing_context:
+        while context_log in variable_contexts:
+            context_log = context_log + "*"
+        print("Context log = "+context_log)
+
+        #if bound_variable in self.current_typing_context:
+        if bound_variable in variable_contexts:
+            #index = self.current_typing_context.index(bound_variable)
+            index = variable_contexts.index(bound_variable)
+            self.current_typing_context[index].set_variable(context_log)   
 
         #NOTE: These all definitely need renamed
         #Visit the left hand child, to get the bound variable type and value
@@ -104,5 +129,4 @@ class CallByValueVisitor(BaseVisitor):
 
         abstraction_result, abstraction_type = self.perform_abstraction(ctx, incoming, incoming_type, to_substitute, to_substitute_type)
         
-        print("Returning abstraction type = "+str(abstraction_type))
         return abstraction_result,abstraction_type

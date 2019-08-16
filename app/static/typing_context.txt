@@ -1,0 +1,3 @@
+Typing Context
+x*: int
+x: bool
