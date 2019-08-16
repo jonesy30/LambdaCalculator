@@ -39,7 +39,7 @@ class BaseVisitor(LambdaCalculusVisitor):
             #print("Type context variables = "+str(self.super_type_context_var))
             #print("Type context types = "+str(self.super_type_context_type))
 
-            self.remove_duplicate_contexts()
+            self.post_process_contexts()
             print("New contexts = "+str(self.super_typing_context))
             self.write_context_to_file()
 
@@ -552,16 +552,13 @@ class BaseVisitor(LambdaCalculusVisitor):
         if self.valid_typing == True:
             self.valid_typing = result
 
-    def remove_duplicate_contexts(self):
-        #typing_context_object_list = []
-        #for index,typing_context_object in enumerate(self.super_typing_context):
-            #typing_context_object = self.TypingContextObject(self.super_type_context_var[index], self.super_type_context_type[index])
-        #    typing_context_object_list.append(typing_context_object)
-        
-        print("Typing context list before = "+str(self.super_typing_context))
+    def post_process_contexts(self):
         self.super_typing_context = list(dict.fromkeys(self.super_typing_context))
-        print("Typing context list after = "+str(self.super_typing_context))
-        #return typing_context_object_list
+
+        for context in self.super_typing_context:
+            variable = context.get_variable()
+            variable = variable.replace("*","")
+            context.set_variable(variable)
 
     class TypingContextObject():
         def __init__(self, variable, variable_type):
