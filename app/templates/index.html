@@ -47,10 +47,28 @@
 
 <script>
     function replaceLambda(e){
-        if( e.key === '%' ){
+
+        //code adapted from https://www.bennadel.com/blog/3483-replacing-double-dashes-with-em-dashes-while-typing-in-javascript.htm
+        var offset = document.querySelector('#input-box').selectionStart;
+        var input = document.querySelector('#input-box');
+ 
+        if ( e.key === '%' ) {
             e.preventDefault();
-            var input = document.querySelector('#input-box');
-            input.value = input.value + 'λ';            
+
+            // Calculate the substrings that come before and after the dash that
+            // we're about to replace.
+            var beforeLambda = input.value.slice( 0, offset);
+            var afterLambda = input.value.slice(offset);
+
+            // Replace the existing dash with the lambda term
+            input.value = ( beforeLambda + 'λ' + afterLambda );
+
+            // In order to prevent the cursor from jumping to the end of the input
+            // value after we've set it programmatically, we have to explicitly
+            // define the selection as staying in the same place that it was before.
+            input.selectionStart = offset+1;
+            input.selectionEnd = offset+1;
+ 
         }
     }
 </script>

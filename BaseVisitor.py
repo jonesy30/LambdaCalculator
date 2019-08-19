@@ -16,6 +16,11 @@ class BaseVisitor(LambdaCalculusVisitor):
 
     def __init__(self):
         super()
+        self.final_result = ""
+
+    def __del__(self):
+        self.beta_reduction_writer.write_to_file("Final result = "+str(self.final_result))
+        self.beta_reduction_writer.close_file()
     
     # Visit a parse tree produced by LambdaCalculusParser#term.
     def visitTerm(self, ctx:LambdaCalculusParser.TermContext):
@@ -32,13 +37,12 @@ class BaseVisitor(LambdaCalculusVisitor):
                 output = output_tuple[0]
                 return_type = output_tuple[1]
 
-            print("Output in term = "+str(output))
-            
             self.send_current_to_super_context()
 
             self.post_process_contexts()
             self.write_context_to_file()
 
+            self.final_result = output
             return output,return_type,self.valid_typing
 
         else:
@@ -47,7 +51,7 @@ class BaseVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#function.
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
 
-        print("Function = "+ctx.getText())
+        #print("Function = "+ctx.getText())
 
         parenthesis_check = ctx.getChild(0).getText()
         #if I am a parenthesis of myself, just return as I am
@@ -89,7 +93,6 @@ class BaseVisitor(LambdaCalculusVisitor):
                 return_type = "bool"
                 input_type = "bool"
         elif op in int_int:
-            print("Hello!")
             if left_type == "bool" or right_type == "bool":
                 self.set_valid_typing(False)
             elif self.valid_typing == True:
@@ -291,14 +294,14 @@ class BaseVisitor(LambdaCalculusVisitor):
         incoming_type = self.convert_type_if_none(incoming_type)
         to_substitute_type = self.convert_type_if_none(to_substitute_type)
 
-        print("To substitute = "+str(to_substitute))   
+        #print("To substitute = "+str(to_substitute))   
 
         #Visit and evaluate the right hand side child (the function)
         returned_child = self.visit(ctx.getChild(2))
         function = returned_child[0]
         function_type = returned_child[1]
 
-        print("Function = "+function)
+        #print("Function = "+function)
 
         input_type = None
         if len(returned_child) == 3:
@@ -346,23 +349,28 @@ class BaseVisitor(LambdaCalculusVisitor):
                                     break
                         end_value = i
                         function = calculate_alpha(to_substitute, function, incoming, 0, end_value)
+                        self.beta_reduction_writer.write_to_file("Alpha converting, function is now "+str(function))
                     #If there is not more than one of the same bound variable detected, just alpha convert as normal
                     else:
                         function = calculate_alpha(to_substitute, function, incoming)
-                
+                        self.beta_reduction_writer.write_to_file("Alpha converting, function is now "+str(function))
                 #If there are no bound variables inside the string found, alpha convert as normal
                 else:
                     function = calculate_alpha(to_substitute, function, incoming)
+                    self.beta_reduction_writer.write_to_file("Alpha converting, function is now "+str(function))
 
                 #Replace the bound variable with the new incoming value up until the end point (the point where there's bound variable crossover)
                 new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
+                self.beta_reduction_writer.write_to_file("Replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
 
             #If there are no other lambda terms found within the current lambda term
             else:
                 #Calculate the alpha reduction as normal
                 new_function = calculate_alpha(to_substitute, function, incoming)
+                self.beta_reduction_writer.write_to_file("Alpha converting, function is now "+str(function))
                 #Replace the bound variable with the new incoming value
                 new_function = new_function.replace(to_substitute,incoming)
+                self.beta_reduction_writer.write_to_file("Replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
 
             #Check valid/invalid type by comparing the incoming type to the bound variable type
             if to_substitute_type is not None:
@@ -449,6 +457,21 @@ class BaseVisitor(LambdaCalculusVisitor):
             variable = context.get_variable()
             variable = variable.replace("*","")
             context.set_variable(variable)
+        
+    def update_typing_contexts(self, bound_variable):
+        variable_contexts = []
+        for context in self.current_typing_context:
+            variable_contexts.append(context.get_variable())
+
+        context_log = bound_variable
+        #while context_log in self.current_typing_context:
+        while context_log in variable_contexts:
+            context_log = context_log + "*"
+
+        #if bound_variable in self.current_typing_context:
+        if bound_variable in variable_contexts:
+            index = variable_contexts.index(bound_variable)
+            self.current_typing_context[index].set_variable(context_log)
 
     class TypingContextObject():
         def __init__(self, variable, variable_type):
@@ -479,5 +502,11 @@ class BaseVisitor(LambdaCalculusVisitor):
         for context in self.super_typing_context:
             write_string = "" + context.get_variable() + ": " + context.get_variable_type() + "\r\n"
             file.write(write_string)
+        
+        file.write("\n\r")
+        explanation_string = "Note: Some variables may have duplicate types, this is because the variable refers to different objects in the expression."
+        explanation_string = explanation_string + " For example, in the expression ([lambda]x:bool.x & [lambda]x:int.x+1), the two x's are unconnected, and therefore in this term"
+        explanation_string = explanation_string + " x has both type int AND type bool"
+        file.write(explanation_string)
         
         file.close()

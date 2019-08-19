@@ -42,13 +42,15 @@ def main():
     if visitor_selection == "v" or visitor_selection == "n":
         #result, return_type, valid_type = run(expression, visitor)
         return_value = run(expression, visitor)
-        if isinstance(return_value,int):
-            if return_value == -1:
-                print("Syntax error - check the term and try again?")
-            elif return_value == -2:
-                print("Normal form cannot be found - does this term have a normal form?")
-            elif return_value == -5:
-                print("Invalid visitor selected - try refreshing the page and try again")
+        #if isinstance(return_value,int):
+        if return_value == -1:
+            print("Syntax error - check the term and try again?")
+        elif return_value == -2:
+            print("Normal form cannot be found - does this term have a normal form?")
+        elif return_value == -5:
+            print("Invalid visitor selected - try refreshing the page and try again")
+        elif return_value == -6:
+            print("Sorry, something went wrong, try entering the term again?")
         else:
             result = return_value[0]
             return_type = return_value[1]
@@ -96,6 +98,8 @@ def web_interface(expression, evaluate_selection):
         return "Normal form cannot be found - does this term have a normal form?"
     elif return_value == -5:
         return "Invalid visitor selected - try refreshing the page and try again"
+    elif return_value == -6:
+        return "Sorry, something went wrong, try entering the term again?"
     elif evaluate_selection == "a":
         #If alpha conversion is selected, just post-process and return result
         return_value,_ = post_process(return_value)
@@ -112,6 +116,7 @@ def web_interface(expression, evaluate_selection):
         output_string = "Result = "+str(result)
         if result != arithmetically_reduced:
             output_string = output_string + " = "+str(arithmetically_reduced)+" by arithmetic reduction"
+        output_string = output_string + " <a href=\"/static/beta_reduction.txt\" target=\"_blank\"><font color=\"#99ccff\">(click here for evaluation details)</font></a>"
         output_string = output_string + "<br>Valid typing = "+str(valid_type)
         if valid_type == False or valid_type == "False":
             output_string = output_string+"<br>"
@@ -122,7 +127,6 @@ def web_interface(expression, evaluate_selection):
             return output_string
 
 def pre_process(expression):
-
     expression_list = list(expression)
     for i,char in enumerate(expression_list):
         if char == 'λ':
@@ -189,14 +193,32 @@ def run(expression, visitor):
                 return str(result),str(return_type),str(valid_type)
             else:
                 return -5
+        except SyntaxTokenError:
+            return -1
         except RecursionError:
             return -2
-        except Exception:
-            return -1
+        except Exception as e:
+            error_message = str(e)
+            #If the exception is a SyntaxTokenError raised by antlr
+            if "SyntaxTokenError" in error_message:
+                return -1
+            #Else something else has gone wrong
+            else:
+                print(error_message)
+                return -6
+    except SyntaxTokenError:
+        return -1
     except RecursionError:
         return -2
-    except Exception:
-        return -1
+    except Exception as e:
+        error_message = str(e)
+        #If the exception is a SyntaxTokenError raised by antlr
+        if "SyntaxTokenError" in error_message:
+            return -1
+        #Else something else has gone wrong
+        else:
+            print(error_message)
+            return -6
 
 def delta_reduction(expression):
     expression = pre_process(expression)
