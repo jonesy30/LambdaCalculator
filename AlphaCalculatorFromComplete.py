@@ -89,7 +89,6 @@ class AlphaCalculatorFromComplete():
         return scope_map, scope_objects
 
     def get_available_letters(self, expression,incoming):
-
         #Note to self: I'm allowing capitals!
         alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
         available_letters = list(alphabet)
@@ -107,15 +106,6 @@ class AlphaCalculatorFromComplete():
 
     def rename_bound_values(self, expression):
         
-        # for scope in scope_objects:
-        #     #print("Scope = "+str(scope))
-        #     term = ""
-        #     i = scope.start_index
-        #     while i < scope.end_index:
-        #         term = term + expression[i]
-        #         i = i + 1
-        print("Incoming expression = "+str(expression))
-
         expression_list = list(expression)
         to_replace = self.get_bound_values(expression)
 
@@ -132,28 +122,7 @@ class AlphaCalculatorFromComplete():
             
         return to_replace,replace_with
 
-        #     i = scope.start_index
-        #     while i < scope.end_index:
-        #         if expression[i] in to_replace:
-        #             expression_list[i] = replace_with[to_replace.index(expression[i])]
-        #         i = i + 1
-            
-        #     expression = "".join(expression_list)
-        #     print("New expression = "+expression)
-
-        # return expression
-
     def rename_free_values(self, expression, scope_objects):
-        #Free is a value telling the function whether or not to do free variable conversion
-
-        # for scope in scope_objects:
-        #     #print("Scope = "+str(scope))
-        #     term = ""
-        #     i = scope.start_index
-        #     while i < scope.end_index:
-        #         term = term + expression[i]
-        #         i = i + 1
-        
         expression_list = list(expression)
         to_replace = self.free_variables(scope_objects,expression)
         to_replace = list(dict.fromkeys(to_replace))
@@ -165,16 +134,6 @@ class AlphaCalculatorFromComplete():
             self.available_letters.remove(replace_with[i])
 
         return to_replace,replace_with
-            # i = scope.start_index
-            # while i < scope.end_index:
-            #     if expression[i] in to_replace:
-            #         expression_list[i] = replace_with[to_replace.index(expression[i])]
-            #     i = i + 1
-            
-            # expression = "".join(expression_list)
-            # print("New expression = "+expression)
-
-        #return expression
 
     def rename_values(self, expression, scope_objects, free_variables=False):
         
@@ -225,16 +184,12 @@ class AlphaCalculatorFromComplete():
         free_variables = []
         free_variables_expression = self.free_variables(scope_objects_expression, expression)
         for variable in free_variables_expression:
-            print("Variable expression = "+variable)
             free_variables.append(variable)
 
         free_variables_incoming = self.free_variables(scope_objects_incoming, incoming)
         for variable in free_variables_incoming:
-            print("Variable incoming = "+variable)
             if variable not in free_variables:
                 free_variables.append(variable)
-
-        print("Complete list of free variables = "+str(free_variables))
 
     def free_variables(self, scope_objects, term):
         
@@ -242,7 +197,6 @@ class AlphaCalculatorFromComplete():
         term_list = list(term)
         
         for scope in scope_objects[::-1]:
-            #print("Scope = "+str(scope))
 
             scope_string = ""
             i = scope.start_index
@@ -288,7 +242,6 @@ class AlphaCalculatorFromComplete():
             expression = self.rename_values(expression, scope_objects_expression,True)
             expression = self.rename_values(expression, scope_objects_expression,False)
 
-        print("Returning expression in calculate alpha "+expression)
         return expression
 
 if __name__ == "__main__":   

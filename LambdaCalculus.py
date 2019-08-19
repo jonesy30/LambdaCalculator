@@ -6,7 +6,6 @@ from LambdaCalculusListener import LambdaCalculusListener
 from LambdaCalculusVisitor import LambdaCalculusVisitor
 from LambdaErrorListener import LambdaErrorListener, SyntaxTokenError
 from BracketCheck import BracketCheck
-from CaseCheck import CaseCheck
 from CallByValueVisitor import CallByValueVisitor
 from CallByNameVisitor import CallByNameVisitor
 from AlphaConversionVisitor import AlphaConversionVisitor
@@ -18,7 +17,6 @@ from sympy import Symbol
 
 def main():
     bracket_checker = BracketCheck()
-    #case_checker = CaseCheck()
 
     visitor_selection = input("Call by value, name or alpha reduce? ")
 
@@ -28,12 +26,6 @@ def main():
     while matched_brackets == False:
         expression = input("Sorry, mismatched brackets, check and try again?\n")
         matched_brackets = bracket_checker.check_brackets(expression)
-
-    # #NOTE: I do not allow any uppercase values
-    # all_lowercase = case_checker.check_case(expression)
-    # while all_lowercase == False:
-    #     expression = input("Sorry, no uppercase values allowed, please rewrite and try again?\n")
-    #     all_lowercase = case_checker.check_case(expression)
 
     visitor = None
     if visitor_selection == "v":
@@ -98,7 +90,6 @@ def web_interface(expression, evaluate_selection):
         return -5
     
     return_value = run(expression, visitor)
-    print("Return value = "+str(return_value))
     if return_value == -1:
         return "Syntax error - check the term and try again?"
     elif return_value == -2:
@@ -200,12 +191,12 @@ def run(expression, visitor):
                 return -5
         except RecursionError:
             return -2
-        #except Exception:
-        #    return -1
+        except Exception:
+            return -1
     except RecursionError:
         return -2
-    #except Exception:
-    #    return -1
+    except Exception:
+        return -1
 
 def delta_reduction(expression):
     expression = pre_process(expression)

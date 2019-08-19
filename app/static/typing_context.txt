@@ -1,3 +1,2 @@
 Typing Context
-y: bool
-x: int
+x: int

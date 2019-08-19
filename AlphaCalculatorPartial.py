@@ -10,7 +10,7 @@ def get_free_variables(bound_value, expression):
     return free_variables
 
 def get_available_letters(free_variables):
-    alphabet = "abcdefghijklmnopqrstuvwxyz"
+    alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     alphabet_list = list(alphabet)
 
     for free_variable in free_variables:
@@ -49,13 +49,8 @@ def calculate_alpha(bound_value, expression, incoming, start_value = 0, end_valu
     while found_letter == False and i < end_value:
         if expression_list[i].isalpha():
             found_letter = True
-            #print("Bound value = "+bound_value)
             free_variables = get_free_variables(bound_value, incoming)
-            #print("Free variables in incoming = "+str(free_variables))
-            #free_variables.extend(get_free_variables(bound_value, expression))
-            #print("Appended free variables = "+str(free_variables))
             available_letters = get_available_letters(free_variables)
-            #print("Expression = "+expression)
             expression = rename_values(expression, free_variables, available_letters, start_value, end_value)
         i = i + 1
     

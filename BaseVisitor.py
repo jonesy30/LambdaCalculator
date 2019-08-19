@@ -35,12 +35,8 @@ class BaseVisitor(LambdaCalculusVisitor):
             print("Output in term = "+str(output))
             
             self.send_current_to_super_context()
-            print("Typing contexts = "+str(self.super_typing_context))
-            #print("Type context variables = "+str(self.super_type_context_var))
-            #print("Type context types = "+str(self.super_type_context_type))
 
             self.post_process_contexts()
-            print("New contexts = "+str(self.super_typing_context))
             self.write_context_to_file()
 
             return output,return_type,self.valid_typing
@@ -49,9 +45,6 @@ class BaseVisitor(LambdaCalculusVisitor):
             return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LambdaCalculusParser#function.
-    #NOTE: having function_type = None could be a way to fix my "invalid typing when bound variable does not match inner variable" issue
-    #Just call this method directly from the abstraction term if the thing below is a function
-    #NOTE: If I don't end up needing this, take it out!
     def visitFunction(self, ctx:LambdaCalculusParser.FunctionContext):
 
         print("Function = "+ctx.getText())
@@ -62,7 +55,6 @@ class BaseVisitor(LambdaCalculusVisitor):
             child_value,child_type,input_type = self.visit(ctx.getChild(1))
             return "" + ctx.getChild(0).getText() + child_value + ctx.getChild(2).getText(),child_type,input_type
         
-        #NOTE: I should be calculating the function here and returning the result
         returned_left = self.visit(ctx.getChild(0))
 
         left = returned_left[0]
@@ -74,16 +66,12 @@ class BaseVisitor(LambdaCalculusVisitor):
         right_type = returned_right[1]
 
         op = ctx.getChild(1).getText()
-        print("op = "+str(op))
 
         if left_type is not None:
             left_type = left_type.lower()
         
         if right_type is not None:
             right_type = right_type.lower()
-
-        print("Left = "+left)
-        print("Right = "+right)
 
         #Functions that take two booleans and return a boolean
         bool_bool = ["&","|"]
@@ -114,12 +102,9 @@ class BaseVisitor(LambdaCalculusVisitor):
                 return_type = "bool"
                 input_type = "int"
 
-        print("Input type = "+str(input_type))
         #If the input type is a function we can't work out what the input type is
-        #NOTE: THIS IS A LIMITATION
         if isinstance(ctx.getChild(0),LambdaCalculusParser.FunctionContext) or isinstance(ctx.getChild(2),LambdaCalculusParser.FunctionContext):
             input_type = None
-        print("Input type = "+str(input_type))
 
         return_string = "" + left + op + right
 
@@ -127,11 +112,8 @@ class BaseVisitor(LambdaCalculusVisitor):
         if left.isalpha() and len(left)<2:
             self.add_variable_to_context(left,input_type)
         if right.isalpha() and len(right)<2:
-            print("In function, right = "+str(right))
-            print("Input type = "+str(input_type))
             self.add_variable_to_context(right,input_type)
         
-        print("Returning input type = "+str(input_type))
         return return_string,return_type,input_type
     
     # Visit a parse tree produced by LambdaCalculusParser#variable.
@@ -142,9 +124,7 @@ class BaseVisitor(LambdaCalculusVisitor):
             return ctx.getText(),None
         else:
             variable_type = self.visit(ctx.getChild(2))
-            print("adding "+variable+" with "+variable_type+" to context")
             self.add_variable_to_context(variable, variable_type)
-            print("valid typing = "+str(self.valid_typing))
 
             return ctx.getText(),variable_type
 
@@ -180,50 +160,31 @@ class BaseVisitor(LambdaCalculusVisitor):
     #NOTE: Please rename this future Yola...
     def convert_function_with_type(self, to_substitute, to_substitute_type, incoming, incoming_type, function, end_value=None):
 
-        print("In convert function, end_value = "+str(end_value))
         new_end_value = end_value
         #If there is a bound variable type to be substituted, add it to the rest of the bound variables in the term
         if to_substitute_type is not None:
-            print("To substitute = "+to_substitute)
             if ":" not in incoming:
-                print("To substitute type in convert = "+to_substitute_type)
-                
                 incoming = incoming + ":" + to_substitute_type
 
-            print("End value in function = "+str(end_value))
             if end_value is not None:
-                print("I am here")
                 new_function = function[:end_value].replace(to_substitute,incoming)
                 new_end_value = len(new_function)
-                print("New end value = "+str(new_end_value))
                 function = new_function + function[end_value:]
             else:
                 function = function.replace(to_substitute,incoming)
                 
-                print("After convert function with type, function = "+str(function))
-        
         #If the substituted type is none but the incoming type is not, we still know what the bound variable type should now be, so replace it
         elif incoming_type is not None:
-            print("Incoming before convert = "+incoming)
             if ":" not in incoming:
                 incoming = incoming + ":" + incoming_type
-                print("Incoming in convert = "+incoming)
-                print("To substitute = "+to_substitute)
-                print("Incoming type in convert = "+incoming_type)
-                print("Function = "+function)
 
             if end_value is not None:
-                print("Bit being replaced = "+function[:end_value])
                 new_function = function[:end_value].replace(to_substitute,incoming)
                 new_end_value = len(new_function)
-                print("New end value = "+str(new_end_value))
                 function = new_function + function[end_value:]
-                print("New_function = "+function)
             else:
                 function = function.replace(to_substitute,incoming)
 
-            print("After convert function with type, function = "+str(function))
-            
         return function,new_end_value
 
     def type_check_application(self, function_type, expression_type):
@@ -246,7 +207,6 @@ class BaseVisitor(LambdaCalculusVisitor):
                             function_journey_step = function_type_journey[0].lower()
                             expression_journey_step = expression_type_journey[0].lower()
                             if function_journey_step == "none" or expression_journey_step == "none":
-                                #NOTE: Repeated code
                                 del function_type_journey[0]
                                 del expression_type_journey[0]
                             else:
@@ -276,7 +236,6 @@ class BaseVisitor(LambdaCalculusVisitor):
 
     def add_bound_variable_types_to_function(self, bound_variable, function, type):
         
-        # need to fix this here
         if ":" in bound_variable:
             head, sep, tail = bound_variable.partition(':')
             bound_variable = head
@@ -310,24 +269,11 @@ class BaseVisitor(LambdaCalculusVisitor):
             lexer = LambdaCalculusLexer(stream)
             lexer.removeErrorListeners()
             lexer.addErrorListener(LambdaErrorListener())
-            #try:
             tokens = CommonTokenStream(lexer)
             parser = LambdaCalculusParser(tokens)
-            #    parser.addErrorListener(LambdaErrorListener())
-            #    try:
             tree = parser.term()
 
             return tree
-                #except (SyntaxTokenError, NoViableAltException):
-            #     except RecursionError:
-            #         return -2
-            #     except Exception:
-            #         return -1
-            # #except (SyntaxTokenError, NoViableAltException):
-            # except RecursionError:
-            #     return -2
-            # except Exception:
-            #     return -1
 
     def check_for_parenthesis(self, ctx):
         parenthesis_check = ctx.getChild(0).getText()
@@ -382,8 +328,6 @@ class BaseVisitor(LambdaCalculusVisitor):
                             bound_variables_left[i] = bound_variable.replace(type_match.group(0),"")
 
                     #More than one bound variable - check whether they match the current bound variable
-                    print("Bound variables left = "+str(bound_variables_left))
-                    print("To subsitute = "+str(to_substitute))
                     
                     to_substitute_comparison = to_substitute
                     if ":" in to_substitute:
@@ -401,9 +345,7 @@ class BaseVisitor(LambdaCalculusVisitor):
                                 if to_substitute_comparison == bound_value:
                                     break
                         end_value = i
-                        print("Function before calculate alpha = "+str(function))
                         function = calculate_alpha(to_substitute, function, incoming, 0, end_value)
-                        print("Function after calculaute alpha = "+str(function))
                     #If there is not more than one of the same bound variable detected, just alpha convert as normal
                     else:
                         function = calculate_alpha(to_substitute, function, incoming)
@@ -414,7 +356,6 @@ class BaseVisitor(LambdaCalculusVisitor):
 
                 #Replace the bound variable with the new incoming value up until the end point (the point where there's bound variable crossover)
                 new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
-                print("New function after replacement in bound_variable clash = "+new_function)
 
             #If there are no other lambda terms found within the current lambda term
             else:
@@ -432,22 +373,6 @@ class BaseVisitor(LambdaCalculusVisitor):
                         #self.valid_typing = False
                         self.set_valid_typing(False)
 
-            print("New function before tree creation = "+str(new_function))
-
-            #at this point I've done all procesing of myself that I need to, so rename the values in the context to avoid variable clash
-            # head, sep, tail = to_substitute.partition(':')
-            # to_substitute = head
-            # print("Ready to subsitute = "+to_substitute)
-
-            # context_log = to_substitute
-            # while context_log in self.type_context_var:
-            #     context_log = context_log + "*"
-            # print("Context log = "+context_log)
-
-            # if to_substitute in self.type_context_var:
-            #     index = self.type_context_var.index(to_substitute)
-            #     self.type_context_var[index] = context_log
-
             #Create a tree of the result of the inner function, and evaluate it
             tree = self.create_tree(new_function)
             if tree == -2 or tree == -1:
@@ -457,29 +382,10 @@ class BaseVisitor(LambdaCalculusVisitor):
             if valid_typing == False:
                 self.set_valid_typing(False)
 
-            print("New function after tree creation = "+str(new_function))          
-        
         #If there is not a value to substitute into this abstraction
         else:
-            #Create a tree of the result of the inner function, and evaluate it
-            #If nothing is incoming, keep the function as is (function + function_type)
-            # head, sep, tail = to_substitute.partition(':')
-            # to_substitute = head
-            # print("Ready to subsitute = "+to_substitute)
-
-            # context_log = to_substitute
-            # while context_log in self.type_context_var:
-            #     context_log = context_log + "*"
-            # print("Context log = "+context_log)
-
-            # if to_substitute in self.type_context_var:
-            #     index = self.type_context_var.index(to_substitute)
-            #     self.type_context_var[index] = context_log
-            
-            print("New function before tree creation = "+str(new_function))
             tree = self.create_tree(new_function)
             new_function,function_type,valid_typing = self.visit(tree)
-            print("New function after tree creation = "+str(new_function))
 
             if valid_typing == False:
                 self.set_valid_typing(False)
@@ -499,13 +405,11 @@ class BaseVisitor(LambdaCalculusVisitor):
         
         #Create the new abstraction type, which is the bound variable type -> the type it gets converted to
         abstraction_type = str(to_substitute_type) + "->" + str(function_type)
-        print("Function after replacement in abstraction = "+str(new_function))
         
         return new_function, abstraction_type
 
     def add_variable_to_context(self,variable,variable_type):
         if variable_type is not None and variable_type != "None":
-            print("Adding variable "+str(variable)+" to context with type "+str(variable_type))
 
             variable_list = []
             typing_list = []
@@ -518,35 +422,21 @@ class BaseVisitor(LambdaCalculusVisitor):
                 type_index = variable_list.index(variable)
                 type_clash = typing_list[type_index].lower()
 
-                print("Variable = "+str(variable))
-                print("Type clash = "+str(type_clash))
-
                 if type_clash != variable_type:
-                    print("Type clash at "+str(variable)+" with type "+str(variable_type))
                     self.set_valid_typing(False)
 
                     #If a variable clash has been found, remove it from the typing context
                     self.current_typing_context.pop(type_index)
-                    #self.type_context_type.pop(type_index)
-                    #self.type_context_var.pop(type_index)
             else:
                 new_typing_context = self.TypingContextObject(variable, variable_type)
                 self.current_typing_context.append(new_typing_context)
-                #self.type_context_var.append(variable)
-                #self.type_context_type.append(variable_type)
-        
-        print("Current typing context = "+str(self.current_typing_context))
             
     def send_current_to_super_context(self):
 
         for current_context in self.current_typing_context:
             self.super_typing_context.append(current_context)
-            #self.super_type_context_var.append(self.type_context_var[i])
-            #self.super_type_context_type.append(self.type_context_type[i])
         
         self.current_typing_context.clear()
-        #self.type_context_var.clear()
-        #self.type_context_type.clear()
     
     def set_valid_typing(self,result):
         if self.valid_typing == True:

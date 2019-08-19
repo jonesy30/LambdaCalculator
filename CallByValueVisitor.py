@@ -18,11 +18,6 @@ class CallByValueVisitor(BaseVisitor):
 
         self.super_typing_context = []
         self.current_typing_context = []
-        #self.super_type_context_var = []
-        #self.super_type_context_type = []
-
-        #self.type_context_var = []
-        #self.type_context_type = []
     
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
@@ -35,7 +30,6 @@ class CallByValueVisitor(BaseVisitor):
 
         #Visit the first child, then visit the second
         #NOTE: To convert to call-by-name, I need to get the text of child 1, and then evaluate the abstraction with the unprocessed textual version of child 1
-        #Then I need to get the abstraction to create a tree of the result of itself (before or after alpha conversion?) which it will then visit and process
         returned_child = self.visit(ctx.getChild(0))
         self.send_current_to_super_context()
 
@@ -45,8 +39,6 @@ class CallByValueVisitor(BaseVisitor):
         input_type = None
         if len(returned_child) == 3:
             input_type = returned_child[2]
-
-        print("Function type in application = "+str(function_type))
 
         expression,expression_type = self.visit(ctx.getChild(1))
 
@@ -87,8 +79,6 @@ class CallByValueVisitor(BaseVisitor):
 
         #At each abstraction, if the bound variable is repeated then change all other instances of this in the list to avoid conflicts
         bound_variable = ctx.getChild(0).getChild(1).getChild(0).getText()
-        print("Bound variable? = "+str(bound_variable))
-        print("Type context var = "+str(self.current_typing_context))
 
         variable_contexts = []
         for context in self.current_typing_context:
@@ -98,11 +88,9 @@ class CallByValueVisitor(BaseVisitor):
         #while context_log in self.current_typing_context:
         while context_log in variable_contexts:
             context_log = context_log + "*"
-        print("Context log = "+context_log)
 
         #if bound_variable in self.current_typing_context:
         if bound_variable in variable_contexts:
-            #index = self.current_typing_context.index(bound_variable)
             index = variable_contexts.index(bound_variable)
             self.current_typing_context[index].set_variable(context_log)   
 
