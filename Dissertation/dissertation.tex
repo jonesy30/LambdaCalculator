@@ -25,16 +25,55 @@
 %\titlespacing*{name=\chapter}{0pt}{40pt}{10pt}
 
 \begin{document}
-\title{Writing a Program to Evaluate Lambda Expressions}
-\author{Yola Jones}
-\date{\today}
-\maketitle
+\begin{titlepage}
+	\centering
+	\includegraphics[scale=0.9]{images/cslogo.png} % also works with logo.pdf
+	\vfill
+	{\bfseries\Huge
+		Building a Lambda Expression Evaluator as a Learning Support Tool\\
+	}
+	\vskip2cm
+	{\huge
+		Yola Jones\\
+	}
+	{\LARGE
+		\vskip0.5cm
+		2409217J\\
+		\vskip0.75cm
+		Supervisor: Ornela Dardha
+	}
+	\vskip2cm
+	{\Large
+		September 2019\\
+		\vskip1cm
+		A dissertation presented in part fulfilment of the requirements of the degree of MSc in Software Development at the University of Glasgow
+	}  
+	\vfill
+	
+	
+%\centering
+%\includegraphics[scale=0.75]{images/cslogo.png}
+%\title{Building a Lambda Expression Evaluator as a Learning Support Tool}
+%\author{Yola Jones (2409217J)}
+%\date{\today}
+\end{titlepage}
+\thispagestyle{empty}
+\begin{abstract}
+This dissertation describes the design, implementation and evaluation of a lambda calculus expression evaluator built using ANTLR and contained within a web interface, designed as support material for the Theory of Computation course at the University of Glasgow. This dissertation discusses in detail the relevant sections of lambda calculus as covered on the course, then discusses the process of using Abstract Syntax Trees to examine the structure of a term based on a particular syntax, which can then be used to parse and evaluate input expressions. The approach taken to evaluation using ANTLR has also been discussed in detail, before giving a summary of testing done and evidence to support the statement that the goals of the project have been met.
+\end{abstract}
+\newpage
+\addtocontents{toc}{\protect\thispagestyle{empty}}
+\tableofcontents
+\newpage
+
+%\maketitle
 
 %
 % 	WHAT TENSE IS THIS
 %
 \renewcommand{\cleardoublepage}{}
 \renewcommand{\clearpage}{}
+\setcounter{page}{1}
 \chapter{Introduction}
 Lambda calculus is often reported as being the worlds smallest programming language \cite{Michaelson2011} expressing terms as mathematical functions which can represent any computable problem \cite{Selinger2013}. Students on the Theory of Computation course taught at The University of Glasgow learn lambda calculus to give them an understanding of functional programming and other programming paradigms \cite{CourseSpecification}.\\
 
@@ -103,7 +142,7 @@ A formal method for evaluating lambda terms is known as a reduction, of which th
 
 \subsubsection{Beta Reduction}
 
-Following alpha conversion, beta reduction is ready to be performed abiding by the Barendregt Convention. A definition is first needed which states when a lambda term has reached its simplest form and can be evaluated no further. This is known as the Normal Form of a lambda term \cite{Barendregt2000}, and is defined as a term which has no subterms of the form $(\lambda x.M)N$ \cite{Hankin2004}. As previously stated, beta reduction is the process of finding the result from the application of a function, and can be performed by following a number of rules \cite{Gay2019}.
+Following alpha conversion, beta reduction is ready to be performed abiding by the Barendregt Convention. A definition is first needed which states when a lambda term has reached its simplest form and can be evaluated no further. This is known as the Normal Form of a lambda term \cite{Barendregt2000}, and is defined as a term with no beta-redex \cite{Hudak2008} or which contains no subterms of the form $(\lambda x.M)N$ \cite{Hankin2004}. As previously stated, beta reduction is the process of finding the result from the application of a function, and can be performed by following a number of rules \cite{Gay2019}.
 
 \begin{enumerate}
 	\item $(\lambda x.M)N = [N / x]M$
@@ -208,9 +247,9 @@ The idea behind this is to turn a sequence of character strings (the surface syn
 \end{figure}
 
 
-\subsection{Antlr}
+\subsection{ANTLR}
 
-One such tool which can help represent the structure of a term based on a particular grammar is Antlr. Antlr is a parsing tool which is used to build and explore syntax trees from character strings. It has a lexer to generate tokens, and has a parser to turn this stream of tokens into an abstract syntax tree which can then be evaluated using either a listener or a visitor \cite{Parr2012}. It has been used in a wide variety of contexts, including Twitter (for query parsing) and the NetBeans IDE (for parsing C++). %[is this enough of an explanation of antlr?]
+One such tool which can help represent the structure of a term based on a particular grammar is ANTLR. ANTLR is a parsing tool which is used to build and explore syntax trees from character strings. It has a lexer to generate tokens, and has a parser to turn this stream of tokens into an abstract syntax tree which can then be evaluated using either a listener or a visitor \cite{Parr2012}. It has been used in a wide variety of contexts, including Twitter (for query parsing) and the NetBeans IDE (for parsing C++). %[is this enough of an explanation of ANTLR?]
 
 \section{Interface}
 
@@ -222,11 +261,11 @@ From the background and analysis discussed above, a set of key aims and objectiv
 The program will include:
 
 \begin{itemize}
-	\item Must Have: The ability to evaluate the validity of lambda calculus terms, so students can enter terms and check whether or not they are valid. This will be done by turning the user input lambda term into an Abstract Syntax Tree using Antlr
+	\item Must Have: The ability to evaluate the validity of lambda calculus terms, so students can enter terms and check whether or not they are valid. This will be done by turning the user input lambda term into an Abstract Syntax Tree using ANTLR
 	\item Must have: Applied lambda calculus, to allow the input of expressions
-	\item Must have: The ability to alpha convert these terms, to help students understand alpha conversion and equivalence. This will be done by navigating the abstract syntax tree generated by Antlr
+	\item Must have: The ability to alpha convert these terms, to help students understand alpha conversion and equivalence. This will be done by navigating the abstract syntax tree generated by ANTLR
 	\item Must have: Which will be contained in a web interface to allow users to use the tool easily
-	\item Should have: Using beta reduction to evaluate terms to normal form to help students understand beta reduction. This will also be done by navigating the abstract syntax tree generated by Antlr
+	\item Should have: Using beta reduction to evaluate terms to normal form to help students understand beta reduction. This will also be done by navigating the abstract syntax tree generated by ANTLR
 	\item Should have: Which includes types, to help students understand types and typing rules
 	\item Could have: Which offers different reduction strategies, to give students the option to understand call by value/call by need evaluation
 	\item Would like to have: Which performs type inference to determine the output type of a lambda term
@@ -238,7 +277,7 @@ The program will include:
 
 The overall program is split into a number of distinct elements, all of which are based on the fundamental rules of Lambda Calculus as defined in previous sections.\\
 
-Firstly, a grammar is written which defines the syntax of lambda terms and allows a term to be broken down into individual tokens. Antlr uses this grammar to process lambda terms, creating an Abstract Syntax Tree for each incoming expression \cite{Parr2012}, a process which has been well documented and therefore will not need to be rewritten. A tree traversal mechanism is the main section of code which navigates the abstract syntax tree and performs operations to determine the resultant expression. This is the section of code which will perform the evaluation, and therefore needs to be designed accurately, with the rules of beta reduction and lambda calculus in mind. A web interface is used to house this program, giving the user a simple and convenient way to interact with the underlying system.\\
+Firstly, a grammar is written which defines the syntax of lambda terms and allows a term to be broken down into individual tokens. ANTLR uses this grammar to process lambda terms, creating an Abstract Syntax Tree for each incoming expression \cite{Parr2012}, a process which has been well documented and therefore will not need to be rewritten. A tree traversal mechanism is the main section of code which navigates the abstract syntax tree and performs operations to determine the resultant expression. This is the section of code which will perform the evaluation, and therefore needs to be designed accurately, with the rules of beta reduction and lambda calculus in mind. A web interface is used to house this program, giving the user a simple and convenient way to interact with the underlying system.\\
 
 The relevant sections have been discussed below, detailing design and key decisions which needed to be made before implementation began. %WHAT TENSE IS THIS
 
@@ -259,16 +298,16 @@ With the addition of types, the grammar adds the option of a \texttt{:[type]} te
 
 The fundamental component of this evaluator is a tree traversal, which navigates through the token nodes and performs different operations depending on the type of node encountered. Abstractions will take an incoming value if one exists, and substitute it into the body of the abstraction. This allows an evaluated expression to be built up, and a result determined.\\
 
-Antlr provides two mechanisms for traversing an abstract syntax tree: listeners and visitors. A listener is a passive way of evaluating a syntax tree, used within an antlr Walker class which traverses the tree using a depth-first approach, triggering methods from the listener as it enters and exits each token \cite{Parr2012}. These listener methods are unable to return values, so expressions and evaluations have to be handled using separate objects within the listener class. As the walker traverses the tree, the listener builds up a running evaluation of the term, returning the result when it exits the topmost node \cite{Srivastav2017}.\\
+ANTLR provides two mechanisms for traversing an abstract syntax tree: listeners and visitors. A listener is a passive way of evaluating a syntax tree, used within an ANTLR Walker class which traverses the tree using a depth-first approach, triggering methods from the listener as it enters and exits each token \cite{Parr2012}. These listener methods are unable to return values, so expressions and evaluations have to be handled using separate objects within the listener class. As the walker traverses the tree, the listener builds up a running evaluation of the term, returning the result when it exits the topmost node \cite{Srivastav2017}.\\
 
 Unlike listeners, visitors control their own traversal of the tree. By visiting the children of each node encountered explicitly, the path they take around the tree can be controlled \cite{Parr2012}. Visitors also allow custom return types, meaning nodes can return their resultant expressions directly to their parent node and do not have to rely on separate objects \cite{Srivastav2017}.\\
 
 With beta reduction, different methods take different approaches to evaluating terms. In an application MN using a call-by-value approach, N is evaluated before M. In a call-by-need approach, N is passed into M before being evaluated. This means that depending on the type of reduction selected, the evaluator will have to traverse the tree in a different order, suggesting visitor over listener is more appropriate for this task. Furthermore, visitor methods being able to return values directly to their parents as opposed to relying on separate objects will support evaluation happening as the tree is being visited, due to the large amount of data being passed around the tree.\\
 
 %Note to self: what tense is this section?
-The visitor therefore was the main code written in this project. An Antlr generated parser is passed to a custom visitor interface. Different visitors are defined for each of the beta-reduction strategies being implemented, since each method takes a different approach to evaluating expressions.\\
+The visitor therefore was the main code written in this project. An ANTLR generated parser is passed to a custom visitor interface. Different visitors are defined for each of the beta-reduction strategies being implemented, since each method takes a different approach to evaluating expressions.\\
 
-The visitor should return three separate items upon returning to the topmost node: the evaluated value of the input lambda term, whether or not the term is typable, and what type the expression will be. It will also return details of any errors where applicable, for example syntax errors which Antlr is unable to parse, or cases where the normal form of a lambda term does not exist.
+The visitor should return three separate items upon returning to the topmost node: the evaluated value of the input lambda term, whether or not the term is typable, and what type the expression will be. It will also return details of any errors where applicable, for example syntax errors which ANTLR is unable to parse, or cases where the normal form of a lambda term does not exist.
 
 \subsection{Web Interface}
 
@@ -278,11 +317,11 @@ The code running the interface and the underlying evaluation code will be kept a
 
 \section{Implementation}
 
-Despite the examples in the Antlr Reference Guide \cite{Parr2012} all being written in Java, Python was chosen as the main language for this project. Antlr offers support for Java and Python, both of which are regularly listed in the top three programming languages being used in industry from various sources \cite{ProgLang1}\cite{ProgLang2}\cite{ProgLang3}. Since the MSc Software Development course which this dissertation is being written for teaches only Java, Python was chosen in order to expand the number of programming languages encountered throughout the course. Therefore the majority of the code for this project will be written in Python, with HTML being used for the web interface.
+Despite the examples in the ANTLR Reference Guide \cite{Parr2012} all being written in Java, Python was chosen as the main language for this project. ANTLR offers support for Java and Python, both of which are regularly listed in the top three programming languages being used in industry from various sources \cite{ProgLang1}\cite{ProgLang2}\cite{ProgLang3}. Since the MSc Software Development course which this dissertation is being written for teaches only Java, Python was chosen in order to expand the number of programming languages encountered throughout the course. Therefore the majority of the code for this project will be written in Python, with HTML being used for the web interface.
 
 \subsection{Grammar}
 
-Antlr requires that the grammar of a language is contained in a .g4 file which defines the parser and lexer rules for lambda calculus in this case. A section of the grammar is shown in Figure \ref{parser_rules}, and indicates the parser rules for some of the token nodes, alongside the lexer rules which are shown in Figure \ref{lexer_rules}. This grammar is consistent with the syntax defined in the background section of this report, with slight modifications such as the addition of parentheses and an explicit definition for boolean and integer values.
+ANTLR requires that the grammar of a language is contained in a .g4 file which defines the parser and lexer rules for lambda calculus in this case. A section of the grammar is shown in Figure \ref{parser_rules}, and indicates the parser rules for some of the token nodes, alongside the lexer rules which are shown in Figure \ref{lexer_rules}. This grammar is consistent with the syntax defined in the background section of this report, with slight modifications such as the addition of parentheses and an explicit definition for boolean and integer values.
 
 \begin{figure}[p]
 \centering
@@ -300,7 +339,7 @@ Antlr requires that the grammar of a language is contained in a .g4 file which d
 
 \subsection{Abstract Syntax Tree}
 
-Having defined a grammar, Antlr can then be used to create an abstract syntax tree, which can be seen for an example term in Figure \ref{abstract_syntax_tree_example}. This is very simple to do using Antlr libraries, and involves passing the input term through a number of classes before passing the result through a parser which turns the tokens into an abstract syntax tree \cite{Tomassetti2007}. The lexer and parser are created by Antlr when the grammar file is compiled, resulting in a syntax tree which processes terms based only on the syntax of the defined language.\\
+Having defined a grammar, ANTLR can then be used to create an abstract syntax tree, which can be seen for an example term in Figure \ref{abstract_syntax_tree_example}. This is very simple to do using ANTLR libraries, and involves passing the input term through a number of classes before passing the result through a parser which turns the tokens into an abstract syntax tree \cite{Tomassetti2007}. The lexer and parser are created by ANTLR when the grammar file is compiled, resulting in a syntax tree which processes terms based only on the syntax of the defined language.\\
 
 The process of creating a tree from the grammar and an incoming term is well documented, and so no modifications need to be made, with the exception of attaching a custom Error Listener to both the lexer and parser, as expanded on later on in this Implementation section.
 
@@ -386,9 +425,9 @@ Each visit method in the visitor returns an evaluated result and a type, which i
 However, during this process, there are a number of occurrences which could stop the program from being able to return a final result. These are broken down into two key issues: syntax errors and occurrences where a term doesn't have a normal form (and therefore cannot be evaluated to termination). These have been summarised below.\\
 
 \textit{Syntax Errors}\\
-Lambda terms often include nested parentheses. It is easy for a user to mismatch brackets, such as forgetting to close an open bracket. Because of this, before the term is passed to antlr, the code checks to ensure brackets are matched correctly, and if not, returns an error to the user informing them of the issue and asking them to re-enter.
+Lambda terms often include nested parentheses. It is easy for a user to mismatch brackets, such as forgetting to close an open bracket. Because of this, before the term is passed to ANTLR, the code checks to ensure brackets are matched correctly, and if not, returns an error to the user informing them of the issue and asking them to re-enter.
 
-Aside from this, syntax errors specific to lambda calculus are likely to occur which cannot be picked up until the term is passed through a lexer. To handle this, Antlr's ErrorListener class is overridden, instead throwing a custom SyntaxTokenError exception which can be caught by the program and passed back to the user.\\
+Aside from this, syntax errors specific to lambda calculus are likely to occur which cannot be picked up until the term is passed through a lexer. To handle this, ANTLR's ErrorListener class is overridden, instead throwing a custom SyntaxTokenError exception which can be caught by the program and passed back to the user.\\
 
 \textit{Recursion Errors}\\
 Recursion errors are thrown in Python when a maximum stack depth is reached in order to protect Python from crashing \cite{PythonStack2019}. This is the exception which is thrown when a lambda term has no normal form, as the code keeps trying to evaluate the term before eventually throwing a RecursionError.

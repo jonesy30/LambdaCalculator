@@ -423,6 +423,31 @@
     \field{urlyear}{2019}
   \endentry
 
+  \entry{Hudak2008}{online}{}
+    \name{author}{1}{}{%
+      {{hash=HP}{%
+         family={Hudak},
+         familyi={H\bibinitperiod},
+         given={Paul},
+         giveni={P\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{HP1}
+    \strng{fullhash}{HP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{title}{A Brief and Informal Introduction to the Lambda Calculus}
+    \verb{url}
+    \verb http://www.cs.yale.edu/homes/hudak/CS201S08/lambda.pdf
+    \endverb
+    \field{year}{2008}
+    \field{urlday}{20}
+    \field{urlmonth}{08}
+    \field{urlyear}{2019}
+  \endentry
+
   \entry{Kamareddine2000}{online}{}
     \name{author}{1}{}{%
       {{hash=KF}{%
@@ -657,29 +682,6 @@
     \field{urlday}{28}
     \field{urlmonth}{07}
     \field{urlyear}{2019}
-  \endentry
-
-  \entry{Scott2016}{book}{}
-    \name{author}{1}{}{%
-      {{hash=SML}{%
-         family={Scott},
-         familyi={S\bibinitperiod},
-         given={Michael\bibnamedelima L.},
-         giveni={M\bibinitperiod\bibinitdelim L\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Morgan Kaufmann Publishers}%
-    }
-    \strng{namehash}{SML1}
-    \strng{fullhash}{SML1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{sortinit}{S}
-    \field{sortinithash}{S}
-    \field{edition}{4}
-    \field{title}{Programming Language Pragmatics}
-    \field{year}{2016}
   \endentry
 
   \entry{Selinger2013}{online}{}

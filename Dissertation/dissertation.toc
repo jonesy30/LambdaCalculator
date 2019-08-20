@@ -1,0 +1,83 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\thispagestyle {empty}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {1}Introduction}{1}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {2}Background}{2}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.1}Lambda Calculus}{2}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1.1}Basic Principles}{2}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1.2}Alpha Conversion}{3}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1.3}Reduction}{3}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Beta Reduction}{3}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1.4}Typing Rules}{4}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Type Inference}{5}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {3}Analysis}{5}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.1}Lambda Calculus}{6}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.2}Abstract Syntax}{6}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2.1}ANTLR}{8}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.3}Interface}{8}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {4}Aims and Objectives}{8}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {5}Design and Implementation}{9}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.1}Design}{9}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.1.1}Grammar}{9}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.1.2}Expression Evaluator}{10}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.1.3}Web Interface}{10}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.2}Implementation}{11}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.2.1}Grammar}{11}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.2.2}Abstract Syntax Tree}{11}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.2.3}Expression Evaluator}{11}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Alpha Conversion}{13}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Beta Reduction}{13}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Typing Rules}{13}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Error Handling}{15}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Web Interface}{16}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {6}Testing}{16}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.1}Accuracy of Lambda Term Evaluation}{16}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.2}Interface Usefulness and Usability}{20}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.2.1}Testing}{20}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.2.2}Results}{20}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {7}Evaluation}{21}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.1}Accurately Evaluating Lambda Terms}{21}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {7.1.1}Limitations}{22}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.2}Improving Student Understanding}{22}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.3}Future Work}{22}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {8}Conclusion}{23}% 
