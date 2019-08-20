@@ -10,6 +10,7 @@ if __name__ is not None and "." in __name__:
 else:
     from LambdaCalculusParser import LambdaCalculusParser
     from LambdaCalculusLexer import LambdaCalculusLexer
+from LambdaSessionInformationObject import LambdaSessionInformationObject
 import re
 
 class BaseVisitor(LambdaCalculusVisitor):
@@ -19,8 +20,7 @@ class BaseVisitor(LambdaCalculusVisitor):
         self.final_result = ""
 
     def __del__(self):
-        self.beta_reduction_writer.write_to_file("Final result = "+str(self.final_result))
-        self.beta_reduction_writer.close_file()
+        self.session_object.add_beta_step("Final result = "+str(self.final_result))
     
     # Visit a parse tree produced by LambdaCalculusParser#term.
     def visitTerm(self, ctx:LambdaCalculusParser.TermContext):
@@ -40,7 +40,7 @@ class BaseVisitor(LambdaCalculusVisitor):
             self.send_current_to_super_context()
 
             self.post_process_contexts()
-            self.write_context_to_file()
+            self.send_context_to_session()
 
             self.final_result = output
             return output,return_type,self.valid_typing
@@ -349,28 +349,28 @@ class BaseVisitor(LambdaCalculusVisitor):
                                     break
                         end_value = i
                         function = calculate_alpha(to_substitute, function, incoming, 0, end_value)
-                        self.beta_reduction_writer.write_to_file("Alpha converting, function is now "+str(function))
+                        self.session_object.add_beta_step("Alpha converting, function is now "+str(function))
                     #If there is not more than one of the same bound variable detected, just alpha convert as normal
                     else:
                         function = calculate_alpha(to_substitute, function, incoming)
-                        self.beta_reduction_writer.write_to_file("Alpha converting, function is now "+str(function))
+                        self.session_object.add_beta_step("Alpha converting, function is now "+str(function))
                 #If there are no bound variables inside the string found, alpha convert as normal
                 else:
                     function = calculate_alpha(to_substitute, function, incoming)
-                    self.beta_reduction_writer.write_to_file("Alpha converting, function is now "+str(function))
+                    self.session_object.add_beta_step("Alpha converting, function is now "+str(function))
 
                 #Replace the bound variable with the new incoming value up until the end point (the point where there's bound variable crossover)
                 new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
-                self.beta_reduction_writer.write_to_file("Replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
+                self.session_object.add_beta_step("Replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
 
             #If there are no other lambda terms found within the current lambda term
             else:
                 #Calculate the alpha reduction as normal
                 new_function = calculate_alpha(to_substitute, function, incoming)
-                self.beta_reduction_writer.write_to_file("Alpha converting, function is now "+str(function))
+                self.session_object.add_beta_step("Alpha converting, function is now "+str(function))
                 #Replace the bound variable with the new incoming value
                 new_function = new_function.replace(to_substitute,incoming)
-                self.beta_reduction_writer.write_to_file("Replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
+                self.session_object.add_beta_step("Replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
 
             #Check valid/invalid type by comparing the incoming type to the bound variable type
             if to_substitute_type is not None:
@@ -496,17 +496,9 @@ class BaseVisitor(LambdaCalculusVisitor):
         def set_variable(self,value):
             self.variable = value
             
-    def write_context_to_file(self):
-        file = open("app/static/typing_context.txt","w+")
-        file.write("Typing Context\n\r")
+    def send_context_to_session(self):
+        write_string = ""
         for context in self.super_typing_context:
-            write_string = "" + context.get_variable() + ": " + context.get_variable_type() + "\r\n"
-            file.write(write_string)
+            write_string = write_string + "" + context.get_variable() + ": " + context.get_variable_type() + "<br>"
         
-        file.write("\n\r")
-        explanation_string = "Note: Some variables may have duplicate types, this is because the variable refers to different objects in the expression."
-        explanation_string = explanation_string + " For example, in the expression ([lambda]x:bool.x & [lambda]x:int.x+1), the two x's are unconnected, and therefore in this term"
-        explanation_string = explanation_string + " x has both type int AND type bool"
-        file.write(explanation_string)
-        
-        file.close()
+        self.session_object.set_typing_context(write_string)

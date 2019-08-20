@@ -1,4 +1,3 @@
-Typing Context
-x: int
+x: int
 
-Note: Some variables may have duplicate types, this is because the variable refers to different objects in the expression. For example, in the expression ([lambda]x:bool.x & [lambda]x:int.x+1), the two x's are unconnected, and therefore in this term x has both type int AND type bool
+

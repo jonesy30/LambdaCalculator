@@ -7,12 +7,12 @@ if __name__ is not None and "." in __name__:
 else:
     from LambdaCalculusParser import LambdaCalculusParser
 from BaseVisitor import BaseVisitor
-from BetaReductionFileWriter import BetaReductionFileWriter
+from LambdaSessionInformationObject import LambdaSessionInformationObject
 import re
 
 class CallByNameVisitor(BaseVisitor):
 
-    def __init__(self):
+    def __init__(self,session_object):
         super()
         self.incoming_values = Stack() #NOTE: This definitely needs renamed
         self.valid_typing = True
@@ -20,9 +20,9 @@ class CallByNameVisitor(BaseVisitor):
         self.super_typing_context = []
         self.current_typing_context = []
 
-        self.beta_reduction_writer = BetaReductionFileWriter()
+        self.session_object = session_object
 
-        self.beta_reduction_writer.write_to_file("Call by name visitor selected")
+        self.session_object.add_beta_step("Call by name visitor selected")
     
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
@@ -34,7 +34,7 @@ class CallByNameVisitor(BaseVisitor):
             return parenthesis_check
 
         #Visit the first child, then visit the second
-        self.beta_reduction_writer.write_to_file("In application "+ctx.getText()+", node "+ctx.getChild(0).getText()+" being processed")
+        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(0).getText()+" being processed")
         returned_child = self.visit(ctx.getChild(0))
         function = returned_child[0]
         function_type = returned_child[1]
@@ -43,7 +43,7 @@ class CallByNameVisitor(BaseVisitor):
         if len(returned_child) == 3:
             input_type = returned_child[2]
             
-        self.beta_reduction_writer.write_to_file("In application "+ctx.getText()+", node "+ctx.getChild(1).getText()+" being passed to "+str(function))
+        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(1).getText()+" being passed to "+str(function))
         expression = ctx.getChild(1).getText()
         expression_type = None
 

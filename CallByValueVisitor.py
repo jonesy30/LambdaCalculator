@@ -7,12 +7,12 @@ if __name__ is not None and "." in __name__:
 else:
     from LambdaCalculusParser import LambdaCalculusParser
 from BaseVisitor import BaseVisitor
-from BetaReductionFileWriter import BetaReductionFileWriter
+from LambdaSessionInformationObject import LambdaSessionInformationObject
 import re
 
 class CallByValueVisitor(BaseVisitor):
 
-    def __init__(self):
+    def __init__(self, session_object):
         super()
         self.incoming_values = Stack() #NOTE: This definitely needs renamed
         self.valid_typing = True
@@ -20,9 +20,9 @@ class CallByValueVisitor(BaseVisitor):
         self.super_typing_context = []
         self.current_typing_context = []
 
-        self.beta_reduction_writer = BetaReductionFileWriter()
+        self.session_object = session_object
 
-        self.beta_reduction_writer.write_to_file("Call by value visitor selected")
+        self.session_object.add_beta_step("Call by value visitor selected")
     
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
@@ -45,7 +45,7 @@ class CallByValueVisitor(BaseVisitor):
         if len(returned_child) == 3:
             input_type = returned_child[2]
 
-        self.beta_reduction_writer.write_to_file("In application "+ctx.getText()+", node "+ctx.getChild(1).getText()+" being processed")
+        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(1).getText()+" being processed")
         expression,expression_type = self.visit(ctx.getChild(1))
 
         #Get the tree created by the output of the left hand tree
@@ -58,7 +58,7 @@ class CallByValueVisitor(BaseVisitor):
 
         application_type = None
 
-        self.beta_reduction_writer.write_to_file("In application "+ctx.getText()+", node "+ctx.getChild(0).getText()+" being processed")
+        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(0).getText()+" being processed")
         #If the left hand tree is an abstraction - you're not done! Keep processing using the right hand side of the tree
         if isinstance(am_I_an_abstraction,LambdaCalculusParser.AbstractionContext):
             #Visit the left hand tree with the term created from the right hand side

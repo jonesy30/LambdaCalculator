@@ -1,8 +1,0 @@
-Beta Reduction Steps
-Call by name visitor selected
-In application (%x.x+1)3, node (%x.x+1) being processed
-In application (%x.x+1)3, node 3 being passed to (%x.x+1)
-Alpha converting, function is now x+1 
-Replacing x with 3 to get 3+1 
-Final result = (3+1)
-
