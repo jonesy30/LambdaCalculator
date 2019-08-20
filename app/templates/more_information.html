@@ -6,33 +6,33 @@
     </head>
     <div id="main-container"> 
         <h1>
-            <a href="/static/easter_egg/lambda.jpg" target="_blank"><font color="#d3d3d3">Lambda</font></a>
-            <a href="/static/easter_egg/calculus.jpg" target="_blank"><font color="#d3d3d3">Calculus</font></a>
-            <a href="/static/easter_egg/expression.jpg" target="_blank"><font color="#d3d3d3">Expression</font></a>
-            <a href="/static/easter_egg/evaluator.jpg" target="_blank"><font color="#d3d3d3">Evaluator</font></a>
+            <a href="/static/easter_egg/lambda.jpg" target="_blank"><span class="easter-egg">Lambda</span></a>
+            <a href="/static/easter_egg/calculus.jpg" target="_blank"><span class="easter-egg">Calculus</span></a>
+            <a href="/static/easter_egg/expression.jpg" target="_blank"><span class="easter-egg">Expression</span></a>
+            <a href="/static/easter_egg/evaluator.jpg" target="_blank"><span class="easter-egg">Evaluator</span></a>
         </h1>
-        <font size="+2">Input = {{input_lambda}}</font>
+        <span class="input-expression">Input = {{input_lambda}}</span>
         <br>
-        <font size="+1"><b>Typing Context</b></font>
-        <form action="/" id="type-form">
-        <div class=output-box>
+        <b class="sub-title">Typing Context</b>
+        <form action="/" class="type-form output-container">
+        <div class="output-box center-content">
             {{typing_context|safe}}
         </div>
         </form>
         <div id="information">
-        <center>Note: Some variables may have duplicate types, this is because the variable refers to different objects in the expression. 
+        <div class="center-content">Note: Some variables may have duplicate types, this is because the variable refers to different objects in the expression. 
         For example, in the expression (λx:bool.x & λx:int.x+1), the two x's are unconnected, and therefore in this term x has both type int AND type bool
-        </center>
+        </div>
         </div>
         <br>
-        <font size="+1"><b>Beta Reduction Details</b></font>
-        <form action="/" id="beta-form">
-        <div class=output-box>
+        <b class="sub-title">Beta Reduction Details</b>
+        <form action="/" class="beta-form output-container">
+        <div class="output-box">
             {{beta_reduction|safe}}
         </div>
         </form>
         <p></p>
-        <p><font color="#a6acaf">Spot an issue? Code can be found <a href="https://github.com/jonesy30/LambdaCalculator.git">here</a></font></p>
+        <p class="spot-an-issue">Spot an issue? Code can be found <a href="https://github.com/jonesy30/LambdaCalculator.git">here</a></p>
     </div>
 </html>
 
@@ -43,26 +43,37 @@
         background-size: 800px 600px;
         color: lightgray;
     }
+
+    .center-content{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
     .output-box{
-        width:100%;
-        height:100%;
+        width: 100%;
+        height: 100%;
         text-align: center;
         color: white;
         overflow-x: hidden; 
         overflow-x: auto; 
     }
+
     #evaluation-method-control{
         height:20%;
     }
+
     #information{
         width:75%;
     }
+
     #input-box{
         width: 100%;
         height: 20%;
         text-align: center;
         background-color: rgba(255,255,255,0.7);
-    } 
+    }
+
     #main-container {
         height:90%;
         display: flex;
@@ -70,19 +81,18 @@
         justify-content: center;
         flex-direction: column;
     }
-    #type-form {
+
+    .type-form {
         width:75%;
-        height:40%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: solid 1px lightgray;
-        border-radius: 5px;
-        background-color: rgba(255,255,255,0.2);
+        height:20%;
     }
-    #beta-form {
+
+    .beta-form {
         width:75%;
         height:80%;
+    }
+
+    .output-container{
         display: flex;
         align-items: center;
         justify-content: center;
@@ -90,14 +100,38 @@
         border-radius: 5px;
         background-color: rgba(255,255,255,0.2);
     }
+
     #confirm-button{
         width:100%;
     }
+
     #instructions {
         text-align:center;
     }
+
     #evaluation-method {
         text-align:center;
+    }
+
+    .easter-egg {
+        color: #d3d3d3;
+        text-decoration-color: #d3d3d3;
+    }
+
+    .easter-egg:hover {
+        text-decoration: underline;
+    }
+
+    .spot-an-issue {
+        color: #a6acaf;
+    }
+
+    .sub-title {
+        font-size: 22px;
+    }
+
+    .input-expression {
+        font-size: 24px;
     }
 
 </style>

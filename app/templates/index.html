@@ -6,17 +6,17 @@
     </head>
     <div id="main-container"> 
         <h1>
-            <a href="/static/easter_egg/lambda.jpg" target="_blank"><font color="#d3d3d3">Lambda</font></a>
-            <a href="/static/easter_egg/calculus.jpg" target="_blank"><font color="#d3d3d3">Calculus</font></a>
-            <a href="/static/easter_egg/expression.jpg" target="_blank"><font color="#d3d3d3">Expression</font></a>
-            <a href="/static/easter_egg/evaluator.jpg" target="_blank"><font color="#d3d3d3">Evaluator</font></a>
+            <a href="/static/easter_egg/lambda.jpg" target="_blank"><span class="easter-egg">Lambda</span></a>
+            <a href="/static/easter_egg/calculus.jpg" target="_blank"><span class="easter-egg">Calculus</span></a>
+            <a href="/static/easter_egg/expression.jpg" target="_blank"><span class="easter-egg">Expression</span></a>
+            <a href="/static/easter_egg/evaluator.jpg" target="_blank"><span class="easter-egg">Evaluator</span></a>
         </h1>
         <div id="instructions">
             <p>Enter the term in the box below, the result will tell you the output, whether it is typable and what type it should be</p>
             <p>To enter &lambda;, type % </p>
             <p>Types can also be entered for any variable, in the form x:type <i>(bool, int and none types allowed)</i></p>
         </div>
-        <form action="/" method="post" id="expression-form" autocomplete="off">
+        <form action="/" method="post" id="expression-form">
             <input name="input-box" id="input-box" onkeydown="replaceLambda(event)" placeholder="Enter expression here" class="form-control"></input>
             <div id="evaluation-method-control">
                 <b>Evaluation Method:</b>
@@ -38,10 +38,10 @@
                 {{result|safe}}
             </div>
         </form>
-        <p><font size="-1">Note: this program only allows single input abstractions. To enter a multi-input abstractions, nest them. So λxy.xy becomes λx.λy.xy</font></p>
-        <p><font size="-1">Need more information? Have a look at the <a href="/static/User_Guide.txt" target="_blank">User Guide</a> for a list of commands and operations</font></p>
+        <p class="note">Note: this program only allows single input abstractions. To enter a multi-input abstractions, nest them. So λxy.xy becomes λx.λy.xy</p>
+        <p class="note">Need more information? Have a look at the <a href="/static/User_Guide.txt" target="_blank">User Guide</a> for a list of commands and operations</p>
         <p></p>
-        <p><font color="#a6acaf">Spot an issue? Code can be found <a href="https://github.com/jonesy30/LambdaCalculator.git">here</a></font></p>
+        <p class="spot-an-issue">Spot an issue? Code can be found <a href="https://github.com/jonesy30/LambdaCalculator.git">here</a></p>
     </div>
 </html>
 
@@ -121,6 +121,32 @@
     }
     #evaluation-method {
         text-align:center;
+    }
+
+    .easter-egg {
+        color: #d3d3d3;
+        text-decoration-color: #d3d3d3;
+    }
+
+    .easter-egg:hover {
+        text-decoration: underline;
+    }
+
+    .spot-an-issue {
+        color: #a6acaf;
+    }
+
+    .note {
+        font-size: 15px;
+    }
+
+    .pale-link {
+        color: #99ccff;
+        text-decoration-color: #99ccff;
+    }
+
+    .pale-link:hover {
+        text-decoration: underline;
     }
 
 </style>

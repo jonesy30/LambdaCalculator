@@ -20,18 +20,6 @@ def index():
 
 @app.route('/more_information', methods=['GET','POST'])
 def more_information():
-    # typing_context = ""
-
-    # f_typing = open('app/static/typing_context.txt','r')
-    # typing_context_list = f_typing.readlines()
-    # for line in typing_context_list:
-    #     typing_context = typing_context + "<p style=\"margin-bottom : 4px;\">" + line + "</p>"
-    
-    # beta_details = ""
-    # f_beta = open('app/static/beta_reduction.txt','r')
-    # beta_reduction_list = f_beta.readlines()
-    # for line in beta_reduction_list:
-    #     beta_details = beta_details + "<p style=\"margin-bottom : 4px;\">" + line + "</p>"
 
     input_lambda = session['input']
     typing_context = session['typing_context']

@@ -120,13 +120,13 @@ def web_interface(expression, evaluate_selection):
         output_string = "Result = "+str(result)
         if result != arithmetically_reduced:
             output_string = output_string + " = "+str(arithmetically_reduced)+" by arithmetic reduction"
-        output_string = output_string + " <a href=\"/more_information\" target=\"_blank\"><font color=\"#99ccff\">(click here for evaluation details)</font></a>"
+        output_string = output_string + " <a href=\"/more_information\" target=\"_blank\"><span class=\"pale-link\">(click here for evaluation details)</span></a>"
         output_string = output_string + "<br>Valid typing = "+str(valid_type)
         if valid_type == False or valid_type == "False":
             output_string = output_string+"<br>"
             return output_string,session_object.get_typing_context(),session_object.get_beta_steps()
         else:
-            output_string = output_string + " under typing context <a href=\"/more_information\" target=\"_blank\"><font color=\"#99ccff\">(click here)</font></a><br>"
+            output_string = output_string + " under typing context <a href=\"/more_information\" target=\"_blank\"><span class=\"pale-link\">(click here)</span></a><br>"
             output_string = output_string + "Type returned = "+str(return_type)+"<br>"
             return output_string,session_object.get_typing_context(),session_object.get_beta_steps()
 

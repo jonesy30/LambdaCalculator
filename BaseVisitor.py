@@ -499,6 +499,6 @@ class BaseVisitor(LambdaCalculusVisitor):
     def send_context_to_session(self):
         write_string = ""
         for context in self.super_typing_context:
-            write_string = write_string + "" + context.get_variable() + ": " + context.get_variable_type() + "<br>"
+            write_string = write_string + "" + context.get_variable() + ": " + context.get_variable_type() + "&ensp;&ensp;&ensp;"
         
         self.session_object.set_typing_context(write_string)
