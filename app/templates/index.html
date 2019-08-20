@@ -19,7 +19,7 @@
         <form action="/" method="post" id="expression-form">
             <input name="input-box" id="input-box" onkeydown="replaceLambda(event)" placeholder="Enter expression here" class="form-control"></input>
             <div id="evaluation-method-control">
-                <b>Evaluation Method:</b>
+                <b>Evaluation Method:&ensp;</b>
                 <div class="custom-control custom-radio custom-control-inline" data-toggle="buttons">
                     <input type="radio" name="evaluation-selection" class="custom-control-input" id="v" value="v" name="Evaluation Type">
                     <label class="custom-control-label" for="v">Call By Value (applicative order)</label>
@@ -88,6 +88,9 @@
     }
     #evaluation-method-control{
         height:20%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     #input-box{
         width: 100%;
@@ -96,7 +99,7 @@
         background-color: rgba(255,255,255,0.7);
     } 
     #main-container {
-        height:85%;
+        height:90%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -104,14 +107,14 @@
     }
     #expression-form {
         width:75%;
-        height:60%;
+        height:80%;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
         border: solid 1px lightgray;
         border-radius: 5px;
-        background-color: rgba(255,255,255,0.2);
+        background-color: rgba(255,255,255,0.1);
     }
     #confirm-button{
         width:100%;

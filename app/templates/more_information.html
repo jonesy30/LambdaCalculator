@@ -14,23 +14,17 @@
         <span class="input-expression">Input = {{input_lambda}}</span>
         <br>
         <b class="sub-title">Typing Context</b>
-        <form action="/" class="type-form output-container">
-        <div class="output-box center-content">
+        <div class="type-output output-container">
             {{typing_context|safe}}
         </div>
-        </form>
-        <div id="information">
-        <div class="center-content">Note: Some variables may have duplicate types, this is because the variable refers to different objects in the expression. 
+        <div id="information" class="center-content">Note: Some variables may have duplicate types, this is because the variable refers to different objects in the expression. 
         For example, in the expression (λx:bool.x & λx:int.x+1), the two x's are unconnected, and therefore in this term x has both type int AND type bool
-        </div>
         </div>
         <br>
         <b class="sub-title">Beta Reduction Details</b>
-        <form action="/" class="beta-form output-container">
-        <div class="output-box">
+        <div class="beta-output output-container">
             {{beta_reduction|safe}}
         </div>
-        </form>
         <p></p>
         <p class="spot-an-issue">Spot an issue? Code can be found <a href="https://github.com/jonesy30/LambdaCalculator.git">here</a></p>
     </div>
@@ -50,13 +44,16 @@
         align-items: center;
     }
 
-    .output-box{
-        width: 100%;
-        height: 100%;
+    .output-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: solid 1px lightgray;
+        border-radius: 5px;
+        background-color: rgba(255,255,255,0.2);
         text-align: center;
-        color: white;
-        overflow-x: hidden; 
-        overflow-x: auto; 
+        overflow-x: hidden;
+        overflow-x: auto;
     }
 
     #evaluation-method-control{
@@ -82,23 +79,14 @@
         flex-direction: column;
     }
 
-    .type-form {
+    .type-output {
         width:75%;
         height:20%;
     }
 
-    .beta-form {
+    .beta-output {
         width:75%;
-        height:80%;
-    }
-
-    .output-container{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: solid 1px lightgray;
-        border-radius: 5px;
-        background-color: rgba(255,255,255,0.2);
+        height:70%;
     }
 
     #confirm-button{
