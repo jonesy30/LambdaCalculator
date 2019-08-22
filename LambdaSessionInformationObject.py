@@ -1,14 +1,15 @@
 class LambdaSessionInformationObject():
     def __init__(self):
         self.input_term = ""
-        self.typing_context = ""
+        self.typing_context = "no context for this term"
         self.beta_steps = ""
 
     def set_input_term(self, input_term):
         self.input_term = input_term
     
     def set_typing_context(self, typing_context):
-        self.typing_context = typing_context
+        if typing_context != "":
+            self.typing_context = typing_context
     
     def add_beta_step(self, beta_step):
         beta_step = self.process_term(beta_step)

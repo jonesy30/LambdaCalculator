@@ -15,7 +15,7 @@ class AlphaConversionVisitor(LambdaCalculusVisitor):
 
     def __init__(self):
         super()
-        self.incoming_values = Stack() #NOTE: This definitely needs renamed
+        self.incoming_values = Stack()
         self.alpha_calculator = AlphaCalculatorFromComplete()
 
     # Visit a parse tree produced by LambdaCalculusParser#term.
@@ -48,7 +48,6 @@ class AlphaConversionVisitor(LambdaCalculusVisitor):
         if parenthesis_check != -1:
             return parenthesis_check
 
-        #inner_expression = self.visit(ctx.getChild(2))
         inner_expression = ctx.getChild(2).getText()
         complete_expression = "" + ctx.getChild(0).getText() + ctx.getChild(1).getText() + inner_expression
 

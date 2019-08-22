@@ -42,11 +42,19 @@
 		\vskip0.75cm
 		Supervisor: Ornela Dardha
 	}
+	\vskip1cm
+	{\large
+		School of Computing Science\\
+		Sir Alwyn Williams Building\\
+		University of Glasgow\\
+		G12 8QQ
+	}
 	\vskip2cm
 	{\Large
-		September 2019\\
 		\vskip1cm
-		A dissertation presented in part fulfilment of the requirements of the degree of MSc in Software Development at the University of Glasgow
+		A dissertation presented in part fulfilment of the requirements of the degree of MSc in Software Development at the University of Glasgow\\
+		\vskip1cm
+		September 2019\\
 	}  
 	\vfill
 	
@@ -59,7 +67,11 @@
 \end{titlepage}
 \thispagestyle{empty}
 \begin{abstract}
-This dissertation describes the design, implementation and evaluation of a lambda calculus expression evaluator built using ANTLR and contained within a web interface, designed as support material for the Theory of Computation course at the University of Glasgow. This dissertation discusses in detail the relevant sections of lambda calculus as covered on the course, then discusses the process of using Abstract Syntax Trees to examine the structure of a term based on a particular syntax, which can then be used to parse and evaluate input expressions. The approach taken to evaluation using ANTLR has also been discussed in detail, before giving a summary of testing done and evidence to support the statement that the goals of the project have been met.
+This dissertation describes the design, implementation and evaluation of a lambda calculus expression evaluator built using ANTLR and contained within a web interface, designed as support material for the Theory of Computation course at the University of Glasgow. This dissertation discusses in detail the relevant sections of lambda calculus as covered on the course, then discusses the process of using Abstract Syntax Trees to examine the structure of a term based on a particular syntax, which can then be used to parse and evaluate input expressions. The approach taken to evaluation using ANTLR has also been discussed in detail, before giving a summary of testing done and evidence to support the statement that the goals of the project have been met.\\
+
+There were two key goals for this project, to design an interface which would accurately evaluate lambda terms and which would help improve students understanding of those on the Theory of Computation course. Both of these goals were met, with testing done to prove the accuracy of lambda term evaluation, and a user test carried out in order to determine the effectiveness of the interface in improving understanding, with positive results both from qualitative user feedback and statistical analysis using quantitative data taken from these tests.\\
+
+The code for this project has been submitted alongside this dissertation, but can also be found at \url{https://github.com/jonesy30/LambdaCalculator} on Github. This tool will be used in future years to support those on the Theory of Computation course.
 \end{abstract}
 \newpage
 \addtocontents{toc}{\protect\thispagestyle{empty}}
@@ -373,7 +385,7 @@ The alpha conversion code written for this project follows this process. First, 
 
 Two beta reduction strategies are taught on the Theory of Computation course, call-by-value and call-by-name. The differences between these two strategies have been discussed in detail, but the key difference is in the order in which substitution and evaluation occurs in an application MN.\\
 
-Because of these differences in evaluation strategy, two separate visitors are used to limit the use of control coupling \cite{Lethbridge2004}. Since they share a lot of functionality, a BaseVisitor was defined which contains all common code between these two strategies. The two call-by-value and call-by-need visitors are subclassed from this base visitor, and define their unique behaviour for the application and abstraction terms. Both visitors print information to a file about the steps being taken to evaluate the term as the tree is visited. This file is given to the user alongside the evaluation result through a clickable link.\\
+Because of these differences in evaluation strategy, two separate visitors are used to limit the use of control coupling \cite{Lethbridge2004}. Since they share a lot of functionality, a BaseVisitor was defined which contains all common code between these two strategies. The two call-by-value and call-by-need visitors are subclassed from this base visitor, and define their unique behaviour for the application and abstraction terms. Both visitors pass information to the web interface about the steps being taken to evaluate the term as the tree is navigated. This output is given to the user alongside the evaluation result through a clickable link which opens a separate webpage containing this information. This can be seen in Figure \ref{web_interface_more_information}.\\
 
 The abstraction term differs between the two methods due only to typing, since determining the type of a term happens during the evaluation of that term. In call-by-value, the type of N is known before substitution, so can be carried throughout the function. In call-by-need, the whole term needs to be type checked after substitution has happened to determine the type of M with N incorporated. Two separate abstraction methods were therefore needed, with common code moved into a method defined within the base visitor.
 
@@ -381,7 +393,7 @@ The abstraction term differs between the two methods due only to typing, since d
 
 Lambda Calculus has clearly defined typing rules which are taught in the Theory of Computation course. These rules have been discussed in more detail previously. Each type can either be of ground type T, or function type T$\rightarrow$U under a typing context $\Gamma$ \cite{Hankin2004}.\\
 
-Since the visitNode methods already evaluate their children nodes, these typing rules can be integrated directly into these nodes, with each visitNode method returning a value and a type. When a type is determined for a variable, this is added to a global typing context associated with the term which is given to the user once the term is evaluated. Type checking happens throughout the code in each method where evaluation occurs, and is implemented as follows:\\
+Since the visitNode methods already evaluate their children nodes, these typing rules can be integrated directly into these nodes, with each visitNode method returning a value and a type. When a type is determined for a variable, this is added to a global typing context associated with the term which is given to the user via a separate webpage linked to the output type once the term is evaluated, shown in Figure \ref{web_interface_more_information}. Type checking happens throughout the code in each method where evaluation occurs, and is implemented as follows:\\
 
 \textit{Variable}\\
 Variables simply return the type given to them by the user, as defined by Rule \ref{variable_type}. Any number is given type \texttt{int}, and any boolean values TRUE or FALSE are given type \texttt{bool}.\\
@@ -419,7 +431,6 @@ The output type of a function is used to determine the output type of its parent
 There is a limit to this type inference, the function will infer the input type when there is only one operation term. For example, the term $\lambda x.(x==1)\&b$ contains two operations, == and \&. In this case, working out the input type is more complicated, since the typing has to be broken down in to sub-functions, which need to determine what they think the input type should be, which then needs to be examined collectively as a complete term. The type of this output is returned by the program therefore as \texttt{None->bool}. This is correct, just not as minimal as its alternative type \texttt{int->bool}.\\
 
 While narrowing type inference to its most minimal state is definitely possible, it is not the key goal in the project, and is a small edge-case when it comes to improving student understanding. Because of this, and due to the finite nature of this project, this limitation has been deemed acceptable, with other tasks which more greatly contribute to students understanding of lambda calculus being prioritised.
-%NOTE TO SELF: I need to talk abotu type inference using typing rules somewhere
 
 \subsubsection{Error Handling}
 Each visit method in the visitor returns an evaluated result and a type, which is used to build the evaluated term and determine the final result, type and type validity of the input expression.\\
@@ -436,13 +447,23 @@ Recursion errors are thrown in Python when a maximum stack depth is reached in o
 
 To handle this, the recursion limit for the code is set to 200, smaller than the python default to prevent excessive time waiting for the program to fail, but large enough to ensure that any reasonable lambda term can be processed. A recursion limit for the code equates to a lambda term with approximately 50 nested abstractions. While this is a limitation, it's is deemed to be a reasonable one, as limiting students to 50 nested abstractions as opposed to 100 is unlikely to impact student understanding. If a recursion error is thrown, it is caught by the code in a \texttt{try/except} block, and an error message informing the user that a normal form cannot be found for this term is given.
 
-\subsubsection{Web Interface}
+\subsection{Web Interface}
 
 Flask is a web framework designed for use with Python, and allows python scripts to be controlled from a web interface \cite{FullStack2019}. The websites' front-end is written in HTML, and is connected to the python file using Flask's \texttt{render_template()} function.\\
 
 Users enter lambda terms in the input dialogue box, entering a \% sign as a lambda symbol. Using a HTML onkeydown event, the interface automatically changes this symbol to a $\lambda$, allowing users to easily enter lambda terms. The complete web interface can be seen in Figure \ref{web_interface_no_input}, Figure \ref{web_interface_input} and Figure \ref{web_interface_error}.\\
 
 Clicking the \textit{Check Expression} button on the web interface sends a HTTP post request to the Flask server, which takes the value held in the user input box along with the selected reduction strategy, and sends this to the main lambda program. The output is returned to the HTML code through Flask, and the webpage is re-rendered to display the results.
+
+\subsection{Complete Program}
+The complete class diagram for the final program can be seen in Figure \ref{class_diagram}, and shows how the web interface connects to the main lambda code using the \texttt{route.py} file which implements Flask. It also shows how the ANTLR generated classes are utilised, and how each evaluation method is implemented using a separate visitor.
+
+\begin{figure}[p]
+	\includegraphics[scale=0.4]{images/class_diagram}
+	\centering
+	\caption{Complete Code Class Diagram}
+	\label{class_diagram}
+\end{figure}
 
 \begin{figure}[p]
 	\includegraphics[scale=0.4]{images/web_interface_no_input}
@@ -463,6 +484,13 @@ Clicking the \textit{Check Expression} button on the web interface sends a HTTP 
 	\includegraphics[scale=0.4]{images/web_interface_error}
 	\caption{Web Interface With Error}
 	\label{web_interface_error}
+\end{figure}
+
+\begin{figure}[p]
+	\includegraphics[scale=0.4]{images/web_interface_more_information}
+	\centering
+	\caption{Web Interface}
+	\label{web_interface_more_information}
 \end{figure}
 
 \chapter{Testing}
@@ -486,12 +514,12 @@ All of the above were tested for, the results shown in Figure \ref{testing_log} 
 Figure \ref{testing_log} demonstrates that in the majority of cases which have been tested, the evaluation is accurate and does yield expected results. Any instances where the output is not as expected have been discussed in the Evaluation section of this report.
 
 \section{Interface Usefulness and Usability}
+
+In order to test the usability and usefulness of the interface, a user test was conducted using participants who had a computer science background, to simulate those on the Theory of Computation course. The analysis done can be broken down into two sections, statistical analysis using quantitative data to determine whether or not the interface created helps to improve understanding of lambda calculus. Qualitative feedback given by participants in the user test will also be used to support any conclusions drawn and a discussion on user ideas and possible improvements will be made.
 \label{interface usefulness and usability}
 \subsection{Testing}
 
-In order to test the usability and usefulness of the interface, a user test was conducted using participants who had a computer science background but who had little to no understanding of lambda calculus. This was done in order to simulate students on the Theory of Computation course who have just been introduced to Lambda Calculus for the first time.\\
-
-Participants were first given a Participant Information sheet and to sign a Participant Consent Form, which stated they were happy with the results of their user test to be included in this dissertation, provided their answers will be kept anonymous as will be done here. They were then asked to read a document giving them a brief introduction to lambda calculus, which was written for this test and was based on the Theory of Computation lecture slides \cite{Gay2019}. This was done to simulate students who have been introduced to lambda calculus, but are still very new to the subject.\\
+In the user test, participants were first given a Participant Information sheet and to sign a Participant Consent Form, which stated they were happy with the results of their user test to be included in this dissertation, provided their answers will be kept anonymous as will be done here. They were then asked to read a document giving them a brief introduction to lambda calculus, which was written for this test and was based on the Theory of Computation lecture slides \cite{Gay2019}. This was done to simulate students who have been introduced to lambda calculus, but are still very new to the subject.\\
 %(Note to self: should I put the introduction to lambda calculus document in the appendix?)
 
 Having read a brief summary, participants were asked to rate their understanding of lambda calculus on a scale of 1-10, before being given the interface to test. They were provided with a few sample lambda terms to test if they wanted to, but were not obligated to use them. This was to simulate students who may be using the tool to evaluate a particular lambda expression they have found in the lecture slides or online.\\
@@ -499,11 +527,15 @@ Having read a brief summary, participants were asked to rate their understanding
 Finally, users were given a questionnaire which again asked them to rate their understanding of lambda calculus having used the interface for a short period of time, so their understanding could be compared before and after using the tool. The questionnaire also asked a number of qualitative questions, asking participants to give feedback on whether or not they would use this tool if they were studying Lambda Calculus, and what they thought of the interface.
 
 \subsection{Results}
-Although the test was not conducted with a time limit, each participant spent approximately five minutes using the interface before stating they were ready to move on. As can be seen from Figure \ref{participant_understanding}, in the five minutes participants interacted with the interface their understanding improved by 40\% on average. 100\% of participants said they would use the tool created if they were on the Theory of Computation course, and 100\% said they found it useful in improving their understanding.\\
+Although the test was not conducted with a time limit, each participant spent approximately five minutes using the interface before stating they were ready to move on. As can be seen from Figure \ref{participant_understanding}, in the five minutes participants interacted with the interface their understanding improved by 40\% on average, with users who started with a lower understanding of lambda calculus seeing the most improvement. 100\% of participants said they would use the tool created if they were on the Theory of Computation course, and 100\% said they found it useful in improving their understanding.\\
 
-The qualitative questions on the interface and tool revealed that participants found the system simple and easy to use, with some suggestions for improvement. Suggested interface changes included making the colour of the input box darker to differentiate between input boxes and menus, and changing the background as some participants found it distracting. Participants also suggested adding additional features such as tooltips to give the user more information on what particular lambda terms meant, and adding a workbook section which would allow users to save the results to a file in order to create a study resource they could go back to later.\\
+Using the percentages of improvement found in Figure \ref{participant_understanding}, we can prove whether the tool created was successful in improving understanding using z-scores and Statistical Hypothesis Testing. Given an alpha-level of 0.05, this leads to a z-value of 1.645 \cite{ZTable2019}. With a sample size of 10 and a mean percentage of improvement of 39.8\%, we can state a null hypothesis that participant understanding improved less than 25\% after using the tool. This leads to a z-score of 2.04, which is larger than the z-value of 1.64. This means that the null hypothesis can be confidently rejected, and leads to the conclusion that with a short amount of time using the tool, students will on average likely improve in understanding of lambda calculus by at least 25\%.\\
 
-Overall the feedback was incredibly positive, supporting the conjecture that the tool created could support student learning for those starting out with lambda calculus. Participants commented that it helped improve understanding by adding a practical element to the much more theoretical-based lecture slides.
+Calculating the t-value of this data using the equal variance method \cite{TTest2019} results in a t-value of 1.92, or approximately 92\% confidence that the improvement in understanding is statistically significant. It is acknowledged that the sample size of 10 in this case is small due to time restrictions in the project, and in order for more concrete conclusions to be drawn more participants would be needed which has been discussed further in the Future Work section of this report. This result is still significant however and supports the hypothesis that the interface created is useful in improving understanding of students learning lambda calculus.\\
+
+The qualitative questions on the interface and tool revealed that participants found the system simple and easy to use, with some suggestions for improvement. Suggested interface changes included making the colour of the input box darker to differentiate between input boxes and menus, changing the background as some participants found it distracting, and splitting up the output box to make individual elements clearer. Participants also suggested adding additional features such as tooltips to give the user more information on what particular lambda terms meant, and adding a workbook section which would allow users to save the results to a file in order to create a study resource they could go back to later.\\
+
+Overall the feedback was incredibly positive, with participants commenting that the tool helped improve understanding by adding a practical element to the much more theoretical-based lecture slides. With an original goal for the tool of helping to improve student understanding in lambda calculus, this combined with the Statistical Hypothesis Testing above proves that this goal has been met successfully.
 
 %Note to self: should I include the results from the google survey in the appendix?
 
@@ -537,12 +569,12 @@ With a goal of supporting learning by providing an interface which accurately ev
 Due to the time limited nature of this project, not all features or corrections have been implemented. Given more time, the following work would be done:
 
 \begin{enumerate}
-	\item Add in type-checking for like terms to prevent the same variable being given conflicting types by the user
-	\item Add in multi-input abstraction terms to allow users to enter $\lambda xy.M$ as appears in the lecture slides \cite{Gay2019} as opposed to $\lambda x.\lambda y.M$
-	\item Improve the type inference to allow input types of multi-operation functions to be inferred
-	\item Include tooltips linked to various aspects of the web interface to give users more information
-	\item Do further user testing for the web interface to get a wider understanding of any style/usability issues that exist 
-	\item Allow users to enter lambda terms in the De Bruijn notation, for those unfamiliar with the Barendregt convention
+	\item Add in multi-input abstraction terms to allow users to enter $\lambda xy.M$ as appears in the lecture slides \cite{Gay2019} as opposed to $\lambda x.\lambda y.M$, which would allow students to directly copy more lambda terms from the lecture slides to see how they are evaluated.
+	\item Improve the type inference to allow input types of multi-operation functions to be inferred.
+	\item Include tooltips linked to various aspects of the web interface to give users more information about what particular phrases mean or what elements of the web interface do.
+	\item Do further user testing for the web interface to get a wider understanding of any style/usability issues that exist from a wider demographic of participants. This could include those who have previously taken the Theory of Computation course to identify any areas which would most benefit from further support, those learning lambda calculus using alternative methods, or those who have less of a background in computer science than the participants used in the study.
+	\item Allow users to enter lambda terms in the De Bruijn notation, for those unfamiliar with the Barendregt convention or those wanting to expand their knowledge of Lambda Calculus.
+	\item Add a feature which would evaluate the term step-by-step, so evaluation could be paused. This would allow users to see exactly how the term is being evaluated, and the state of evaluation at each stage.
 \end{enumerate}
 
 \chapter{Conclusion}
@@ -552,7 +584,7 @@ The outcome of the project was extremely successful, resulting in a simple and c
 
 Creating this tool was very much a challenge, having no prior knowledge of lambda calculus before the project was started resulted in an extremely steep learning curve and a number of setbacks due to misunderstandings made early on in the project. As well as this ANTLR had to be learned from scratch, resulting in a portion of time being allocated to becoming familiar with the tool in order to utilise it in the best way possible.\\
 
-Due to the finite nature of the project and the amount of learning that had to be done as implementation was underway, there are features which would benefit the tool which have not been included due to time restrictions. These include supporting multiple notations such as De Bruijn notation and multi-input terms which have been discussed previously. The tool could also be expanded in ways which would further benefit student learning, for example the option of evaluating a term step-by-step so students could see the method of evaluation explicitly, and adding tooltips to give users more guidance on the theoretical aspects of lambda calculus.\\
+Due to the finite nature of the project and the amount of learning that had to be done as implementation was underway, there are features which would benefit the tool which have not been included due to time restrictions. These include supporting multiple notations such as De Bruijn notation and multi-input terms which have been discussed previously. The tool could also be expanded in ways which would further benefit student learning, for example adding tooltips to give users more guidance on the theoretical aspects of lambda calculus and allowing students to evaluate terms step-by-step so they could see how the term is processed as evaluation is happening.\\
 
 As well as additional features, one key goal would be to perform additional user testing across a wider demographic of participants, including those who previously have taken the Theory of Computation course, those more familiar with Lambda Calculus and those at other universities or learning lambda calculus through other means. This would help improve the tool for a wider range of potential users, and allow additional feature ideas to come from people who would actually be using it.\\
 

@@ -134,7 +134,6 @@ class BaseVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#abstraction_term.
     def visitAbstraction_term(self, ctx:LambdaCalculusParser.Abstraction_termContext):
         return self.visit(ctx.getChild(1))
-        #return self.visitChildren(ctx)
         
     # Visit a parse tree produced by LambdaCalculusParser#number.
     def visitNumber(self, ctx:LambdaCalculusParser.NumberContext):
@@ -147,7 +146,6 @@ class BaseVisitor(LambdaCalculusVisitor):
     # Visit a parse tree produced by LambdaCalculusParser#operation.
     def visitOperation(self, ctx:LambdaCalculusParser.OperationContext):
         return self.visitChildren(ctx)
-    
     
     # Visit a parse tree produced by LambdaCalculusParser#expression.
     def visitValue(self, ctx:LambdaCalculusParser.ValueContext):
@@ -294,14 +292,10 @@ class BaseVisitor(LambdaCalculusVisitor):
         incoming_type = self.convert_type_if_none(incoming_type)
         to_substitute_type = self.convert_type_if_none(to_substitute_type)
 
-        #print("To substitute = "+str(to_substitute))   
-
         #Visit and evaluate the right hand side child (the function)
         returned_child = self.visit(ctx.getChild(2))
         function = returned_child[0]
         function_type = returned_child[1]
-
-        #print("Function = "+function)
 
         input_type = None
         if len(returned_child) == 3:

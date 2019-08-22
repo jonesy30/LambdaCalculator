@@ -2,7 +2,6 @@ import sys
 from antlr4 import *
 from LambdaCalculusLexer import LambdaCalculusLexer
 from LambdaCalculusParser import LambdaCalculusParser
-from LambdaCalculusListener import LambdaCalculusListener
 from LambdaCalculusVisitor import LambdaCalculusVisitor
 from LambdaErrorListener import LambdaErrorListener, SyntaxTokenError
 from BracketCheck import BracketCheck
@@ -41,9 +40,7 @@ def main():
         print("No visitor")
     
     if visitor_selection == "v" or visitor_selection == "n":
-        #result, return_type, valid_type = run(expression, visitor)
         return_value = run(expression, visitor)
-        #if isinstance(return_value,int):
         if return_value == -1:
             print("Syntax error - check the term and try again?")
         elif return_value == -2:

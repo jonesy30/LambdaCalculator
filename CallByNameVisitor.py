@@ -14,7 +14,7 @@ class CallByNameVisitor(BaseVisitor):
 
     def __init__(self,session_object):
         super()
-        self.incoming_values = Stack() #NOTE: This definitely needs renamed
+        self.incoming_values = Stack()
         self.valid_typing = True
 
         self.super_typing_context = []

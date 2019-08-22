@@ -477,6 +477,61 @@
     \field{urlyear}{2019}
   \endentry
 
+  \entry{TTest2019}{online}{}
+    \name{author}{1}{}{%
+      {{hash=KW}{%
+         family={Kenton},
+         familyi={K\bibinitperiod},
+         given={Will},
+         giveni={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KW1}
+    \strng{fullhash}{KW1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{title}{T-Test}
+    \verb{url}
+    \verb https://www.investopedia.com/terms/t/t-test.asp
+    \endverb
+    \field{day}{25}
+    \field{month}{01}
+    \field{year}{2019}
+    \field{urlday}{22}
+    \field{urlmonth}{08}
+    \field{urlyear}{2019}
+  \endentry
+
+  \entry{ZTable2019}{online}{}
+    \name{author}{1}{}{%
+      {{hash=LWW}{%
+         family={LaMorte},
+         familyi={L\bibinitperiod},
+         given={Wayne\bibnamedelima W.},
+         giveni={W\bibinitperiod\bibinitdelim W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{LWW1}
+    \strng{fullhash}{LWW1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{title}{Hypothesis Testing: Upper-, Lower, and Two Tailed Tests}
+    \verb{url}
+    \verb http://sphweb.bumc.bu.edu/otlt/MPH-Modules/BS/BS704_HypothesisTest-Me
+    \verb ans-Proportions/BS704_HypothesisTest-Means-Proportions3.html
+    \endverb
+    \field{day}{06}
+    \field{month}{11}
+    \field{year}{2017}
+    \field{urlday}{22}
+    \field{urlmonth}{08}
+    \field{urlyear}{2019}
+  \endentry
+
   \entry{Lethbridge2004}{book}{}
     \name{author}{2}{}{%
       {{hash=LTC}{%

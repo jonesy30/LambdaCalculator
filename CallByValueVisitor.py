@@ -14,7 +14,7 @@ class CallByValueVisitor(BaseVisitor):
 
     def __init__(self, session_object):
         super()
-        self.incoming_values = Stack() #NOTE: This definitely needs renamed
+        self.incoming_values = Stack()
         self.valid_typing = True
 
         self.super_typing_context = []
@@ -34,7 +34,6 @@ class CallByValueVisitor(BaseVisitor):
             return parenthesis_check
 
         #Visit the first child, then visit the second
-        #NOTE: To convert to call-by-name, I need to get the text of child 1, and then evaluate the abstraction with the unprocessed textual version of child 1
         returned_child = self.visit(ctx.getChild(0))
         self.send_current_to_super_context()
 
@@ -88,7 +87,6 @@ class CallByValueVisitor(BaseVisitor):
         bound_variable = ctx.getChild(0).getChild(1).getChild(0).getText()
         self.update_typing_contexts(bound_variable)
 
-        # #NOTE: These all definitely need renamed
         # #Visit the left hand child, to get the bound variable type and value
         to_substitute,to_substitute_type = self.visit(ctx.getChild(0))
 

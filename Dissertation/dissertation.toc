@@ -58,7 +58,9 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{Error Handling}{15}% 
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{Web Interface}{16}% 
+\contentsline {subsection}{\numberline {5.2.4}Web Interface}{16}% 
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.2.5}Complete Program}{16}% 
 \defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {6}Testing}{16}% 
 \defcounter {refsection}{0}\relax 
@@ -70,14 +72,14 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {6.2.2}Results}{20}% 
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {7}Evaluation}{21}% 
+\contentsline {chapter}{\numberline {7}Evaluation}{22}% 
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7.1}Accurately Evaluating Lambda Terms}{21}% 
+\contentsline {section}{\numberline {7.1}Accurately Evaluating Lambda Terms}{23}% 
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {7.1.1}Limitations}{22}% 
+\contentsline {subsection}{\numberline {7.1.1}Limitations}{23}% 
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7.2}Improving Student Understanding}{22}% 
+\contentsline {section}{\numberline {7.2}Improving Student Understanding}{23}% 
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {7.3}Future Work}{22}% 
+\contentsline {section}{\numberline {7.3}Future Work}{24}% 
 \defcounter {refsection}{0}\relax 
-\contentsline {chapter}{\numberline {8}Conclusion}{23}% 
+\contentsline {chapter}{\numberline {8}Conclusion}{24}% 
