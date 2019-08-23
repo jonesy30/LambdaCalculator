@@ -56,6 +56,7 @@ def main():
             result,return_type = post_process(result, return_type)
 
             arithmetically_reduced = delta_reduction(result)
+            arithmetically_reduced,_ = post_process(arithmetically_reduced)
         
             print("Result = "+result)
             print("Arithmetically reduced = "+arithmetically_reduced)
@@ -113,6 +114,7 @@ def web_interface(expression, evaluate_selection):
         result,return_type = post_process(result, return_type)
 
         arithmetically_reduced = delta_reduction(result)
+        arithmetically_reduced,_ = post_process(arithmetically_reduced)
 
         output_string = "Result = "+str(result)
         if result != arithmetically_reduced:
@@ -126,6 +128,52 @@ def web_interface(expression, evaluate_selection):
             output_string = output_string + " under typing context <a href=\"/more_information\" target=\"_blank\"><span class=\"pale-link\">(click here)</span></a><br>"
             output_string = output_string + "Type returned = "+str(return_type)+"<br>"
             return output_string,session_object.get_typing_context(),session_object.get_beta_steps()
+
+def unit_t_interface(expression, evaluate_selection):
+
+    session_object = LambdaSessionInformationObject()
+    session_object.set_input_term(expression)
+
+    bracket_checker = BracketCheck()
+    matched_brackets = bracket_checker.check_brackets(expression)
+    if matched_brackets == False:
+        return "Mismatched brackets - check the term and try again?"
+
+    result = None
+    return_type = None
+    valid_type = None
+
+    if evaluate_selection == "v":
+        visitor = CallByValueVisitor(session_object)
+    elif evaluate_selection == "n":
+        visitor = CallByNameVisitor(session_object)
+    elif evaluate_selection == "a":
+        expression = remove_types(expression)
+        visitor = AlphaConversionVisitor()
+    else:
+        return -5
+    
+    return_value = run(expression, visitor)
+    if return_value == -1:
+        return "Syntax error - check the term and try again?"
+    elif return_value == -2:
+        return "Normal form cannot be found - does this term have a normal form?"
+    elif return_value == -5:
+        return "Invalid visitor selected - try refreshing the page and try again"
+    elif return_value == -6:
+        return "Sorry, something went wrong, try entering the term again?"
+    elif evaluate_selection == "a":
+        #If alpha conversion is selected, just post-process and return result
+        return return_value
+    else:
+        #If non-alpha conversion visitor selected, variable needs to be unpacked and delta-reduced
+        result = return_value[0]
+        return_type = return_value[1]
+        valid_type = return_value[2]
+
+        arithmetically_reduced = delta_reduction(result)
+
+        return arithmetically_reduced,valid_type,return_type
 
 def pre_process(expression):
     expression_list = list(expression)
@@ -230,7 +278,6 @@ def delta_reduction(expression):
     tree = parser.term()
     visitor = DeltaReductionVisitor()
     arithmetically_reduced = visitor.visit(tree)
-    arithmetically_reduced,_ = post_process(arithmetically_reduced)
 
     return arithmetically_reduced
 
