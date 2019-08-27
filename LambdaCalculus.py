@@ -27,11 +27,14 @@ def main():
         expression = input("Sorry, mismatched brackets, check and try again?\n")
         matched_brackets = bracket_checker.check_brackets(expression)
 
+    session_object = LambdaSessionInformationObject()
+    session_object.set_input_term(expression)
+
     visitor = None
     if visitor_selection == "v":
-        visitor = CallByValueVisitor()
+        visitor = CallByValueVisitor(session_object)
     elif visitor_selection == "n":
-        visitor = CallByNameVisitor()
+        visitor = CallByNameVisitor(session_object)
     elif visitor_selection == "a":
         #Types are not supported with alpha conversion, so remove all types the user has input before processing
         expression = remove_types(expression)
