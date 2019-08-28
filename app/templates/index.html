@@ -5,19 +5,24 @@
         <title>Lambda Calculator </title>
     </head>
     <div id="main-container"> 
+        <!--The main header-->
         <h1>
             <a href="/static/easter_egg/lambda.jpg" target="_blank"><span class="easter-egg">Lambda</span></a>
             <a href="/static/easter_egg/calculus.jpg" target="_blank"><span class="easter-egg">Calculus</span></a>
             <a href="/static/easter_egg/expression.jpg" target="_blank"><span class="easter-egg">Expression</span></a>
             <a href="/static/easter_egg/evaluator.jpg" target="_blank"><span class="easter-egg">Evaluator</span></a>
         </h1>
+        <!--The instructions on the webpage-->
         <div id="instructions">
             <p>Enter the term in the box below, the result will tell you the output, whether it is typable and what type it should be</p>
             <p>To enter &lambda;, type % </p>
             <p>Types can also be entered for any variable, in the form x:type <i>(bool, int and none types allowed)</i></p>
         </div>
+        <!--The main input/output box on the webpage-->
         <form action="/" method="post" id="expression-form">
+            <!--Input box - replace all % signs with a lambda symbol as the user is typing-->
             <input name="input-box" id="input-box" onkeydown="replaceLambda(event)" placeholder="Enter expression here" class="form-control" autocomplete="off"></input>
+            <!--Evaluation method selection (call-by-name, call-by-value or alpha-conversion)-->
             <div id="evaluation-method-control">
                 <b>Evaluation Method:&ensp;</b>
                 <div class="custom-control custom-radio custom-control-inline" data-toggle="buttons">
@@ -33,11 +38,14 @@
                     <label class="custom-control-label" for="a">Alpha Conversion Only</label>
                 </div>
             </div>
-            <button id="confirm-button" class="btn btn-primary">Check Expression</button>      
+            <!--Confirm button-->
+            <button id="confirm-button" class="btn btn-primary">Check Expression</button>   
+            <!--Result box (result to be displayed is incoming when the file is rendered)-->   
             <div class=output-box>
                 {{result|safe}}
             </div>
         </form>
+        <!--Notes at the end giving user more information-->
         <p class="note">Note: this program only allows single input abstractions. To enter a multi-input abstractions, nest them. So λxy.xy becomes λx.λy.xy</p>
         <p class="note">Need more information? Have a look at the <a href="/static/User Guide.pdf" target="_blank">User Guide</a> for a list of commands and operations</p>
         <p></p>

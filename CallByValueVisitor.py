@@ -10,6 +10,8 @@ from BaseVisitor import BaseVisitor
 from LambdaSessionInformationObject import LambdaSessionInformationObject
 import re
 
+#Class which implements call-by-value beta evaluation using an ANTLR visitor which navigates around an abstract syntax tree
+
 class CallByValueVisitor(BaseVisitor):
 
     def __init__(self, session_object):
@@ -17,34 +19,39 @@ class CallByValueVisitor(BaseVisitor):
         self.incoming_values = Stack()
         self.valid_typing = True
 
+        #Typing context is used to differentiate between the current scope typing and the main scope typing
         self.super_typing_context = []
         self.current_typing_context = []
 
+        #Session object is used to pass information between webpages
         self.session_object = session_object
 
         self.session_object.add_beta_step("Call by value visitor selected")
     
     # Visit a parse tree produced by LambdaCalculusParser#application.
     def visitApplication(self, ctx:LambdaCalculusParser.ApplicationContext):
-        
-        #print("Application = "+ctx.getText())
 
+        #Check for parenthesis, and return the inner bit if so
         parenthesis_check = self.check_for_parenthesis(ctx)
         if parenthesis_check != -1:
             return parenthesis_check
 
-        #Visit the first child, then visit the second
+        #Visit the first child, then visit the second (as per call-by-value evaluation method rules)
         returned_child = self.visit(ctx.getChild(0))
         self.send_current_to_super_context()
 
+        #Get the function text and type from the left child
         function = returned_child[0]
         function_type = returned_child[1]
 
+        #If there are still variables to unpack, it's the typing inference of the input term from a  function. Unpack this
         input_type = None
         if len(returned_child) == 3:
             input_type = returned_child[2]
 
         self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(1).getText()+" being processed")
+        
+        #Visit the second child now the first has been visited
         expression,expression_type = self.visit(ctx.getChild(1))
 
         #Get the tree created by the output of the left hand tree
@@ -72,13 +79,10 @@ class CallByValueVisitor(BaseVisitor):
         application_type = self.type_check_application(function_type,expression_type)
 
         #Return the application value and type
-        #print("Returned value in application = "+function)
         return function,application_type
 
     # Visit a parse tree produced by LambdaCalculusParser#abstraction.
     def visitAbstraction(self, ctx:LambdaCalculusParser.AbstractionContext):
-        #print("Abstraction = "+ctx.getText())
-
         parenthesis_check = self.check_for_parenthesis(ctx)
         if parenthesis_check != -1:
             return parenthesis_check
@@ -99,12 +103,15 @@ class CallByValueVisitor(BaseVisitor):
         incoming = None
         incoming_type = None
         
+        #If there is no incoming tuple, keep as is, otherwise unpack into value and type
         if incoming_tuple == -1:
             incoming = incoming_tuple
         else:
             incoming = incoming_tuple[0]
             incoming_type = incoming_tuple[1]
 
+        #Perform the bulk of the abstraction (contained within BaseVisitor) and get the result and type of the abstraction
         abstraction_result, abstraction_type = self.perform_abstraction(ctx, incoming, incoming_type, to_substitute, to_substitute_type)
         
+        #Return the results of the abstraction
         return abstraction_result,abstraction_type

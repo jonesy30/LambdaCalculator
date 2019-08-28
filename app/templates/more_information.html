@@ -5,22 +5,27 @@
         <title>Lambda Calculator </title>
     </head>
     <div id="main-container"> 
+        <!--Heading-->
         <h1>
             <a href="/static/easter_egg/lambda.jpg" target="_blank"><span class="easter-egg">Lambda</span></a>
             <a href="/static/easter_egg/calculus.jpg" target="_blank"><span class="easter-egg">Calculus</span></a>
             <a href="/static/easter_egg/expression.jpg" target="_blank"><span class="easter-egg">Expression</span></a>
             <a href="/static/easter_egg/evaluator.jpg" target="_blank"><span class="easter-egg">Evaluator</span></a>
         </h1>
+        <!--Incoming information about the incoming lambda term (which this more information page is about)-->
         <span class="input-expression">Input = {{input_lambda}}</span>
         <br>
+        <!--Information about the typing context which is incoming-->
         <b class="sub-title">Typing Context</b>
         <div class="type-output output-container">
             {{typing_context|safe}}
         </div>
+        <!--Typing context explanation-->
         <div id="information" class="center-content">Note: Some variables may have duplicate types, this is because the variable refers to different objects in the expression. 
         For example, in the expression (λx:bool.x & λx:int.x+1), the two x's are unconnected, and therefore in this term x has both type int AND type bool
         </div>
         <br>
+        <!--Incoming information about beta-reduction-->
         <b class="sub-title">Beta Reduction Details</b>
         <div class="beta-output output-container">
             {{beta_reduction|safe}}
