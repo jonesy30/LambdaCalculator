@@ -11,7 +11,7 @@ The README is split into multiple sections, all of which can be found below. To 
 Install and setup ANTLR4
     - To do this, you'll need at least Java 1.7 installed (since the back-end of ANTLR is Java and not Python)
     - Follow the steps in this link in section "1. Setup ANTLR" https://tomassetti.me/antlr-mega-tutorial/#setup-antlr
-    - Get ANTLR for python using "pip install antlr4-python3-runtime" (using a virtual environment if you want - see steps at the bottom of this README)
+    - Get ANTLR for python using "pip install antlr4-python3-runtime" (using a virtual environment if you want - see steps at the bottom of this README section)
     - Run the following commands from the main directory containing the LambdaCalculus.g4 file
         antlr4 LambdaCalculus.g4
         antlr4 -Dlanguage=Python3 LambdaCalculus.g4 -visitor
@@ -38,4 +38,33 @@ INSTALLING A VIRTUAL ENVIRONMENT -- Windows
 For more information, or for instructions on MAC, refer to the virtual environment steps in the following links:
 https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/
+
+**********************************************************
+
+FILE INFORMATION
+Files Created By Yola
+    - everything in testing folder (used for unit-tests)
+    - everything in app folder (used for web-interface)
+    - AlphaCalculatorFromComplete.py (alpha conversion)
+    - AlphaCalculatorPartial.py (alpha conversion)
+    - AlphaConversionVisitor.py (alpha conversion)
+    - BaseVisitor.py (base beta visitor)
+    - BracketCheck.py (support file used by other classes)
+    - CallByNameVisitor.py (beta reduction)
+    - CallByValueVisitor.py (beta reduction)
+    - DeltaReductionVisitor.py (arithmetic evaluation)
+    - LamdaCalculus.g4 (grammar file)
+    - LambdaCalculus.py (MAIN RUNNABLE FILE)
+    - LambdaSessionInformationObject.py (support file used by other classes)
+    - interface_runner.py (used to launch web interface)
+
+File Credit Given to https://www.sanfoundry.com/python-program-implement-stack
+    - Stack.py (used by other classes)
+
+Files Created (or auto-generated) By ANTLR
+    - LambdaCalculusLexer.java
+    - LambdaCalculusParser.java
+    - LambdaCalculusVisitor.py
+    - LambdaCalculusLexer.py
+    - LambdaCalculusVisitor.py
 

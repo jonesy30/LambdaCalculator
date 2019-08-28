@@ -419,3 +419,7 @@ TSWLatexianTemp*
 .idea/
 *.iml
 /**/gen
+
+#ANTLR files
+*.interp
+*.token
