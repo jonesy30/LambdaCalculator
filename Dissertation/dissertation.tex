@@ -74,15 +74,10 @@ There were two key goals for this project, to design an interface which would ac
 The code for this project has been submitted alongside this dissertation, but can also be found at \url{https://github.com/jonesy30/LambdaCalculator} on Github. This tool will be used in future years to support those on the Theory of Computation course.
 \end{abstract}
 \newpage
-\addtocontents{toc}{\protect\thispagestyle{empty}}
+\addtocontents{toc}{\protect\thispagestyle{empty}\tiny}
 \tableofcontents
 \newpage
 
-%\maketitle
-
-%
-% 	WHAT TENSE IS THIS
-%
 \renewcommand{\cleardoublepage}{}
 \renewcommand{\clearpage}{}
 \setcounter{page}{1}
@@ -212,6 +207,12 @@ This is all that is needed to statically analyse a lambda term, and determine wh
 In a lambda expression, the type of a term can often be inferred without any explicit type declaration. For example, in an expression $\lambda x.x+1$, $x$ can be assumed to have type int, as + is an in integer operator. This is type inference, and is the process of giving a variable a generic type (or supertype) and then refining this type based on gathered information until a minimal type is reached. \cite{Gay2019} \cite{Bezem2008} \cite{Wiesner2011}\\
 
 This gathering of information can be split into two categories, structural and syntax \cite{Bezem2008}. Structural is done using lambda typing rules, for example using the fact that abstractions are function types of form $T \rightarrow T$ to find the final type of the term $\lambda x.x+5$. The syntax of the term can also be used to gather information, for example using arithmetic or boolean operators to determine the type of a variable used in that expression.
+
+
+\subsection{Related Work}
+There are a number of similar interfaces which have been built to solve comparable problems. In \cite{McNab2019}, an interface was created to evaluate pi-calculus terms which are similar to lambda calculus but which model concurrent computation as opposed to single processes. This methodology is also taught on the Theory of Computation course at the University of Glasgow, and the program was written to support this course.\\
+
+The website found in \cite{Kovacsics2019} is an interface for users to evaluate lambda terms step-by-step by clicking on elements within the term. \cite{Gong} also integrates lambda calculus in a web interface, evaluating untyped lambda terms through a command line interface accessible via a website. A learning support tool is described in \cite{Ruiz2009} which was written for the Programming Paradigms course at The Universitat de Girona, created to give students a graphical representation of the parse trees of lambda terms in order to improve their understanding of how lambda calculus terms are constructed.
 
 \renewcommand{\cleardoublepage}{}
 \renewcommand{\clearpage}{}

@@ -49,7 +49,7 @@ class CallByValueVisitor(BaseVisitor):
         if len(returned_child) == 3:
             input_type = returned_child[2]
 
-        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(1).getText()+" being evaluated using the right-reduction rule")
+        self.session_object.add_beta_step("In application "+ctx.getText()+", expression "+ctx.getChild(1).getText()+" being evaluated using the right-reduction rule")
         
         #Visit the second child now the first has been visited
         expression,expression_type = self.visit(ctx.getChild(1))

@@ -394,29 +394,49 @@ class BaseVisitor(LambdaCalculusVisitor):
                                 if to_substitute_comparison == bound_value:
                                     break
                         end_value = i
+                        before_alpha = function
                         function = calculate_alpha(to_substitute, function, incoming, 0, end_value)
-                        self.session_object.add_beta_step("Alpha converting, abstraction is now "+str(function))
+
+                        if before_alpha != function:
+                            substitution_form = "%"+str(to_substitute)+"."
+                            printed_form = substitution_form + str(function)
+                            self.session_object.add_beta_step("Alpha converting, abstraction is now "+str(printed_form))
                     #If there is not more than one of the same bound variable detected, just alpha convert as normal
                     else:
+                        before_alpha = function
                         function = calculate_alpha(to_substitute, function, incoming)
-                        self.session_object.add_beta_step("Alpha converting, abstraction is now "+str(function))
+
+                        if before_alpha != function:
+                            substitution_form = "%"+str(to_substitute)+"."
+                            printed_form = substitution_form + str(function)
+                            self.session_object.add_beta_step("Alpha converting, abstraction is now "+str(printed_form))
                 #If there are no bound variables inside the string found, alpha convert as normal
                 else:
+                    before_alpha = function
                     function = calculate_alpha(to_substitute, function, incoming)
-                    self.session_object.add_beta_step("Alpha converting, abstraction is now "+str(function))
+
+                    if before_alpha != function:
+                        substitution_form = "%"+str(to_substitute)+"."
+                        printed_form = substitution_form + str(function)
+                        self.session_object.add_beta_step("Alpha converting, abstraction is now "+str(printed_form))
 
                 #Replace the bound variable with the new incoming value up until the end point (the point where there's bound variable crossover)
                 new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
-                self.session_object.add_beta_step("Using the substitution rule, replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
+                self.session_object.add_beta_step("Using the beta rule, replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
 
             #If there are no other lambda terms found within the current lambda term
             else:
                 #Calculate the alpha reduction as normal
+                before_alpha = function
                 new_function = calculate_alpha(to_substitute, function, incoming)
-                self.session_object.add_beta_step("Alpha converting, abstraction is now "+str(function))
+
+                if before_alpha != new_function:
+                    substitution_form = "%"+str(to_substitute)+"."
+                    printed_form = substitution_form + str(new_function)
+                    self.session_object.add_beta_step("Alpha converting, abstraction is now "+str(printed_form))
                 #Replace the bound variable with the new incoming value
                 new_function = new_function.replace(to_substitute,incoming)
-                self.session_object.add_beta_step("Using the subsitution rule, replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
+                self.session_object.add_beta_step("Using the beta rule, replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
 
             #Check valid/invalid type by comparing the incoming type to the bound variable type
             if to_substitute_type is not None:

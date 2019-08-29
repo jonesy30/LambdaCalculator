@@ -37,7 +37,7 @@ class CallByNameVisitor(BaseVisitor):
             return parenthesis_check
 
         #Visit the first child, then visit the second
-        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(0).getText()+" being evaluated using the left-reduction rule")
+        self.session_object.add_beta_step("In application "+ctx.getText()+", expression "+ctx.getChild(0).getText()+" being evaluated using the left-reduction rule")
         returned_child = self.visit(ctx.getChild(0))
         
         #Get the function and function type from the returned child
@@ -49,7 +49,7 @@ class CallByNameVisitor(BaseVisitor):
         if len(returned_child) == 3:
             input_type = returned_child[2]
             
-        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(1).getText()+" being passed to "+str(function))
+        self.session_object.add_beta_step("In application "+ctx.getText()+", expression "+ctx.getChild(1).getText()+" being passed to "+str(function))
         #Get the text of the left hand term
         expression = ctx.getChild(1).getText()
         expression_type = None
