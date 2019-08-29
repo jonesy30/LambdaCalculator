@@ -30,8 +30,28 @@
         <div class="beta-output output-container">
             {{beta_reduction|safe}}
         </div>
-        <p></p>
-        <p class="spot-an-issue">Spot an issue? Code can be found <a href="https://github.com/jonesy30/LambdaCalculator.git">here</a></p>
+        <br>
+        <b class="sub-title">Beta Reduction Rules</b>
+        <div class="rules-container">
+            <div class="reduction-rule">
+                <img class="resize" src="/static/beta_rules/substitution_rule.png">
+            </div>
+            <div class="reduction-rule">
+                <img class="resize" src="/static/beta_rules/equivalence.png">
+            </div>
+            <div class="reduction-rule">
+                <img class="resize" src="/static/beta_rules/symmetric_equality.png">
+            </div>
+            <div class="reduction-rule">
+                <img class="resize" src="/static/beta_rules/left_reduction.png">
+            </div>
+            <div class="reduction-rule">
+                <img class="resize" src="/static/beta_rules/right_reduction.png">
+            </div>
+            <div class="reduction-rule">
+                <img class="resize" src="/static/beta_rules/lambda_reduction.png">
+            </div>
+        </div>
     </div>
 </html>
 
@@ -59,12 +79,24 @@
         overflow-x: auto;
     }
 
+    .rules-container{
+        border: solid 1px lightgray;
+        border-radius: 5px;
+        background-color: rgba(255,255,255,0.2);
+    }
+
+    .reduction-rule{
+        width: 150px;
+        color: lightgray;
+        float: left;
+    }
+
     #evaluation-method-control{
         height:20%;
     }
 
     #information{
-        width:75%;
+        width:80%;
     }
 
     #input-box{
@@ -83,7 +115,7 @@
     }
 
     .type-output {
-        width:75%;
+        width:80%;
         height:20%;
         display: flex;
         align-items: center;
@@ -91,8 +123,8 @@
     }
 
     .beta-output {
-        width:75%;
-        height:70%;
+        width:80%;
+        height:40%;
     }
 
     #instructions {
@@ -122,6 +154,11 @@
 
     .input-expression {
         font-size: 24px;
+    }
+
+    img.resize {
+        max-width:100%;
+        max-height:100%;
     }
 
 </style>

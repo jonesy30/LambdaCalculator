@@ -37,7 +37,7 @@ class CallByNameVisitor(BaseVisitor):
             return parenthesis_check
 
         #Visit the first child, then visit the second
-        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(0).getText()+" being processed")
+        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(0).getText()+" being evaluated using the left-reduction rule")
         returned_child = self.visit(ctx.getChild(0))
         
         #Get the function and function type from the returned child

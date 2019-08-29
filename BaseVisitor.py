@@ -336,8 +336,15 @@ class BaseVisitor(LambdaCalculusVisitor):
 
         #Visit and evaluate the right hand side child (the function), get the function and the function type from the result
         returned_child = self.visit(ctx.getChild(2))
+
         function = returned_child[0]
         function_type = returned_child[1]
+
+        comparison_child = self.remove_types(ctx.getChild(2).getText())
+        comparison_function = self.remove_types(function)
+
+        if comparison_child!=comparison_function:
+            self.session_object.add_beta_step("Using the lambda-reduction rule to get to "+str(comparison_function))
 
         #The right hand child could be a function, if so it will contain an "input_type" variable from type inference
         #If there are more variables to unpack, get the inferred input type
@@ -388,28 +395,28 @@ class BaseVisitor(LambdaCalculusVisitor):
                                     break
                         end_value = i
                         function = calculate_alpha(to_substitute, function, incoming, 0, end_value)
-                        self.session_object.add_beta_step("Alpha converting, function is now "+str(function))
+                        self.session_object.add_beta_step("Alpha converting, abstraction is now "+str(function))
                     #If there is not more than one of the same bound variable detected, just alpha convert as normal
                     else:
                         function = calculate_alpha(to_substitute, function, incoming)
-                        self.session_object.add_beta_step("Alpha converting, function is now "+str(function))
+                        self.session_object.add_beta_step("Alpha converting, abstraction is now "+str(function))
                 #If there are no bound variables inside the string found, alpha convert as normal
                 else:
                     function = calculate_alpha(to_substitute, function, incoming)
-                    self.session_object.add_beta_step("Alpha converting, function is now "+str(function))
+                    self.session_object.add_beta_step("Alpha converting, abstraction is now "+str(function))
 
                 #Replace the bound variable with the new incoming value up until the end point (the point where there's bound variable crossover)
                 new_function = function[:end_value].replace(to_substitute,incoming) + function[end_value:]
-                self.session_object.add_beta_step("Replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
+                self.session_object.add_beta_step("Using the substitution rule, replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
 
             #If there are no other lambda terms found within the current lambda term
             else:
                 #Calculate the alpha reduction as normal
                 new_function = calculate_alpha(to_substitute, function, incoming)
-                self.session_object.add_beta_step("Alpha converting, function is now "+str(function))
+                self.session_object.add_beta_step("Alpha converting, abstraction is now "+str(function))
                 #Replace the bound variable with the new incoming value
                 new_function = new_function.replace(to_substitute,incoming)
-                self.session_object.add_beta_step("Replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
+                self.session_object.add_beta_step("Using the subsitution rule, replacing "+str(to_substitute)+ " with "+str(incoming)+" to get "+str(new_function))
 
             #Check valid/invalid type by comparing the incoming type to the bound variable type
             if to_substitute_type is not None:
@@ -457,7 +464,7 @@ class BaseVisitor(LambdaCalculusVisitor):
         
         #Create the new abstraction type, which is the bound variable type -> the type it gets converted to
         abstraction_type = str(to_substitute_type) + "->" + str(function_type)
-        
+
         return new_function, abstraction_type
 
     #Method which adds a variable with an associated type to the typing context for the current scope
@@ -586,3 +593,14 @@ class BaseVisitor(LambdaCalculusVisitor):
         
         #Set the session object to the string representation of the typing context
         self.session_object.set_typing_context(write_string)
+
+    #Function which removes all types from the output term (since this is covered by the typing context and the final type)
+    def remove_types(self, output):
+        bad_strings = [":int",":Int",":INT",":bool",":Bool",":BOOL",":None",":NONE",":none"]
+
+        #Replace all types with no character (deleting them)
+        output = str(output)
+        for string in bad_strings:
+            output = output.replace(string,"")
+        
+        return output

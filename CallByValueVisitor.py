@@ -49,7 +49,7 @@ class CallByValueVisitor(BaseVisitor):
         if len(returned_child) == 3:
             input_type = returned_child[2]
 
-        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(1).getText()+" being processed")
+        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(1).getText()+" being evaluated using the right-reduction rule")
         
         #Visit the second child now the first has been visited
         expression,expression_type = self.visit(ctx.getChild(1))
@@ -64,7 +64,7 @@ class CallByValueVisitor(BaseVisitor):
 
         application_type = None
 
-        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(0).getText()+" being processed")
+        self.session_object.add_beta_step("In application "+ctx.getText()+", node "+ctx.getChild(0).getText()+" being evaluated using the left-reduction rule")
         #If the left hand tree is an abstraction - you're not done! Keep processing using the right hand side of the tree
         if isinstance(am_I_an_abstraction,LambdaCalculusParser.AbstractionContext):
             #Visit the left hand tree with the term created from the right hand side
@@ -112,6 +112,6 @@ class CallByValueVisitor(BaseVisitor):
 
         #Perform the bulk of the abstraction (contained within BaseVisitor) and get the result and type of the abstraction
         abstraction_result, abstraction_type = self.perform_abstraction(ctx, incoming, incoming_type, to_substitute, to_substitute_type)
-        
+
         #Return the results of the abstraction
         return abstraction_result,abstraction_type
