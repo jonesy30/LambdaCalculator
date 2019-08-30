@@ -59,11 +59,6 @@
 	\vfill
 	
 	
-%\centering
-%\includegraphics[scale=0.75]{images/cslogo.png}
-%\title{Building a Lambda Expression Evaluator as a Learning Support Tool}
-%\author{Yola Jones (2409217J)}
-%\date{\today}
 \end{titlepage}
 \thispagestyle{empty}
 \begin{abstract}
@@ -74,7 +69,7 @@ There were two key goals for this project, to design an interface which would ac
 The code for this project has been submitted alongside this dissertation, but can also be found at \url{https://github.com/jonesy30/LambdaCalculator} on Github. This tool will be used in future years to support those on the Theory of Computation course.
 \end{abstract}
 \newpage
-\addtocontents{toc}{\protect\thispagestyle{empty}\tiny}
+\addtocontents{toc}{\protect\thispagestyle{empty}}
 \tableofcontents
 \newpage
 
@@ -383,7 +378,7 @@ The alpha conversion code written for this project follows this process. First, 
 
 Two beta reduction strategies are taught on the Theory of Computation course, call-by-value and call-by-name. The differences between these two strategies have been discussed in detail, but the key difference is in the order in which substitution and evaluation occurs in an application MN.\\
 
-Because of these differences in evaluation strategy, two separate visitors are used to limit the use of control coupling \cite{Lethbridge2004}. Since they share a lot of functionality, a BaseVisitor was defined which contains all common code between these two strategies. The two call-by-value and call-by-need visitors are subclassed from this base visitor, and define their unique behaviour for the application and abstraction terms. Both visitors pass information to the web interface about the steps being taken to evaluate the term as the tree is navigated. This output is given to the user alongside the evaluation result through a clickable link which opens a separate webpage containing this information. This can be seen in Figure \ref{_more_information}.\\
+Because of these differences in evaluation strategy, two separate visitors are used to limit the use of control coupling \cite{Lethbridge2004}. Since they share a lot of functionality, a BaseVisitor was defined which contains all common code between these two strategies. The two call-by-value and call-by-need visitors are subclassed from this base visitor, and define their unique behaviour for the application and abstraction terms. Both visitors pass information to the web interface about the steps being taken to evaluate the term as the tree is navigated. This output is given to the user alongside the evaluation result through a clickable link which opens a separate webpage containing this information. This can be seen in Figure \ref{web_interface_more_information}, and contains a set of beta-steps along with the reduction rules which have been used to evaluate the term.\\
 
 The abstraction term differs between the two methods due only to typing, since determining the type of a term happens during the evaluation of that term. In call-by-value, the type of N is known before substitution, so can be carried throughout the function. In call-by-need, the whole term needs to be type checked after substitution has happened to determine the type of M with N incorporated. Two separate abstraction methods were therefore needed, with common code moved into a method defined within the base visitor.
 
@@ -449,7 +444,9 @@ Flask is a web framework designed for use with Python, and allows python scripts
 
 Users enter lambda terms in the input dialogue box, entering a \% sign as a lambda symbol. Using a HTML onkeydown event, the interface automatically changes this symbol to a $\lambda$, allowing users to easily enter lambda terms. The complete web interface can be seen in Figure \ref{web_interface_no_input}, Figure \ref{web_interface_input} and Figure \ref{web_interface_error}.\\
 
-Clicking the \textit{Check Expression} button on the web interface sends a HTTP post request to the Flask server, which takes the value held in the user input box along with the selected reduction strategy, and sends this to the main lambda program. The output is returned to the HTML code through Flask, and the webpage is re-rendered to display the results.
+Clicking the \textit{Check Expression} button on the web interface sends a HTTP post request to the Flask server, which takes the value held in the user input box along with the selected reduction strategy, and sends this to the main lambda program. The output is returned to the HTML code through Flask, and the webpage is re-rendered to display the results.\\
+
+The evaluation details (including the typing context and a list of beta-steps, along with what reduction rules have been used) are connected to the main webpage through a clickable link in the results section. This allows users to see details of the evaluation which has just been done, shown in Figure \ref{web_interface_more_information}.
 
 \subsection{Complete Program}
 The complete class diagram for the final program can be seen in Figure \ref{class_diagram}, and shows how the web interface connects to the main lambda code using the \texttt{route.py} file which integrates Flask. It also shows how the ANTLR generated classes are utilised, and how each evaluation method is implemented using a separate visitor. The complete list of files used in the code along with what was written by the author and what was ANTLR generated can be found in the Appendix of this report.
